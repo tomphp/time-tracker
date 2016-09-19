@@ -1,0 +1,8 @@
+default:
+  suites:
+    default:
+      paths: [ %paths.base%/tests/features ]
+      contexts:
+        - test\features\TomPHP\TimeTracker\FeatureContext
+      filters:
+        tags: "~@ui-only&&~@wip"

@@ -1,0 +1,24 @@
+{
+    "config": {
+        "sort-packages": true
+    },
+    "require-dev": {
+        "behat/behat": "^3.1",
+        "phpunit/phpunit": "^5.5"
+    },
+    "require": {
+        "ramsey/uuid": "^3.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "TomPHP\\TimeTracker\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "files": ["vendor/phpunit/phpunit/src/Framework/Assert/Functions.php"],
+        "psr-4": {
+            "test\\features\\TomPHP\\TimeTracker\\": "test/features/bootstrap/",
+            "test\\unit\\TomPHP\\TimeTracker\\": "test/unit/"
+        }
+    }
+}
