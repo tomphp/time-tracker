@@ -8,7 +8,10 @@
     },
     "require": {
         "php": "^7.0",
-        "ramsey/uuid": "^3.5"
+        "pimple/pimple": "^3.0",
+        "ramsey/uuid": "^3.5",
+        "tomphp/container-configurator": "^0.5.1",
+        "tomphp/transform": "^0.2.4"
     },
     "autoload": {
         "psr-4": {

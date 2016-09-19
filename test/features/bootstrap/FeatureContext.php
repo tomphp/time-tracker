@@ -7,6 +7,8 @@ use Behat\Behat\Context\Context;
 use Behat\Behat\Context\SnippetAcceptingContext;
 use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
+use Pimple\Container;
+use TomPHP\ContainerConfigurator\Configurator;
 use TomPHP\TimeTracker\Domain\ProjectId;
 use TomPHP\TimeTracker\Domain\Project;
 use TomPHP\TimeTracker\Domain\User;
@@ -14,6 +16,10 @@ use TomPHP\TimeTracker\Domain\UserId;
 use TomPHP\TimeTracker\Domain\Period;
 use TomPHP\TimeTracker\Domain\Date;
 use TomPHP\TimeTracker\Domain\TimeEntry;
+use TomPHP\TimeTracker\Storage\MemoryProjectProjections;
+use TomPHP\TimeTracker\Domain\EventBus;
+use TomPHP\TimeTracker\Domain\EventHandlers\ProjectProjectionHandler;
+use TomPHP\Transform as T;
 
 /**
  * Defines application features from the specific context.
@@ -26,15 +32,37 @@ class FeatureContext implements Context, SnippetAcceptingContext
     /** @var ProjectId */
     private $projects = [];
 
-    /**
-     * Initializes context.
-     *
-     * Every scenario gets its own context instance.
-     * You can also pass arbitrary arguments to the
-     * context constructor through behat.yml.
-     */
+    /** @var Pimple */
+    private $services;
+
     public function __construct()
     {
+        $this->services = new Container();
+
+        $config = [
+            'event_handlers' => [
+                ProjectProjectionHandler::class,
+            ],
+            'di' => [
+                'services' => [
+                    ProjectProjections::class => [
+                        'class' => MemoryProjectProjections::class
+                    ],
+                    ProjectProjectionHandler::class => [
+                        'arguments' => [ProjectProjections::class],
+                    ],
+                ],
+            ],
+        ];
+
+        Configurator::apply()
+            ->configFromArray($config)
+            ->withSetting(Configurator::SETTING_DEFAULT_SINGLETON_SERVICES, true)
+            ->to($this->services);
+
+        foreach ($this->services['config.event_handlers'] as $name) {
+            EventBus::subscribe($this->services[$name]);
+        }
     }
 
     /**
@@ -106,5 +134,24 @@ class FeatureContext implements Context, SnippetAcceptingContext
     public function shouldHaveConfirmationThatHisTimeWasLogged($user)
     {
         // Intentionally blank
+    }
+
+    /**
+     * @When I retrieve a list of all active projects
+     */
+    public function iRetrieveAListOfAllActiveProjects()
+    {
+        $this->result = $this->services[ProjectProjections::class]->all();
+    }
+
+    /**
+     * @Then I should get the following projects:
+     */
+    public function iShouldGetTheFollowingProjects(TableNode $table)
+    {
+        assertSame(
+            $table->getColumn(0),
+            array_map(T\getProperty('projectName'), $this->result)
+        );
     }
 }
