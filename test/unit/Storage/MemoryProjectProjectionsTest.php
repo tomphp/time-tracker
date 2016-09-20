@@ -5,6 +5,7 @@ namespace test\unit\TomPHP\TimeTracker\Storage;
 use TomPHP\TimeTracker\Domain\ProjectProjection;
 use TomPHP\TimeTracker\Storage\MemoryProjectProjections;
 use TomPHP\TimeTracker\Domain\ProjectId;
+use TomPHP\TimeTracker\Domain\Period;
 
 final class MemoryProjectProjectionsTest extends \PHPUnit_Framework_TestCase
 {
@@ -13,12 +14,52 @@ final class MemoryProjectProjectionsTest extends \PHPUnit_Framework_TestCase
     {
         $projects = new MemoryProjectProjections();
 
-        $project1 = new ProjectProjection(ProjectId::generate(), 'Project One');
-        $project2 = new ProjectProjection(ProjectId::generate(), 'Project Two');
+        $project1 = new ProjectProjection(ProjectId::generate(), 'Project One', Period::fromString('0'));
+        $project2 = new ProjectProjection(ProjectId::generate(), 'Project Two', Period::fromString('0'));
 
         $projects->add($project1);
         $projects->add($project2);
 
         assertSame([$project1, $project2], $projects->all());
+    }
+
+    /** @test */
+    public function on_withId_it_returns_the_project_projection_with_that_id()
+    {
+        $projects = new MemoryProjectProjections();
+
+        $projectId = ProjectId::generate();
+        $project = new ProjectProjection($projectId, 'Project One', Period::fromString('0'));
+
+        $projects->add($project);
+
+        assertSame($project, $projects->withId($projectId));
+    }
+
+    /** @test */
+    public function on_withId_it_throws_if_there_is_no_project_projection_for_the_given_id()
+    {
+        $this->markTestIncomplete();
+    }
+
+    /** @test */
+    public function on_updateTotalTimeFor_it_updates_the_total_time_for_the_given_project()
+    {
+        $projects = new MemoryProjectProjections();
+
+        $projectId = ProjectId::generate();
+        $project = new ProjectProjection($projectId, 'Project One', Period::fromString('0'));
+
+        $projects->add($project);
+
+        $projects->updateTotalTimeFor($projectId, Period::fromString('8'));
+
+        assertEquals(Period::fromString('8'), $projects->withId($projectId)->totalTime);
+    }
+
+    /** @test */
+    public function on_updateTotalTimeFor_it_throws_if_there_is_no_project_projection_for_the_given_id()
+    {
+        $this->markTestIncomplete();
     }
 }

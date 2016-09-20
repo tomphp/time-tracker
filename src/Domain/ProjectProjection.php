@@ -8,6 +8,7 @@ use TomPHP\TimeTracker\Domain\ProjectId;
 /**
  * @property ProjectId $projectId
  * @property string    $projectName
+ * @property Period    $totalTime
  */
 final class ProjectProjection
 {
@@ -19,9 +20,16 @@ final class ProjectProjection
     /** @var string */
     private $projectName;
 
-    public function __construct(ProjectId $projectId, string $projectName)
-    {
+    /** @var Period */
+    private $totalTime;
+
+    public function __construct(
+        ProjectId $projectId,
+        string $projectName,
+        Period $totalTime
+    ) {
         $this->projectId   = $projectId;
         $this->projectName = $projectName;
+        $this->totalTime   = $totalTime;
     }
 }

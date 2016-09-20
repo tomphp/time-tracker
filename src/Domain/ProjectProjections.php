@@ -9,4 +9,9 @@ interface ProjectProjections
 
     /** @return void */
     public function add(ProjectProjection $project);
+
+    public function withId(ProjectId $id) : ProjectProjection;
+
+    /** @return void */
+    public function updateTotalTimeFor(ProjectId $id, Period $totalTime);
 }

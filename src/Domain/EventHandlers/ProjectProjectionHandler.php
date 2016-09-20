@@ -6,6 +6,8 @@ use TomPHP\TimeTracker\Domain\EventHandler;
 use TomPHP\TimeTracker\Domain\Events\ProjectCreated;
 use TomPHP\TimeTracker\Domain\ProjectProjections;
 use TomPHP\TimeTracker\Domain\ProjectProjection;
+use TomPHP\TimeTracker\Domain\Period;
+use TomPHP\TimeTracker\Domain\Events\TimeEntryLogged;
 
 final class ProjectProjectionHandler extends EventHandler
 {
@@ -21,7 +23,18 @@ final class ProjectProjectionHandler extends EventHandler
     {
         $this->projectProjections->add(new ProjectProjection(
             $event->projectId,
-            $event->projectName
+            $event->projectName,
+            Period::fromString('0:00')
         ));
+    }
+
+    protected function handleTimeEntryLogged(TimeEntryLogged $event)
+    {
+        $project = $this->projectProjections->withId($event->projectId());
+
+        $this->projectProjections->updateTotalTimeFor(
+            $event->projectId(),
+            $project->totalTime->add($event->period())
+        );
     }
 }

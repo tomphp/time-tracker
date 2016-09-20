@@ -10,6 +10,11 @@ use TomPHP\TimeTracker\Domain\Events\ProjectCreated;
 
 final class ProjectTest extends \PHPUnit_Framework_TestCase
 {
+    protected function tearDown()
+    {
+        EventBus::clearSubscribers();
+    }
+
     /** @test */
     public function on_create_it_publishes_a_project_created_event()
     {

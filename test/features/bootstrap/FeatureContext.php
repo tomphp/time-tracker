@@ -154,4 +154,38 @@ class FeatureContext implements Context, SnippetAcceptingContext
             array_map(T\getProperty('projectName'), $this->result)
         );
     }
+
+    /**
+     * @Given :user has logged a time entry for :period hours on :date against :project
+     */
+    public function hasLoggedATimeEntryForHoursOnAgainst(
+        UserId $user,
+        Period $period,
+        Date $date,
+        ProjectId $project
+    ) {
+        $this->logsATimeEntryForHoursOnAgainstWithDescription(
+            $user,
+            $period,
+            $date,
+            $project,
+            'Example description'
+        );
+    }
+
+    /**
+     * @When I retrieve the details for :project
+     */
+    public function iRetrieveTheDetailsFor(ProjectId $project)
+    {
+        $this->result = $this->services[ProjectProjections::class]->withId($project);
+    }
+
+    /**
+     * @Then I should see that the total hours spent on the project is :period
+     */
+    public function iShouldSeeThatTheTotalHoursSpentOnTheProjectIs(Period $period)
+    {
+        assertEquals($period, $this->result->totalTime);
+    }
 }
