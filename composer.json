@@ -8,7 +8,7 @@
     },
     "require": {
         "php": "^7.0",
-        "friendsofphp/php-cs-fixer": "2.0.0-alpha",
+        "friendsofphp/php-cs-fixer": "dev-master",
         "pimple/pimple": "^3.0",
         "ramsey/uuid": "^3.5",
         "tomphp/container-configurator": "^0.5.1",
