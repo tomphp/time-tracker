@@ -15,14 +15,14 @@ final class TimeEntryTest extends \PHPUnit_Framework_TestCase
 {
     protected function tearDown()
     {
-        EventBus::clearSubscribers();
+        EventBus::clearHandlers();
     }
 
     /** @test */
     public function on_log_it_publishes_a_time_entry_logged_event()
     {
         $handler = $this->prophesize(EventHandler::class);
-        EventBus::subscribe($handler->reveal());
+        EventBus::addHandler($handler->reveal());
 
         $userId      = UserId::generate();
         $projectId   = ProjectId::generate();

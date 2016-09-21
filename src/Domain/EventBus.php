@@ -8,7 +8,7 @@ final class EventBus
     private static $handlers = [];
 
     /** @return void */
-    public static function subscribe(EventHandler $handler)
+    public static function addHandler(EventHandler $handler)
     {
         self::$handlers[] = $handler;
     }
@@ -22,7 +22,7 @@ final class EventBus
     }
 
     /** @return void */
-    public static function clearSubscribers()
+    public static function clearHandlers()
     {
         self::$handlers = [];
     }

@@ -59,7 +59,7 @@ class FeatureContext implements Context, SnippetAcceptingContext
             ->to($this->services);
 
         foreach ($this->services['config.event_handlers'] as $name) {
-            EventBus::subscribe($this->services[$name]);
+            EventBus::addHandler($this->services[$name]);
         }
     }
 

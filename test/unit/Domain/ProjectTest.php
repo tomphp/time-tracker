@@ -12,14 +12,14 @@ final class ProjectTest extends \PHPUnit_Framework_TestCase
 {
     protected function tearDown()
     {
-        EventBus::clearSubscribers();
+        EventBus::clearHandlers();
     }
 
     /** @test */
     public function on_create_it_publishes_a_project_created_event()
     {
         $handler = $this->prophesize(EventHandler::class);
-        EventBus::subscribe($handler->reveal());
+        EventBus::addHandler($handler->reveal());
 
         $projectId = ProjectId::generate();
 
