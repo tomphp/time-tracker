@@ -2,23 +2,21 @@
 
 namespace test\features\TomPHP\TimeTracker;
 
-use Behat\Behat\Tester\Exception\PendingException;
 use Behat\Behat\Context\Context;
 use Behat\Behat\Context\SnippetAcceptingContext;
-use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
 use Pimple\Container;
 use TomPHP\ContainerConfigurator\Configurator;
-use TomPHP\TimeTracker\Domain\ProjectId;
-use TomPHP\TimeTracker\Domain\Project;
-use TomPHP\TimeTracker\Domain\User;
-use TomPHP\TimeTracker\Domain\UserId;
-use TomPHP\TimeTracker\Domain\Period;
 use TomPHP\TimeTracker\Domain\Date;
-use TomPHP\TimeTracker\Domain\TimeEntry;
-use TomPHP\TimeTracker\Storage\MemoryProjectProjections;
 use TomPHP\TimeTracker\Domain\EventBus;
 use TomPHP\TimeTracker\Domain\EventHandlers\ProjectProjectionHandler;
+use TomPHP\TimeTracker\Domain\Period;
+use TomPHP\TimeTracker\Domain\Project;
+use TomPHP\TimeTracker\Domain\ProjectId;
+use TomPHP\TimeTracker\Domain\TimeEntry;
+use TomPHP\TimeTracker\Domain\User;
+use TomPHP\TimeTracker\Domain\UserId;
+use TomPHP\TimeTracker\Storage\MemoryProjectProjections;
 use TomPHP\Transform as T;
 
 /**
@@ -46,7 +44,7 @@ class FeatureContext implements Context, SnippetAcceptingContext
             'di' => [
                 'services' => [
                     ProjectProjections::class => [
-                        'class' => MemoryProjectProjections::class
+                        'class' => MemoryProjectProjections::class,
                     ],
                     ProjectProjectionHandler::class => [
                         'arguments' => [ProjectProjections::class],
@@ -72,7 +70,7 @@ class FeatureContext implements Context, SnippetAcceptingContext
     {
         if (!isset($this->users[$username])) {
             $userId = UserId::generate();
-            $user = User::create($userId, $username);
+            $user   = User::create($userId, $username);
 
             $this->users[$username] = $userId;
         }

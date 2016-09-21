@@ -4,10 +4,10 @@ namespace TomPHP\TimeTracker\Domain\EventHandlers;
 
 use TomPHP\TimeTracker\Domain\EventHandler;
 use TomPHP\TimeTracker\Domain\Events\ProjectCreated;
-use TomPHP\TimeTracker\Domain\ProjectProjections;
-use TomPHP\TimeTracker\Domain\ProjectProjection;
-use TomPHP\TimeTracker\Domain\Period;
 use TomPHP\TimeTracker\Domain\Events\TimeEntryLogged;
+use TomPHP\TimeTracker\Domain\Period;
+use TomPHP\TimeTracker\Domain\ProjectProjection;
+use TomPHP\TimeTracker\Domain\ProjectProjections;
 
 final class ProjectProjectionHandler extends EventHandler
 {

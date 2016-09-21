@@ -3,8 +3,8 @@
 namespace TomPHP\TimeTracker\Domain\Events;
 
 use TomPHP\TimeTracker\Domain\Event;
-use TomPHP\TimeTracker\Util\ReadOnlyProperties;
 use TomPHP\TimeTracker\Domain\ProjectId;
+use TomPHP\TimeTracker\Util\ReadOnlyProperties;
 
 /**
  * @property ProjectId $projectId

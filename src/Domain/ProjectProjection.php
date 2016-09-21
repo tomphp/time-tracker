@@ -3,7 +3,6 @@
 namespace TomPHP\TimeTracker\Domain;
 
 use TomPHP\TimeTracker\Util\ReadOnlyProperties;
-use TomPHP\TimeTracker\Domain\ProjectId;
 
 /**
  * @property ProjectId $projectId

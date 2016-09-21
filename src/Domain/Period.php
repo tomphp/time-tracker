@@ -25,7 +25,7 @@ final class Period
 
     private function __construct(int $hours, int $minutes)
     {
-        $this->hours = $hours;
+        $this->hours   = $hours;
         $this->minutes = $minutes;
     }
 
@@ -41,7 +41,7 @@ final class Period
 
     public function add(self $other) : self
     {
-        $hours = $this->hours + $other->hours();
+        $hours   = $this->hours + $other->hours();
         $minutes = $this->minutes + $other->minutes();
 
         if ($minutes >= 60) {

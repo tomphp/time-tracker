@@ -2,10 +2,10 @@
 
 namespace test\unit\TomPHP\TimeTracker\Storage;
 
+use TomPHP\TimeTracker\Domain\Period;
+use TomPHP\TimeTracker\Domain\ProjectId;
 use TomPHP\TimeTracker\Domain\ProjectProjection;
 use TomPHP\TimeTracker\Storage\MemoryProjectProjections;
-use TomPHP\TimeTracker\Domain\ProjectId;
-use TomPHP\TimeTracker\Domain\Period;
 
 final class MemoryProjectProjectionsTest extends \PHPUnit_Framework_TestCase
 {
@@ -29,7 +29,7 @@ final class MemoryProjectProjectionsTest extends \PHPUnit_Framework_TestCase
         $projects = new MemoryProjectProjections();
 
         $projectId = ProjectId::generate();
-        $project = new ProjectProjection($projectId, 'Project One', Period::fromString('0'));
+        $project   = new ProjectProjection($projectId, 'Project One', Period::fromString('0'));
 
         $projects->add($project);
 
@@ -48,7 +48,7 @@ final class MemoryProjectProjectionsTest extends \PHPUnit_Framework_TestCase
         $projects = new MemoryProjectProjections();
 
         $projectId = ProjectId::generate();
-        $project = new ProjectProjection($projectId, 'Project One', Period::fromString('0'));
+        $project   = new ProjectProjection($projectId, 'Project One', Period::fromString('0'));
 
         $projects->add($project);
 

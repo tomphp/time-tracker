@@ -2,14 +2,14 @@
 
 namespace test\unit\TomPHP\TimeTracker\Domain;
 
-use TomPHP\TimeTracker\Domain\TimeEntry;
-use TomPHP\TimeTracker\Domain\EventBus;
-use TomPHP\TimeTracker\Domain\UserId;
-use TomPHP\TimeTracker\Domain\ProjectId;
 use TomPHP\TimeTracker\Domain\Date;
-use TomPHP\TimeTracker\Domain\Period;
+use TomPHP\TimeTracker\Domain\EventBus;
 use TomPHP\TimeTracker\Domain\EventHandler;
 use TomPHP\TimeTracker\Domain\Events\TimeEntryLogged;
+use TomPHP\TimeTracker\Domain\Period;
+use TomPHP\TimeTracker\Domain\ProjectId;
+use TomPHP\TimeTracker\Domain\TimeEntry;
+use TomPHP\TimeTracker\Domain\UserId;
 
 final class TimeEntryTest extends \PHPUnit_Framework_TestCase
 {

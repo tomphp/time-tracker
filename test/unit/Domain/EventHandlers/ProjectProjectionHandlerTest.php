@@ -2,17 +2,17 @@
 
 namespace test\unit\TomPHP\TimeTracker\Domain\EventHandlers;
 
-use TomPHP\TimeTracker\Domain\ProjectProjections;
-use TomPHP\TimeTracker\Domain\EventHandlers\ProjectProjectionHandler;
-use TomPHP\TimeTracker\Domain\ProjectId;
-use TomPHP\TimeTracker\Domain\Events\ProjectCreated;
-use TomPHP\TimeTracker\Domain\ProjectProjection;
-use TomPHP\TimeTracker\Domain\Period;
-use TomPHP\TimeTracker\Domain\Event;
-use TomPHP\TimeTracker\Domain\Events\TimeEntryLogged;
 use Prophecy\Argument;
-use TomPHP\TimeTracker\Domain\UserId;
 use TomPHP\TimeTracker\Domain\Date;
+use TomPHP\TimeTracker\Domain\Event;
+use TomPHP\TimeTracker\Domain\EventHandlers\ProjectProjectionHandler;
+use TomPHP\TimeTracker\Domain\Events\ProjectCreated;
+use TomPHP\TimeTracker\Domain\Events\TimeEntryLogged;
+use TomPHP\TimeTracker\Domain\Period;
+use TomPHP\TimeTracker\Domain\ProjectId;
+use TomPHP\TimeTracker\Domain\ProjectProjection;
+use TomPHP\TimeTracker\Domain\ProjectProjections;
+use TomPHP\TimeTracker\Domain\UserId;
 
 final class ProjectProjectionHandlerTest extends \PHPUnit_Framework_TestCase
 {
@@ -25,7 +25,7 @@ final class ProjectProjectionHandlerTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->projects = $this->prophesize(ProjectProjections::class);
-        $this->subject = new ProjectProjectionHandler($this->projects->reveal());
+        $this->subject  = new ProjectProjectionHandler($this->projects->reveal());
     }
 
     /** @test */

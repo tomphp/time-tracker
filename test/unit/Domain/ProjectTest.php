@@ -4,9 +4,9 @@ namespace test\unit\TomPHP\TimeTracker\Domain;
 
 use TomPHP\TimeTracker\Domain\EventBus;
 use TomPHP\TimeTracker\Domain\EventHandler;
-use TomPHP\TimeTracker\Domain\ProjectId;
-use TomPHP\TimeTracker\Domain\Project;
 use TomPHP\TimeTracker\Domain\Events\ProjectCreated;
+use TomPHP\TimeTracker\Domain\Project;
+use TomPHP\TimeTracker\Domain\ProjectId;
 
 final class ProjectTest extends \PHPUnit_Framework_TestCase
 {

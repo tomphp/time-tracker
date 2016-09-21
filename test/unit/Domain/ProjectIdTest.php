@@ -11,7 +11,7 @@ final class ProjectIdTest extends \PHPUnit_Framework_TestCase
     public function on_toString_it_returns_a_string_representation()
     {
         $string = 'dae81576-11c9-4a99-96da-0d1901c337d0';
-        $id = new ProjectId(Uuid::fromString($string));
+        $id     = new ProjectId(Uuid::fromString($string));
 
         assertSame($string, (string) $id);
     }

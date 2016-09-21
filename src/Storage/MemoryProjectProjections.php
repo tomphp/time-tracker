@@ -2,10 +2,10 @@
 
 namespace TomPHP\TimeTracker\Storage;
 
+use TomPHP\TimeTracker\Domain\Period;
+use TomPHP\TimeTracker\Domain\ProjectId;
 use TomPHP\TimeTracker\Domain\ProjectProjection;
 use TomPHP\TimeTracker\Domain\ProjectProjections;
-use TomPHP\TimeTracker\Domain\ProjectId;
-use TomPHP\TimeTracker\Domain\Period;
 
 final class MemoryProjectProjections implements ProjectProjections
 {
