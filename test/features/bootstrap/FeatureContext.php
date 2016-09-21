@@ -105,7 +105,7 @@ class FeatureContext implements Context, SnippetAcceptingContext
     /**
      * @Given there is a project named :name
      */
-    public function thereIsAProjectNamed(string $name)
+    public function createProjectNamed(string $name)
     {
         $projectId = ProjectId::generate();
 
@@ -116,7 +116,7 @@ class FeatureContext implements Context, SnippetAcceptingContext
     /**
      * @When :user logs a time entry for :period hours on :date against :project with description :description
      */
-    public function logsATimeEntryForHoursOnAgainstWithDescription(
+    public function logTimeEntryWithDescription(
         UserId $user,
         Period $period,
         Date $date,
@@ -129,7 +129,7 @@ class FeatureContext implements Context, SnippetAcceptingContext
     /**
      * @Then :user should have confirmation that his time was logged
      */
-    public function shouldHaveConfirmationThatHisTimeWasLogged($user)
+    public function doNothing($user)
     {
         // Intentionally blank
     }
@@ -137,7 +137,7 @@ class FeatureContext implements Context, SnippetAcceptingContext
     /**
      * @When I retrieve a list of all active projects
      */
-    public function iRetrieveAListOfAllActiveProjects()
+    public function fetchAllActiveProjectProjections()
     {
         $this->result = $this->services[ProjectProjections::class]->all();
     }
@@ -145,7 +145,7 @@ class FeatureContext implements Context, SnippetAcceptingContext
     /**
      * @Then I should get the following projects:
      */
-    public function iShouldGetTheFollowingProjects(TableNode $table)
+    public function assertResultMatchesProjectTable(TableNode $table)
     {
         assertSame(
             $table->getColumn(0),
@@ -156,13 +156,13 @@ class FeatureContext implements Context, SnippetAcceptingContext
     /**
      * @Given :user has logged a time entry for :period hours on :date against :project
      */
-    public function hasLoggedATimeEntryForHoursOnAgainst(
+    public function logTimeEntry(
         UserId $user,
         Period $period,
         Date $date,
         ProjectId $project
     ) {
-        $this->logsATimeEntryForHoursOnAgainstWithDescription(
+        $this->logTimeEntryWithDescription(
             $user,
             $period,
             $date,
@@ -174,7 +174,7 @@ class FeatureContext implements Context, SnippetAcceptingContext
     /**
      * @When I retrieve the details for :project
      */
-    public function iRetrieveTheDetailsFor(ProjectId $project)
+    public function fetchProjectProjection(ProjectId $project)
     {
         $this->result = $this->services[ProjectProjections::class]->withId($project);
     }
@@ -182,7 +182,7 @@ class FeatureContext implements Context, SnippetAcceptingContext
     /**
      * @Then I should see that the total hours spent on the project is :period
      */
-    public function iShouldSeeThatTheTotalHoursSpentOnTheProjectIs(Period $period)
+    public function assertProjectTotalTime(Period $period)
     {
         assertEquals($period, $this->result->totalTime());
     }
