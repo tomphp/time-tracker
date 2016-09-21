@@ -2,17 +2,8 @@
 
 namespace TomPHP\TimeTracker\Domain;
 
-use TomPHP\TimeTracker\Util\ReadOnlyProperties;
-
-/**
- * @property ProjectId $projectId
- * @property string    $projectName
- * @property Period    $totalTime
- */
 final class ProjectProjection
 {
-    use ReadOnlyProperties;
-
     /** @var ProjectId */
     private $projectId;
 
@@ -30,5 +21,20 @@ final class ProjectProjection
         $this->projectId   = $projectId;
         $this->projectName = $projectName;
         $this->totalTime   = $totalTime;
+    }
+
+    public function projectId() : ProjectId
+    {
+        return $this->projectId;
+    }
+
+    public function projectName() : string
+    {
+        return $this->projectName;
+    }
+
+    public function totalTime() : Period
+    {
+        return $this->totalTime;
     }
 }

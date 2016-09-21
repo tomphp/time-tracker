@@ -149,7 +149,7 @@ class FeatureContext implements Context, SnippetAcceptingContext
     {
         assertSame(
             $table->getColumn(0),
-            array_map(T\getProperty('projectName'), $this->result)
+            array_map(T\callMethod('projectName'), $this->result)
         );
     }
 
@@ -184,6 +184,6 @@ class FeatureContext implements Context, SnippetAcceptingContext
      */
     public function iShouldSeeThatTheTotalHoursSpentOnTheProjectIs(Period $period)
     {
-        assertEquals($period, $this->result->totalTime);
+        assertEquals($period, $this->result->totalTime());
     }
 }

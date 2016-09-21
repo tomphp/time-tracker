@@ -4,16 +4,9 @@ namespace TomPHP\TimeTracker\Domain\Events;
 
 use TomPHP\TimeTracker\Domain\Event;
 use TomPHP\TimeTracker\Domain\ProjectId;
-use TomPHP\TimeTracker\Util\ReadOnlyProperties;
 
-/**
- * @property ProjectId $projectId
- * @property string    $projectName
- */
 final class ProjectCreated extends Event
 {
-    use ReadOnlyProperties;
-
     /** @var ProjectId */
     private $projectId;
 
@@ -24,5 +17,15 @@ final class ProjectCreated extends Event
     {
         $this->projectId   = $projectId;
         $this->projectName = $projectName;
+    }
+
+    public function projectId() : ProjectId
+    {
+        return $this->projectId;
+    }
+
+    public function projectName() : string
+    {
+        return $this->projectName;
     }
 }

@@ -22,8 +22,8 @@ final class ProjectProjectionHandler extends EventHandler
     protected function handleProjectCreated(ProjectCreated $event)
     {
         $this->projectProjections->add(new ProjectProjection(
-            $event->projectId,
-            $event->projectName,
+            $event->projectId(),
+            $event->projectName(),
             Period::fromString('0:00')
         ));
     }
@@ -34,7 +34,7 @@ final class ProjectProjectionHandler extends EventHandler
 
         $this->projectProjections->updateTotalTimeFor(
             $event->projectId(),
-            $project->totalTime->add($event->period())
+            $project->totalTime()->add($event->period())
         );
     }
 }

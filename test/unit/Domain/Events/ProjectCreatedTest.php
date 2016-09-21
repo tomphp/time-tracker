@@ -15,7 +15,7 @@ final class ProjectCreatedTest extends \PHPUnit_Framework_TestCase
 
         $event = new ProjectCreated($projectId, $projectName);
 
-        assertSame($projectId, $event->projectId);
-        assertSame($projectName, $event->projectName);
+        assertSame($projectId, $event->projectId());
+        assertSame($projectName, $event->projectName());
     }
 }

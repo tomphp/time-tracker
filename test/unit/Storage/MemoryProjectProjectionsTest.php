@@ -54,7 +54,7 @@ final class MemoryProjectProjectionsTest extends \PHPUnit_Framework_TestCase
 
         $projects->updateTotalTimeFor($projectId, Period::fromString('8'));
 
-        assertEquals(Period::fromString('8'), $projects->withId($projectId)->totalTime);
+        assertEquals(Period::fromString('8'), $projects->withId($projectId)->totalTime());
     }
 
     /** @test */
