@@ -4,7 +4,6 @@ namespace test\unit\TomPHP\TimeTracker\Domain\EventHandlers;
 
 use Prophecy\Argument;
 use TomPHP\TimeTracker\Domain\Date;
-use TomPHP\TimeTracker\Domain\Event;
 use TomPHP\TimeTracker\Domain\EventHandlers\ProjectProjectionHandler;
 use TomPHP\TimeTracker\Domain\Events\ProjectCreated;
 use TomPHP\TimeTracker\Domain\Events\TimeEntryLogged;
@@ -14,35 +13,26 @@ use TomPHP\TimeTracker\Domain\ProjectProjection;
 use TomPHP\TimeTracker\Domain\ProjectProjections;
 use TomPHP\TimeTracker\Domain\UserId;
 
-final class ProjectProjectionHandlerTest extends \PHPUnit_Framework_TestCase
+final class ProjectProjectionHandlerTest extends AbstractEventHandlerTest
 {
     /** @var ProjectProjections */
     private $projects;
 
-    /** @var ProjectProjectionHandler */
-    private $subject;
-
     protected function setUp()
     {
         $this->projects = $this->prophesize(ProjectProjections::class);
-        $this->subject  = new ProjectProjectionHandler($this->projects->reveal());
     }
 
-    /** @test */
-    public function on_handle_it_ignores_unknown_events()
+    protected function subject()
     {
-        $event = $this->prophesize(Event::class)->reveal();
-
-        $this->subject->handle($event);
-
-        assertTrue(true); // Just test that no errors are generated
+        return new ProjectProjectionHandler($this->projects->reveal());
     }
 
     /** @test */
     public function on_handle_ProjectCreated_it_stores_a_new_ProjectProjection()
     {
         $projectId = ProjectId::generate();
-        $this->subject->handle(new ProjectCreated($projectId, 'Example Project'));
+        $this->subject()->handle(new ProjectCreated($projectId, 'Example Project'));
 
         $this->projects
             ->add(new ProjectProjection($projectId, 'Example Project', Period::fromString('0')))
@@ -61,7 +51,7 @@ final class ProjectProjectionHandlerTest extends \PHPUnit_Framework_TestCase
             ->updateTotalTimeFor(Argument::any(), Argument::any())
             ->willReturn();
 
-        $this->subject->handle(new TimeEntryLogged(
+        $this->subject()->handle(new TimeEntryLogged(
             UserId::generate(),
             $projectId,
             Date::fromString('2016-09-20'),
@@ -84,7 +74,7 @@ final class ProjectProjectionHandlerTest extends \PHPUnit_Framework_TestCase
             ->updateTotalTimeFor(Argument::any(), Argument::any())
             ->willReturn();
 
-        $this->subject->handle(new TimeEntryLogged(
+        $this->subject()->handle(new TimeEntryLogged(
             UserId::generate(),
             $projectId,
             Date::fromString('2016-09-20'),
