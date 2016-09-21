@@ -33,7 +33,7 @@ final class MemoryProjectProjections implements ProjectProjections
 
         $this->projections[(string) $id] = new ProjectProjection(
             $project->projectId(),
-            $project->projectName(),
+            $project->name(),
             $totalTime
         );
     }

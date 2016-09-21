@@ -149,7 +149,7 @@ class FeatureContext implements Context, SnippetAcceptingContext
     {
         assertSame(
             $table->getColumn(0),
-            array_map(T\callMethod('projectName'), $this->result)
+            array_map(T\callMethod('name'), $this->result)
         );
     }
 

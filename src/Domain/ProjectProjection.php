@@ -8,18 +8,18 @@ final class ProjectProjection
     private $projectId;
 
     /** @var string */
-    private $projectName;
+    private $name;
 
     /** @var Period */
     private $totalTime;
 
     public function __construct(
         ProjectId $projectId,
-        string $projectName,
+        string $name,
         Period $totalTime
     ) {
         $this->projectId   = $projectId;
-        $this->projectName = $projectName;
+        $this->name = $name;
         $this->totalTime   = $totalTime;
     }
 
@@ -28,9 +28,9 @@ final class ProjectProjection
         return $this->projectId;
     }
 
-    public function projectName() : string
+    public function name() : string
     {
-        return $this->projectName;
+        return $this->name;
     }
 
     public function totalTime() : Period
