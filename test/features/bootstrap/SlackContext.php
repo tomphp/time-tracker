@@ -6,11 +6,11 @@ use Behat\Behat\Context\Context;
 use Behat\Behat\Context\SnippetAcceptingContext;
 use Behat\Behat\Tester\Exception\PendingException;
 use Prophecy\Prophet;
-use TomPHP\TimeTracker\Domain\Project;
 use TomPHP\TimeTracker\Slack\CommandRunner;
 use TomPHP\TimeTracker\Slack\Date;
 use TomPHP\TimeTracker\Slack\Developer;
 use TomPHP\TimeTracker\Slack\Period;
+use TomPHP\TimeTracker\Slack\Project;
 use TomPHP\TimeTracker\Slack\TimeTracker;
 
 class SlackContext implements Context, SnippetAcceptingContext

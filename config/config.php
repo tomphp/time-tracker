@@ -1,11 +1,11 @@
 <?php
 
-use TomPHP\TimeTracker\Domain\EventHandlers\ProjectProjectionHandler;
-use TomPHP\TimeTracker\Domain\EventHandlers\TimeEntryProjectionHandler;
-use TomPHP\TimeTracker\Domain\ProjectProjections;
-use TomPHP\TimeTracker\Storage\MemoryProjectProjections;
-use TomPHP\TimeTracker\Domain\TimeEntryProjections;
-use TomPHP\TimeTracker\Storage\MemoryTimeEntryProjections;
+use TomPHP\TimeTracker\Tracker\EventHandlers\ProjectProjectionHandler;
+use TomPHP\TimeTracker\Tracker\EventHandlers\TimeEntryProjectionHandler;
+use TomPHP\TimeTracker\Tracker\ProjectProjections;
+use TomPHP\TimeTracker\Tracker\Storage\MemoryProjectProjections;
+use TomPHP\TimeTracker\Tracker\TimeEntryProjections;
+use TomPHP\TimeTracker\Tracker\Storage\MemoryTimeEntryProjections;
 
 return [
     'event_handlers' => [
