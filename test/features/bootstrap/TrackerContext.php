@@ -36,7 +36,7 @@ class TrackerContext implements Context, SnippetAcceptingContext
         $this->services = new Container();
 
         Configurator::apply()
-            ->configFromFile(__DIR__ . '/../../../config/config.php')
+            ->configFromFile(__DIR__ . '/../../../config/tracker.config.php')
             ->withSetting(Configurator::SETTING_DEFAULT_SINGLETON_SERVICES, true)
             ->to($this->services);
 
