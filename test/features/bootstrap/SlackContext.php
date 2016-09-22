@@ -2,68 +2,139 @@
 
 namespace test\features\TomPHP\TimeTracker;
 
-use Behat\Behat\Tester\Exception\PendingException;
 use Behat\Behat\Context\Context;
 use Behat\Behat\Context\SnippetAcceptingContext;
-use Behat\Gherkin\Node\TableNode;
-use Pimple\Container;
-use TomPHP\ContainerConfigurator\Configurator;
-use TomPHP\TimeTracker\Domain\Date;
-use TomPHP\TimeTracker\Domain\EventBus;
-use TomPHP\TimeTracker\Domain\EventHandlers\ProjectProjectionHandler;
-use TomPHP\TimeTracker\Domain\EventHandlers\TimeEntryProjectionHandler;
-use TomPHP\TimeTracker\Domain\Period;
+use Behat\Behat\Tester\Exception\PendingException;
+use Prophecy\Prophet;
 use TomPHP\TimeTracker\Domain\Project;
-use TomPHP\TimeTracker\Domain\ProjectId;
-use TomPHP\TimeTracker\Domain\TimeEntry;
-use TomPHP\TimeTracker\Domain\TimeEntryProjection;
-use TomPHP\TimeTracker\Domain\TimeEntryProjections;
-use TomPHP\TimeTracker\Domain\User;
-use TomPHP\TimeTracker\Domain\UserId;
-use TomPHP\TimeTracker\Storage\MemoryProjectProjections;
-use TomPHP\TimeTracker\Storage\MemoryTimeEntryProjections;
-use TomPHP\Transform as T;
+use TomPHP\TimeTracker\Slack\CommandRunner;
+use TomPHP\TimeTracker\Slack\Date;
+use TomPHP\TimeTracker\Slack\Developer;
+use TomPHP\TimeTracker\Slack\Period;
+use TomPHP\TimeTracker\Slack\TimeTracker;
 
 class SlackContext implements Context, SnippetAcceptingContext
 {
+    /** @var Prophet */
+    private $prophet;
 
-    /**
-     * @Given Tom is a user
-     */
-    public function tomIsAUser()
+    /** @var Developer[] */
+    private $developers = [];
+
+    /** @var Project[] */
+    private $projects = [];
+
+    /** @var TimeTracker */
+    private $timeTracker;
+
+    public function __construct()
     {
-        throw new PendingException();
+        $this->prophet     = new Prophet();
+        $this->timeTracker = $this->prophet->prophesize(TimeTracker::class);
     }
 
     /**
-     * @Given there is a project named :arg1
+     * @Transform :period
      */
-    public function thereIsAProjectNamed($arg1)
+    public function castStringToPeriod(string $string) : Period
     {
-        throw new PendingException();
+        return new Period();
     }
 
     /**
-     * @When Tom issues the command :arg1
+     * @Transform :developer
      */
-    public function tomIssuesTheCommand($arg1)
+    public function fetchDeveloperByName(string $name) : Developer
     {
-        throw new PendingException();
+        return $this->developers[$name];
     }
 
     /**
-     * @Then :arg1 hours should have been logged today against :arg2 for :arg3
+     * @Transform :project
      */
-    public function hoursShouldHaveBeenLoggedTodayAgainstFor($arg1, $arg2, $arg3)
+    public function fetchProjectByName(string $name) : Project
     {
-        throw new PendingException();
+        return $this->projects[$name];
     }
 
     /**
-     * @Then message saying :arg1 should have been sent to Slack
+     * @Given :developerName is a developer with Slack handle @:slackHandle
      */
-    public function messageSayingShouldHaveBeenSentToSlack($arg1)
+    public function createDeveloper(string $developerName, string $slackHandle)
+    {
+        $developer = new Developer("developer-id-$developerName", $developerName, $slackHandle);
+
+        $this->developers[$developerName] = $developer;
+
+        $this->timeTracker
+            ->fetchDeveloperBySlackHandle($slackHandle)
+            ->willReturn($developer);
+    }
+
+    /**
+     * @Given there is a project named :projectName
+     */
+    public function createProject(string $projectName)
+    {
+        $project = new Project("project-id-$projectName", $developerName);
+
+        $this->projects[$projectName] = $project;
+
+        $this->timeTracker
+            ->fetchProjectByName($projectName)
+            ->willReturn($project);
+    }
+
+    /**
+     * @When :developer issues the command :command
+     */
+    public function developerIssuesCommand(Developer $developer, string $command)
+    {
+        $this->commandRunner()->run($developer->slackHandle(), $command);
+    }
+
+    /**
+     * @Then :period hours should have been logged today by :developer against :project for :description
+     */
+    public function assertTimeEntryLogged(
+        Period $period,
+        Developer $developer,
+        Project $project,
+        string $description
+    ) {
+        throw new PendingException();
+
+        $this->timeTracker->logTimeEntry(
+            $developer,
+            $project,
+            $this->today(),
+            $period,
+            $description
+        )->shouldHaveBeenCalled();
+    }
+
+    /**
+     * @Then message saying :message should have been sent to Slack
+     */
+    public function messageSayingShouldHaveBeenSentToSlack(Message $message)
     {
         throw new PendingException();
+
+        $this->messenger()->send($message)->shouldHaveBeenCalled();
+    }
+
+    private function today() : Date
+    {
+        return new Date();
+    }
+
+    private function commandRunner() : CommandRunner
+    {
+        return new CommandRunner();
+    }
+
+    private function messenger() : SlackMessenger
+    {
+        return new SlackMessenger();
     }
 }
