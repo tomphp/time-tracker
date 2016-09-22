@@ -9,18 +9,15 @@ use Pimple\Container;
 use TomPHP\ContainerConfigurator\Configurator;
 use TomPHP\TimeTracker\Domain\Date;
 use TomPHP\TimeTracker\Domain\EventBus;
-use TomPHP\TimeTracker\Domain\EventHandlers\ProjectProjectionHandler;
-use TomPHP\TimeTracker\Domain\EventHandlers\TimeEntryProjectionHandler;
 use TomPHP\TimeTracker\Domain\Period;
 use TomPHP\TimeTracker\Domain\Project;
 use TomPHP\TimeTracker\Domain\ProjectId;
+use TomPHP\TimeTracker\Domain\ProjectProjections;
 use TomPHP\TimeTracker\Domain\TimeEntry;
 use TomPHP\TimeTracker\Domain\TimeEntryProjection;
 use TomPHP\TimeTracker\Domain\TimeEntryProjections;
 use TomPHP\TimeTracker\Domain\User;
 use TomPHP\TimeTracker\Domain\UserId;
-use TomPHP\TimeTracker\Storage\MemoryProjectProjections;
-use TomPHP\TimeTracker\Storage\MemoryTimeEntryProjections;
 use TomPHP\Transform as T;
 
 class DomainContext implements Context, SnippetAcceptingContext
@@ -38,31 +35,8 @@ class DomainContext implements Context, SnippetAcceptingContext
     {
         $this->services = new Container();
 
-        $config = [
-            'event_handlers' => [
-                ProjectProjectionHandler::class,
-                TimeEntryProjectionHandler::class,
-            ],
-            'di' => [
-                'services' => [
-                    ProjectProjections::class => [
-                        'class' => MemoryProjectProjections::class,
-                    ],
-                    ProjectProjectionHandler::class => [
-                        'arguments' => [ProjectProjections::class],
-                    ],
-                    TimeEntryProjections::class => [
-                        'class' => MemoryTimeEntryProjections::class,
-                    ],
-                    TimeEntryProjectionHandler::class => [
-                        'arguments' => [TimeEntryProjections::class],
-                    ],
-                ],
-            ],
-        ];
-
         Configurator::apply()
-            ->configFromArray($config)
+            ->configFromFile(__DIR__ . '/../../../config/config.php')
             ->withSetting(Configurator::SETTING_DEFAULT_SINGLETON_SERVICES, true)
             ->to($this->services);
 
