@@ -1,8 +1,14 @@
 default:
   suites:
-    default:
-      paths: [ %paths.base%/test/features ]
+    domain:
+      paths: [ %paths.base%/test/features/domain ]
       contexts:
-        - test\features\TomPHP\TimeTracker\FeatureContext
+        - test\features\TomPHP\TimeTracker\DomainContext
+      filters:
+        tags: "~@ui-only&&~@wip"
+    slack:
+      paths: [ %paths.base%/test/features/slack ]
+      contexts:
+        - test\features\TomPHP\TimeTracker\SlackContext
       filters:
         tags: "~@ui-only&&~@wip"

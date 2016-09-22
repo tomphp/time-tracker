@@ -23,10 +23,7 @@ use TomPHP\TimeTracker\Storage\MemoryProjectProjections;
 use TomPHP\TimeTracker\Storage\MemoryTimeEntryProjections;
 use TomPHP\Transform as T;
 
-/**
- * Defines application features from the specific context.
- */
-class FeatureContext implements Context, SnippetAcceptingContext
+class DomainContext implements Context, SnippetAcceptingContext
 {
     /** @var UserId[] */
     private $users = [];
