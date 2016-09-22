@@ -12,13 +12,13 @@ final class ProjectProjectionTest extends \PHPUnit_Framework_TestCase
     public function it_exposes_its_properties()
     {
         $projectId   = ProjectId::generate();
-        $name = 'Example Project';
+        $name        = 'Example Project';
         $totalTime   = Period::fromString('0');
 
         $project = new ProjectProjection($projectId, $name, $totalTime);
 
         assertSame($projectId, $project->projectId());
         assertSame($name, $project->name());
-        assertEquals($totalTime, $project->totalTime());
+        assertSame($totalTime, $project->totalTime());
     }
 }

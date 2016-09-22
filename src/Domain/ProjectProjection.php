@@ -19,7 +19,7 @@ final class ProjectProjection
         Period $totalTime
     ) {
         $this->projectId   = $projectId;
-        $this->name = $name;
+        $this->name        = $name;
         $this->totalTime   = $totalTime;
     }
 

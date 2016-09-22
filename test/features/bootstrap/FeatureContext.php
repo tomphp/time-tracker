@@ -10,13 +10,17 @@ use TomPHP\ContainerConfigurator\Configurator;
 use TomPHP\TimeTracker\Domain\Date;
 use TomPHP\TimeTracker\Domain\EventBus;
 use TomPHP\TimeTracker\Domain\EventHandlers\ProjectProjectionHandler;
+use TomPHP\TimeTracker\Domain\EventHandlers\TimeEntryProjectionHandler;
 use TomPHP\TimeTracker\Domain\Period;
 use TomPHP\TimeTracker\Domain\Project;
 use TomPHP\TimeTracker\Domain\ProjectId;
 use TomPHP\TimeTracker\Domain\TimeEntry;
+use TomPHP\TimeTracker\Domain\TimeEntryProjection;
+use TomPHP\TimeTracker\Domain\TimeEntryProjections;
 use TomPHP\TimeTracker\Domain\User;
 use TomPHP\TimeTracker\Domain\UserId;
 use TomPHP\TimeTracker\Storage\MemoryProjectProjections;
+use TomPHP\TimeTracker\Storage\MemoryTimeEntryProjections;
 use TomPHP\Transform as T;
 
 /**
@@ -40,6 +44,7 @@ class FeatureContext implements Context, SnippetAcceptingContext
         $config = [
             'event_handlers' => [
                 ProjectProjectionHandler::class,
+                TimeEntryProjectionHandler::class,
             ],
             'di' => [
                 'services' => [
@@ -48,6 +53,12 @@ class FeatureContext implements Context, SnippetAcceptingContext
                     ],
                     ProjectProjectionHandler::class => [
                         'arguments' => [ProjectProjections::class],
+                    ],
+                    TimeEntryProjections::class => [
+                        'class' => MemoryTimeEntryProjections::class,
+                    ],
+                    TimeEntryProjectionHandler::class => [
+                        'arguments' => [TimeEntryProjections::class],
                     ],
                 ],
             ],
@@ -100,6 +111,24 @@ class FeatureContext implements Context, SnippetAcceptingContext
     public function castStringToDate(string $string) : Date
     {
         return Date::fromString($string);
+    }
+
+    /**
+     * @Transform table:user,date,time,description
+     */
+    public function castTimeEntryTableToArray(TableNode $table) : array
+    {
+        return array_map(
+            function (array $entry) {
+                return [
+                    'user'        => $this->castUsernameToUserId($entry['user']),
+                    'date'        => $this->castStringToDate($entry['date']),
+                    'time'        => $this->castStringToPeriod($entry['time']),
+                    'description' => $entry['description'],
+                ];
+            },
+            $table->getHash()
+        );
     }
 
     /**
@@ -185,5 +214,49 @@ class FeatureContext implements Context, SnippetAcceptingContext
     public function assertProjectTotalTime(Period $period)
     {
         assertEquals($period, $this->result->totalTime());
+    }
+
+    /**
+     * @Given the following time entries have been logged against :project:
+     */
+    public function logMultipleTimeEntries(ProjectId $project, array $entries)
+    {
+        foreach ($entries as $entry) {
+            $this->logTimeEntryWithDescription(
+                $entry['user'],
+                $entry['time'],
+                $entry['date'],
+                $project,
+                $entry['description']
+            );
+        }
+    }
+
+    /**
+     * @When I retrieve the time entries for :project
+     */
+    public function fetchTimeEntriesForProject(ProjectId $project)
+    {
+        $this->result = $this->services[TimeEntryProjections::class]->forProject($project);
+    }
+
+    /**
+     * @Then I should see these time entries:
+     */
+    public function assertTableContainsTimeEntryProjections(array $entries)
+    {
+        $results = array_map(
+            function (TimeEntryProjection $entry) {
+                return [
+                    'user'        => $entry->userId(),
+                    'date'        => $entry->date(),
+                    'time'        => $entry->period(),
+                    'description' => $entry->description(),
+                ];
+            },
+            $this->result
+        );
+
+        assertEquals($entries, $results);
     }
 }

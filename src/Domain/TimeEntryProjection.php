@@ -1,14 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace TomPHP\TimeTracker\Domain\Events;
+namespace TomPHP\TimeTracker\Domain;
 
-use TomPHP\TimeTracker\Domain\Date;
-use TomPHP\TimeTracker\Domain\Event;
-use TomPHP\TimeTracker\Domain\Period;
-use TomPHP\TimeTracker\Domain\ProjectId;
-use TomPHP\TimeTracker\Domain\UserId;
-
-final class TimeEntryLogged extends Event
+final class TimeEntryProjection
 {
     /** @var ProjectId */
     private $projectId;
