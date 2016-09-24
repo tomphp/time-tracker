@@ -10,17 +10,17 @@ use TomPHP\TimeTracker\Tracker\TimeEntryProjections;
 final class TimeEntryProjectionHandler extends EventHandler
 {
     /** @var TimeEntryProjections */
-    private $timeEntrieProjections;
+    private $timeEntryProjections;
 
     public function __construct(TimeEntryProjections $timeEntrieProjections)
     {
-        $this->timeEntrieProjections = $timeEntrieProjections;
+        $this->timeEntryProjections = $timeEntrieProjections;
     }
 
     protected function handleTimeEntryLogged(TimeEntryLogged $event)
     {
-        $this->timeEntrieProjections->add(new TimeEntryProjection(
-            $event->userId(),
+        $this->timeEntryProjections->add(new TimeEntryProjection(
+            $event->developerId(),
             $event->projectId(),
             $event->date(),
             $event->period(),

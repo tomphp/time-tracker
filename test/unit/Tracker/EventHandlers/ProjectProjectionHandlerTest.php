@@ -4,6 +4,7 @@ namespace test\unit\TomPHP\TimeTracker\Tracker\EventHandlers;
 
 use Prophecy\Argument;
 use TomPHP\TimeTracker\Tracker\Date;
+use TomPHP\TimeTracker\Tracker\DeveloperId;
 use TomPHP\TimeTracker\Tracker\EventHandlers\ProjectProjectionHandler;
 use TomPHP\TimeTracker\Tracker\Events\ProjectCreated;
 use TomPHP\TimeTracker\Tracker\Events\TimeEntryLogged;
@@ -11,7 +12,6 @@ use TomPHP\TimeTracker\Tracker\Period;
 use TomPHP\TimeTracker\Tracker\ProjectId;
 use TomPHP\TimeTracker\Tracker\ProjectProjection;
 use TomPHP\TimeTracker\Tracker\ProjectProjections;
-use TomPHP\TimeTracker\Tracker\UserId;
 
 final class ProjectProjectionHandlerTest extends AbstractEventHandlerTest
 {
@@ -52,7 +52,7 @@ final class ProjectProjectionHandlerTest extends AbstractEventHandlerTest
             ->willReturn();
 
         $this->subject()->handle(new TimeEntryLogged(
-            UserId::generate(),
+            DeveloperId::generate(),
             $projectId,
             Date::fromString('2016-09-20'),
             Period::fromString('1'),
@@ -75,7 +75,7 @@ final class ProjectProjectionHandlerTest extends AbstractEventHandlerTest
             ->willReturn();
 
         $this->subject()->handle(new TimeEntryLogged(
-            UserId::generate(),
+            DeveloperId::generate(),
             $projectId,
             Date::fromString('2016-09-20'),
             Period::fromString('1'),

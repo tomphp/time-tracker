@@ -2,9 +2,9 @@
 
 namespace TomPHP\TimeTracker\Tracker;
 
-final class User
+final class Developer
 {
-    public static function create(UserId $id, string $name) : self
+    public static function create(DeveloperId $id, string $name) : self
     {
         return new self();
     }

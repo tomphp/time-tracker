@@ -8,6 +8,8 @@ use Behat\Gherkin\Node\TableNode;
 use Pimple\Container;
 use TomPHP\ContainerConfigurator\Configurator;
 use TomPHP\TimeTracker\Tracker\Date;
+use TomPHP\TimeTracker\Tracker\Developer;
+use TomPHP\TimeTracker\Tracker\DeveloperId;
 use TomPHP\TimeTracker\Tracker\EventBus;
 use TomPHP\TimeTracker\Tracker\Period;
 use TomPHP\TimeTracker\Tracker\Project;
@@ -16,14 +18,12 @@ use TomPHP\TimeTracker\Tracker\ProjectProjections;
 use TomPHP\TimeTracker\Tracker\TimeEntry;
 use TomPHP\TimeTracker\Tracker\TimeEntryProjection;
 use TomPHP\TimeTracker\Tracker\TimeEntryProjections;
-use TomPHP\TimeTracker\Tracker\User;
-use TomPHP\TimeTracker\Tracker\UserId;
 use TomPHP\Transform as T;
 
 class TrackerContext implements Context, SnippetAcceptingContext
 {
-    /** @var UserId[] */
-    private $users = [];
+    /** @var DeveloperId[] */
+    private $developers = [];
 
     /** @var ProjectId */
     private $projects = [];
@@ -46,18 +46,18 @@ class TrackerContext implements Context, SnippetAcceptingContext
     }
 
     /**
-     * @Transform :user
+     * @Transform :developer
      */
-    public function castUsernameToUserId(string $username) : UserId
+    public function castDeveloperNameToDeveloperId(string $developerName) : DeveloperId
     {
-        if (!isset($this->users[$username])) {
-            $userId = UserId::generate();
-            $user   = User::create($userId, $username);
+        if (!isset($this->developers[$developerName])) {
+            $developerId = DeveloperId::generate();
+            Developer::create($developerId, $developerName);
 
-            $this->users[$username] = $userId;
+            $this->developers[$developerName] = $developerId;
         }
 
-        return $this->users[$username];
+        return $this->developers[$developerName];
     }
 
     /**
@@ -85,17 +85,17 @@ class TrackerContext implements Context, SnippetAcceptingContext
     }
 
     /**
-     * @Transform table:user,date,time,description
+     * @Transform table:developer,date,time,description
      */
     public function castTimeEntryTableToArray(TableNode $table) : array
     {
         return array_map(
             function (array $entry) {
                 return [
-                    'user'        => $this->castUsernameToUserId($entry['user']),
-                    'date'        => $this->castStringToDate($entry['date']),
-                    'time'        => $this->castStringToPeriod($entry['time']),
-                    'description' => $entry['description'],
+                    'developer'        => $this->castDeveloperNameToDeveloperId($entry['developer']),
+                    'date'             => $this->castStringToDate($entry['date']),
+                    'time'             => $this->castStringToPeriod($entry['time']),
+                    'description'      => $entry['description'],
                 ];
             },
             $table->getHash()
@@ -114,22 +114,22 @@ class TrackerContext implements Context, SnippetAcceptingContext
     }
 
     /**
-     * @When :user logs a time entry for :period hours on :date against :project with description :description
+     * @When :developer logs a time entry for :period hours on :date against :project with description :description
      */
     public function logTimeEntryWithDescription(
-        UserId $user,
+        DeveloperId $developer,
         Period $period,
         Date $date,
         ProjectId $project,
         string $description
     ) {
-        TimeEntry::log($user, $project, $date, $period, $description);
+        TimeEntry::log($developer, $project, $date, $period, $description);
     }
 
     /**
-     * @Then :user should have confirmation that his time was logged
+     * @Then :developer should have confirmation that his time was logged
      */
-    public function doNothing($user)
+    public function doNothing($developer)
     {
         // Intentionally blank
     }
@@ -154,16 +154,16 @@ class TrackerContext implements Context, SnippetAcceptingContext
     }
 
     /**
-     * @Given :user has logged a time entry for :period hours on :date against :project
+     * @Given :developer has logged a time entry for :period hours on :date against :project
      */
     public function logTimeEntry(
-        UserId $user,
+        DeveloperId $developer,
         Period $period,
         Date $date,
         ProjectId $project
     ) {
         $this->logTimeEntryWithDescription(
-            $user,
+            $developer,
             $period,
             $date,
             $project,
@@ -194,7 +194,7 @@ class TrackerContext implements Context, SnippetAcceptingContext
     {
         foreach ($entries as $entry) {
             $this->logTimeEntryWithDescription(
-                $entry['user'],
+                $entry['developer'],
                 $entry['time'],
                 $entry['date'],
                 $project,
@@ -219,10 +219,10 @@ class TrackerContext implements Context, SnippetAcceptingContext
         $results = array_map(
             function (TimeEntryProjection $entry) {
                 return [
-                    'user'        => $entry->userId(),
-                    'date'        => $entry->date(),
-                    'time'        => $entry->period(),
-                    'description' => $entry->description(),
+                    'developer'        => $entry->developerId(),
+                    'date'             => $entry->date(),
+                    'time'             => $entry->period(),
+                    'description'      => $entry->description(),
                 ];
             },
             $this->result

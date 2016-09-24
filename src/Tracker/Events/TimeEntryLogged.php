@@ -3,18 +3,18 @@
 namespace TomPHP\TimeTracker\Tracker\Events;
 
 use TomPHP\TimeTracker\Tracker\Date;
+use TomPHP\TimeTracker\Tracker\DeveloperId;
 use TomPHP\TimeTracker\Tracker\Event;
 use TomPHP\TimeTracker\Tracker\Period;
 use TomPHP\TimeTracker\Tracker\ProjectId;
-use TomPHP\TimeTracker\Tracker\UserId;
 
 final class TimeEntryLogged extends Event
 {
     /** @var ProjectId */
     private $projectId;
 
-    /** @var UserId */
-    private $userId;
+    /** @var DeveloperId */
+    private $developerId;
 
     /** @var Date */
     private $date;
@@ -26,17 +26,17 @@ final class TimeEntryLogged extends Event
     private $description;
 
     public function __construct(
-        UserId $userId,
+        DeveloperId $developerId,
         ProjectId $projectId,
         Date $date,
         Period $period,
         string $description
     ) {
-        $this->projectId   = $projectId;
-        $this->userId      = $userId;
-        $this->date        = $date;
-        $this->period      = $period;
-        $this->description = $description;
+        $this->projectId        = $projectId;
+        $this->developerId      = $developerId;
+        $this->date             = $date;
+        $this->period           = $period;
+        $this->description      = $description;
     }
 
     public function projectId() : ProjectId
@@ -44,9 +44,9 @@ final class TimeEntryLogged extends Event
         return $this->projectId;
     }
 
-    public function userId() : UserId
+    public function developerId() : DeveloperId
     {
-        return $this->userId;
+        return $this->developerId;
     }
 
     public function date() : Date

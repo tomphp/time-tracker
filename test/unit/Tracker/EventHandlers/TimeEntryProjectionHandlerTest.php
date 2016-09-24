@@ -4,13 +4,13 @@ namespace test\unit\TomPHP\TimeTracker\Tracker\EventHandlers;
 
 use Prophecy\Prophecy\ObjectProphecy;
 use TomPHP\TimeTracker\Tracker\Date;
+use TomPHP\TimeTracker\Tracker\DeveloperId;
 use TomPHP\TimeTracker\Tracker\EventHandlers\TimeEntryProjectionHandler;
 use TomPHP\TimeTracker\Tracker\Events\TimeEntryLogged;
 use TomPHP\TimeTracker\Tracker\Period;
 use TomPHP\TimeTracker\Tracker\ProjectId;
 use TomPHP\TimeTracker\Tracker\TimeEntryProjection;
 use TomPHP\TimeTracker\Tracker\TimeEntryProjections;
-use TomPHP\TimeTracker\Tracker\UserId;
 
 final class TimeEntryProjectionHandlerTest extends AbstractEventHandlerTest
 {
@@ -30,14 +30,14 @@ final class TimeEntryProjectionHandlerTest extends AbstractEventHandlerTest
     /** @test */
     public function on_handle_TimeEntryLogged_it_stores_a_new_TimeEntryProjection()
     {
-        $userId      = UserId::generate();
-        $projectId   = ProjectId::generate();
-        $date        = Date::fromString('2016-09-21');
-        $period      = Period::fromString('1:30');
-        $description = 'Example description';
+        $developerId      = DeveloperId::generate();
+        $projectId        = ProjectId::generate();
+        $date             = Date::fromString('2016-09-21');
+        $period           = Period::fromString('1:30');
+        $description      = 'Example description';
 
         $this->subject()->handle(new TimeEntryLogged(
-            $userId,
+            $developerId,
             $projectId,
             $date,
             $period,
@@ -46,7 +46,7 @@ final class TimeEntryProjectionHandlerTest extends AbstractEventHandlerTest
 
         $this->timeEntries
             ->add(new TimeEntryProjection(
-                $userId,
+                $developerId,
                 $projectId,
                 $date,
                 $period,

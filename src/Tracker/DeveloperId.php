@@ -2,7 +2,7 @@
 
 namespace TomPHP\TimeTracker\Tracker;
 
-final class UserId
+final class DeveloperId
 {
     public static function generate() : self
     {

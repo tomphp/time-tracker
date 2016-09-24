@@ -7,8 +7,8 @@ final class TimeEntryProjection
     /** @var ProjectId */
     private $projectId;
 
-    /** @var UserId */
-    private $userId;
+    /** @var DeveloperId */
+    private $developerId;
 
     /** @var Date */
     private $date;
@@ -20,17 +20,17 @@ final class TimeEntryProjection
     private $description;
 
     public function __construct(
-        UserId $userId,
+        DeveloperId $userId,
         ProjectId $projectId,
         Date $date,
         Period $period,
         string $description
     ) {
-        $this->projectId   = $projectId;
-        $this->userId      = $userId;
-        $this->date        = $date;
-        $this->period      = $period;
-        $this->description = $description;
+        $this->projectId        = $projectId;
+        $this->developerId      = $userId;
+        $this->date             = $date;
+        $this->period           = $period;
+        $this->description      = $description;
     }
 
     public function projectId() : ProjectId
@@ -38,9 +38,9 @@ final class TimeEntryProjection
         return $this->projectId;
     }
 
-    public function userId() : UserId
+    public function developerId() : DeveloperId
     {
-        return $this->userId;
+        return $this->developerId;
     }
 
     public function date() : Date

@@ -3,11 +3,11 @@
 namespace test\unit\TomPHP\TimeTracker\Storage;
 
 use TomPHP\TimeTracker\Tracker\Date;
+use TomPHP\TimeTracker\Tracker\DeveloperId;
 use TomPHP\TimeTracker\Tracker\Period;
 use TomPHP\TimeTracker\Tracker\ProjectId;
 use TomPHP\TimeTracker\Tracker\Storage\MemoryTimeEntryProjections;
 use TomPHP\TimeTracker\Tracker\TimeEntryProjection;
-use TomPHP\TimeTracker\Tracker\UserId;
 
 final class MemoryTimeEntryProjectionsTest extends \PHPUnit_Framework_TestCase
 {
@@ -19,14 +19,14 @@ final class MemoryTimeEntryProjectionsTest extends \PHPUnit_Framework_TestCase
         $projectId = ProjectId::generate();
 
         $projection1 = new TimeEntryProjection(
-            UserId::generate(),
+            DeveloperId::generate(),
             $projectId,
             Date::fromString('2016-09-19'),
             Period::fromString('0'),
             'Example entry 1'
         );
         $projection2 = new TimeEntryProjection(
-            UserId::generate(),
+            DeveloperId::generate(),
             ProjectId::generate(),
             Date::fromString('2016-09-21'),
             Period::fromString('0'),
