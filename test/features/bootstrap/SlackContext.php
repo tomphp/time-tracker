@@ -4,19 +4,27 @@ namespace test\features\TomPHP\TimeTracker;
 
 use Behat\Behat\Context\Context;
 use Behat\Behat\Context\SnippetAcceptingContext;
-use Behat\Behat\Tester\Exception\PendingException;
+use Interop\Container\ContainerInterface;
+use Pimple\Container;
+use Prophecy\Argument;
 use Prophecy\Prophet;
+use SamBurns\Pimple3ContainerInterop\ServiceContainer;
+use TomPHP\ContainerConfigurator\Configurator;
 use TomPHP\TimeTracker\Slack\CommandRunner;
 use TomPHP\TimeTracker\Slack\Date;
 use TomPHP\TimeTracker\Slack\Developer;
 use TomPHP\TimeTracker\Slack\Period;
 use TomPHP\TimeTracker\Slack\Project;
+use TomPHP\TimeTracker\Slack\SlackMessenger;
 use TomPHP\TimeTracker\Slack\TimeTracker;
 
 class SlackContext implements Context, SnippetAcceptingContext
 {
     /** @var Prophet */
     private $prophet;
+
+    /** @var ContainerInterface */
+    private $services;
 
     /** @var Developer[] */
     private $developers = [];
@@ -27,10 +35,34 @@ class SlackContext implements Context, SnippetAcceptingContext
     /** @var TimeTracker */
     private $timeTracker;
 
+    /** @var SlackMessenger */
+    private $messenger;
+
     public function __construct()
     {
         $this->prophet     = new Prophet();
+        $pimple            = new Container();
+        $this->services    = new ServiceContainer($pimple);
+
+        Configurator::apply()
+            ->configFromFile(__DIR__ . '/../../../config/slack.config.php')
+            ->configFromArray([
+                'di' => [
+                    'services' => [
+                        CommandRunner::class => [
+                            'arguments' => [$this->services, 'config.slack.commands'],
+                        ],
+                    ],
+                ],
+            ])
+            ->withSetting(Configurator::SETTING_DEFAULT_SINGLETON_SERVICES, true)
+            ->to($pimple);
+
         $this->timeTracker = $this->prophet->prophesize(TimeTracker::class);
+        $this->messenger   = $this->prophet->prophesize(SlackMessenger::class);
+
+        $this->services[TimeTracker::class]    = $this->timeTracker->reveal();
+        $this->services[SlackMessenger::class] = $this->messenger->reveal();
     }
 
     /**
@@ -38,7 +70,7 @@ class SlackContext implements Context, SnippetAcceptingContext
      */
     public function castStringToPeriod(string $string) : Period
     {
-        return new Period();
+        return Period::fromString($string);
     }
 
     /**
@@ -76,7 +108,7 @@ class SlackContext implements Context, SnippetAcceptingContext
      */
     public function createProject(string $projectName)
     {
-        $project = new Project("project-id-$projectName", $developerName);
+        $project = new Project("project-id-$projectName", $projectName);
 
         $this->projects[$projectName] = $project;
 
@@ -90,6 +122,8 @@ class SlackContext implements Context, SnippetAcceptingContext
      */
     public function developerIssuesCommand(Developer $developer, string $command)
     {
+        $this->timeTracker->logTimeEntry(Argument::cetera())->willReturn();
+
         $this->commandRunner()->run($developer->slackHandle(), $command);
     }
 
@@ -102,8 +136,6 @@ class SlackContext implements Context, SnippetAcceptingContext
         Project $project,
         string $description
     ) {
-        throw new PendingException();
-
         $this->timeTracker->logTimeEntry(
             $developer,
             $project,
@@ -116,11 +148,9 @@ class SlackContext implements Context, SnippetAcceptingContext
     /**
      * @Then message saying :message should have been sent to Slack
      */
-    public function messageSayingShouldHaveBeenSentToSlack(Message $message)
+    public function messageSayingShouldHaveBeenSentToSlack(string $message)
     {
-        throw new PendingException();
-
-        $this->messenger()->send($message)->shouldHaveBeenCalled();
+        $this->messenger->send($message)->shouldHaveBeenCalled();
     }
 
     private function today() : Date
@@ -130,11 +160,6 @@ class SlackContext implements Context, SnippetAcceptingContext
 
     private function commandRunner() : CommandRunner
     {
-        return new CommandRunner();
-    }
-
-    private function messenger() : SlackMessenger
-    {
-        return new SlackMessenger();
+        return $this->services->get(CommandRunner::class);
     }
 }

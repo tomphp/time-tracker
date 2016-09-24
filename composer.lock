@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "54038dc551bfc2fe430f4a846f2bc633",
-    "content-hash": "37110a1ff0db0e6457132126f9757e26",
+    "hash": "0ef94818bc042ce8c856ec760e0abb45",
+    "content-hash": "d7f153dde9b21bad44e2330a6f0429d7",
     "packages": [
         {
             "name": "beberlei/assert",
@@ -65,6 +65,33 @@
                 "validation"
             ],
             "time": "2016-07-28 19:35:30"
+        },
+        {
+            "name": "container-interop/container-interop",
+            "version": "1.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/container-interop/container-interop.git",
+                "reference": "fc08354828f8fd3245f77a66b9e23a6bca48297e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/container-interop/container-interop/zipball/fc08354828f8fd3245f77a66b9e23a6bca48297e",
+                "reference": "fc08354828f8fd3245f77a66b9e23a6bca48297e",
+                "shasum": ""
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Interop\\Container\\": "src/Interop/Container/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Promoting the interoperability of container objects (DIC, SL, etc.)",
+            "time": "2014-12-30 15:22:37"
         },
         {
             "name": "friendsofphp/php-cs-fixer",
@@ -303,6 +330,41 @@
                 "uuid"
             ],
             "time": "2016-08-02 18:39:32"
+        },
+        {
+            "name": "samburns/pimple3-containerinterop",
+            "version": "1.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Sam-Burns/pimple3-containerinterop.git",
+                "reference": "e518a0d3a3d9f9b0510311e8ad4b94b855c467ca"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Sam-Burns/pimple3-containerinterop/zipball/e518a0d3a3d9f9b0510311e8ad4b94b855c467ca",
+                "reference": "e518a0d3a3d9f9b0510311e8ad4b94b855c467ca",
+                "shasum": ""
+            },
+            "require": {
+                "container-interop/container-interop": "~1.1.0",
+                "php": ">=5.5.0",
+                "pimple/pimple": "^3.0"
+            },
+            "require-dev": {
+                "phpspec/phpspec": "2.4.0",
+                "phpunit/phpunit": ">=4.8.0 <5.1.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "SamBurns\\Pimple3ContainerInterop\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "time": "2015-12-16 19:28:33"
         },
         {
             "name": "sebastian/diff",
@@ -791,16 +853,16 @@
         },
         {
             "name": "tomphp/container-configurator",
-            "version": "v0.5.1",
+            "version": "dev-index-bug",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tomphp/container-configurator.git",
-                "reference": "4fcde735388604198a81a7efea9e9e8e85dbd1b6"
+                "reference": "fa84ad7323e8acef5c3caf185bb28d857cf060a2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tomphp/container-configurator/zipball/4fcde735388604198a81a7efea9e9e8e85dbd1b6",
-                "reference": "4fcde735388604198a81a7efea9e9e8e85dbd1b6",
+                "url": "https://api.github.com/repos/tomphp/container-configurator/zipball/fa84ad7323e8acef5c3caf185bb28d857cf060a2",
+                "reference": "fa84ad7323e8acef5c3caf185bb28d857cf060a2",
                 "shasum": ""
             },
             "require": {
@@ -847,7 +909,7 @@
                 "di",
                 "league"
             ],
-            "time": "2016-09-18 14:25:43"
+            "time": "2016-09-24 08:08:42"
         },
         {
             "name": "tomphp/exception-constructor-tools",
@@ -1688,24 +1750,24 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "5.5.4",
+            "version": "5.5.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "3e6e88e56c912133de6e99b87728cca7ed70c5f5"
+                "reference": "a57126dc681b08289fef6ac96a48e30656f84350"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/3e6e88e56c912133de6e99b87728cca7ed70c5f5",
-                "reference": "3e6e88e56c912133de6e99b87728cca7ed70c5f5",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/a57126dc681b08289fef6ac96a48e30656f84350",
+                "reference": "a57126dc681b08289fef6ac96a48e30656f84350",
                 "shasum": ""
             },
             "require": {
                 "ext-dom": "*",
                 "ext-json": "*",
-                "ext-pcre": "*",
-                "ext-reflection": "*",
-                "ext-spl": "*",
+                "ext-libxml": "*",
+                "ext-mbstring": "*",
+                "ext-xml": "*",
                 "myclabs/deep-copy": "~1.3",
                 "php": "^5.6 || ^7.0",
                 "phpspec/prophecy": "^1.3.1",
@@ -1727,7 +1789,12 @@
             "conflict": {
                 "phpdocumentor/reflection-docblock": "3.0.2"
             },
+            "require-dev": {
+                "ext-pdo": "*"
+            },
             "suggest": {
+                "ext-tidy": "*",
+                "ext-xdebug": "*",
                 "phpunit/php-invoker": "~1.1"
             },
             "bin": [
@@ -1762,7 +1829,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2016-08-26 07:11:44"
+            "time": "2016-09-21 14:40:13"
         },
         {
             "name": "phpunit/phpunit-mock-objects",
@@ -2620,7 +2687,8 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "friendsofphp/php-cs-fixer": 20
+        "friendsofphp/php-cs-fixer": 20,
+        "tomphp/container-configurator": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,

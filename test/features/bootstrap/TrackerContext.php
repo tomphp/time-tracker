@@ -40,7 +40,7 @@ class TrackerContext implements Context, SnippetAcceptingContext
             ->withSetting(Configurator::SETTING_DEFAULT_SINGLETON_SERVICES, true)
             ->to($this->services);
 
-        foreach ($this->services['config.event_handlers'] as $name) {
+        foreach ($this->services['config.tracker.event_handlers'] as $name) {
             EventBus::addHandler($this->services[$name]);
         }
     }

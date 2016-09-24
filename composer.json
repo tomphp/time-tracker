@@ -11,7 +11,8 @@
         "friendsofphp/php-cs-fixer": "dev-master",
         "pimple/pimple": "^3.0",
         "ramsey/uuid": "^3.5",
-        "tomphp/container-configurator": "^0.5.1",
+        "samburns/pimple3-containerinterop": "^1.2",
+        "tomphp/container-configurator": "dev-index-bug",
         "tomphp/transform": "^0.2.4"
     },
     "autoload": {
