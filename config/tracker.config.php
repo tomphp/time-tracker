@@ -8,9 +8,11 @@ use TomPHP\TimeTracker\Tracker\TimeEntryProjections;
 use TomPHP\TimeTracker\Tracker\Storage\MemoryTimeEntryProjections;
 
 return [
-    'event_handlers' => [
-        ProjectProjectionHandler::class,
-        TimeEntryProjectionHandler::class,
+    'tracker' => [
+        'event_handlers' => [
+            ProjectProjectionHandler::class,
+            TimeEntryProjectionHandler::class,
+        ],
     ],
     'di' => [
         'services' => [
