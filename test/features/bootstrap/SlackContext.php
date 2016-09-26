@@ -45,7 +45,7 @@ class SlackContext implements Context, SnippetAcceptingContext
         $this->services    = new ServiceContainer($pimple);
 
         Configurator::apply()
-            ->configFromFile(__DIR__ . '/../../../config/slack.config.php')
+            ->configFromFile(__DIR__ . '/../../../config/slack.global.php')
             ->configFromArray([
                 'di' => [
                     'services' => [
