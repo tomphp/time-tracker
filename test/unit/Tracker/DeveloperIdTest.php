@@ -2,12 +2,12 @@
 
 namespace test\unit\TomPHP\TimeTracker\Tracker;
 
-use TomPHP\TimeTracker\Tracker\ProjectId;
+use TomPHP\TimeTracker\Tracker\DeveloperId;
 
-final class ProjectIdTest extends AbstractEntityIdTest
+final class DeveloperIdTest extends AbstractEntityIdTest
 {
     protected function className() : string
     {
-        return ProjectId::class;
+        return DeveloperId::class;
     }
 }
