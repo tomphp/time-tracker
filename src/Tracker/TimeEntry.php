@@ -2,6 +2,8 @@
 
 namespace TomPHP\TimeTracker\Tracker;
 
+use TomPHP\TimeTracker\Common\Date;
+use TomPHP\TimeTracker\Common\Period;
 use TomPHP\TimeTracker\Tracker\Events\TimeEntryLogged;
 
 final class TimeEntry
@@ -22,5 +24,9 @@ final class TimeEntry
         ));
 
         return new self();
+    }
+
+    private function __construct()
+    {
     }
 }

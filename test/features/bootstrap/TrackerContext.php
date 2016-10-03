@@ -7,11 +7,11 @@ use Behat\Behat\Context\SnippetAcceptingContext;
 use Behat\Gherkin\Node\TableNode;
 use Pimple\Container;
 use TomPHP\ContainerConfigurator\Configurator;
-use TomPHP\TimeTracker\Tracker\Date;
+use TomPHP\TimeTracker\Common\Date;
+use TomPHP\TimeTracker\Common\Period;
 use TomPHP\TimeTracker\Tracker\Developer;
 use TomPHP\TimeTracker\Tracker\DeveloperId;
 use TomPHP\TimeTracker\Tracker\EventBus;
-use TomPHP\TimeTracker\Tracker\Period;
 use TomPHP\TimeTracker\Tracker\Project;
 use TomPHP\TimeTracker\Tracker\ProjectId;
 use TomPHP\TimeTracker\Tracker\ProjectProjections;
@@ -41,19 +41,20 @@ class TrackerContext implements Context, SnippetAcceptingContext
             ->withSetting(Configurator::SETTING_DEFAULT_SINGLETON_SERVICES, true)
             ->to($this->services);
 
+        EventBus::clearHandlers();
         foreach ($this->services['config.tracker.event_handlers'] as $name) {
             EventBus::addHandler($this->services[$name]);
         }
     }
 
     /**
-     * @Transform :developer
+     * @Transform
      */
     public function castDeveloperNameToDeveloperId(string $developerName) : DeveloperId
     {
         if (!isset($this->developers[$developerName])) {
             $developerId = DeveloperId::generate();
-            Developer::create($developerId, $developerName);
+            Developer::create($developerId, $developerName, uniqid('@slack-'));
 
             $this->developers[$developerName] = $developerId;
         }
@@ -62,7 +63,7 @@ class TrackerContext implements Context, SnippetAcceptingContext
     }
 
     /**
-     * @Transform :project
+     * @Transform
      */
     public function castProjectNameToProjectId(string $name) : ProjectId
     {
@@ -70,7 +71,7 @@ class TrackerContext implements Context, SnippetAcceptingContext
     }
 
     /**
-     * @Transform :period
+     * @Transform
      */
     public function castStringToPeriod(string $string) : Period
     {
@@ -78,7 +79,7 @@ class TrackerContext implements Context, SnippetAcceptingContext
     }
 
     /**
-     * @Transform :date
+     * @Transform
      */
     public function castStringToDate(string $string) : Date
     {

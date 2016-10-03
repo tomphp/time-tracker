@@ -2,9 +2,9 @@
 
 namespace TomPHP\TimeTracker\Slack\Command;
 
+use TomPHP\TimeTracker\Common\Date;
+use TomPHP\TimeTracker\Common\Period;
 use TomPHP\TimeTracker\Slack\Command;
-use TomPHP\TimeTracker\Slack\Date;
-use TomPHP\TimeTracker\Slack\Period;
 
 final class LogCommand implements Command
 {

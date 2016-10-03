@@ -6,10 +6,15 @@ use TomPHP\TimeTracker\Tracker\ProjectProjections;
 use TomPHP\TimeTracker\Tracker\Storage\MemoryProjectProjections;
 use TomPHP\TimeTracker\Tracker\TimeEntryProjections;
 use TomPHP\TimeTracker\Tracker\Storage\MemoryTimeEntryProjections;
+use TomPHP\TimeTracker\Tracker\DeveloperProjections;
+use TomPHP\TimeTracker\Tracker\Storage\MemoryDeveloperProjections;
 
 return [
     'di' => [
         'services' => [
+            DeveloperProjections::class => [
+                'class' => MemoryDeveloperProjections::class,
+            ],
             ProjectProjections::class => [
                 'class' => MemoryProjectProjections::class,
             ],

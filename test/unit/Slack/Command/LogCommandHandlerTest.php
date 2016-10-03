@@ -3,11 +3,11 @@
 namespace test\unit\TomPHP\TimeTracker\Slack\Command;
 
 use Prophecy\Argument;
+use TomPHP\TimeTracker\Common\Date;
+use TomPHP\TimeTracker\Common\Period;
 use TomPHP\TimeTracker\Slack\Command\LogCommand;
 use TomPHP\TimeTracker\Slack\Command\LogCommandHandler;
-use TomPHP\TimeTracker\Slack\Date;
 use TomPHP\TimeTracker\Slack\Developer;
-use TomPHP\TimeTracker\Slack\Period;
 use TomPHP\TimeTracker\Slack\Project;
 use TomPHP\TimeTracker\Slack\SlackMessenger;
 use TomPHP\TimeTracker\Slack\TimeTracker;

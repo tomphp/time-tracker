@@ -2,10 +2,10 @@
 
 namespace TomPHP\TimeTracker\Tracker\EventHandlers;
 
+use TomPHP\TimeTracker\Common\Period;
 use TomPHP\TimeTracker\Tracker\EventHandler;
 use TomPHP\TimeTracker\Tracker\Events\ProjectCreated;
 use TomPHP\TimeTracker\Tracker\Events\TimeEntryLogged;
-use TomPHP\TimeTracker\Tracker\Period;
 use TomPHP\TimeTracker\Tracker\ProjectProjection;
 use TomPHP\TimeTracker\Tracker\ProjectProjections;
 

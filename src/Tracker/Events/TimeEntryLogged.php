@@ -2,10 +2,10 @@
 
 namespace TomPHP\TimeTracker\Tracker\Events;
 
-use TomPHP\TimeTracker\Tracker\Date;
+use TomPHP\TimeTracker\Common\Date;
+use TomPHP\TimeTracker\Common\Period;
 use TomPHP\TimeTracker\Tracker\DeveloperId;
 use TomPHP\TimeTracker\Tracker\Event;
-use TomPHP\TimeTracker\Tracker\Period;
 use TomPHP\TimeTracker\Tracker\ProjectId;
 
 final class TimeEntryLogged extends Event

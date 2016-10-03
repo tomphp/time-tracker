@@ -2,6 +2,9 @@
 
 namespace TomPHP\TimeTracker\Tracker;
 
+use TomPHP\TimeTracker\Common\Date;
+use TomPHP\TimeTracker\Common\Period;
+
 final class TimeEntryProjection
 {
     /** @var ProjectId */

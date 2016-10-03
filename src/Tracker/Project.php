@@ -11,4 +11,8 @@ final class Project
         EventBus::publish(new ProjectCreated($id, $name));
         return new self();
     }
+
+    private function __construct()
+    {
+    }
 }

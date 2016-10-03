@@ -1,13 +1,13 @@
 <?php declare(strict_types=1);
 
-namespace test\unit\TomPHP\TimeTracker\Tracker;
+namespace test\unit\TomPHP\TimeTracker\Common;
 
-use TomPHP\TimeTracker\Tracker\Period;
+use TomPHP\TimeTracker\Common\Period;
 
 final class PeriodTest extends \PHPUnit_Framework_TestCase
 {
     /** @test */
-    public function on_from_string_it_splits_minutes_and_hours()
+    public function on_fromString_it_splits_minutes_and_hours()
     {
         $period = Period::fromString('1:11');
 
@@ -16,12 +16,27 @@ final class PeriodTest extends \PHPUnit_Framework_TestCase
     }
 
     /** @test */
-    public function on_from_string_it_is_hours_if_no_colon_is_present()
+    public function on_fromString_it_is_hours_if_no_colon_is_present()
     {
         $period = Period::fromString('5');
 
         assertSame(5, $period->hours());
         assertSame(0, $period->minutes());
+    }
+
+    /** @test */
+    public function on_fromHours_it_constructs_from_an_integer()
+    {
+        $period = Period::fromHours(2);
+
+        assertSame(2, $period->hours());
+        assertSame(0, $period->minutes());
+    }
+
+    /** @test */
+    public function on_toString_it_returns_a_string_representation()
+    {
+        assertSame('2:45 hours', (string) Period::fromString('2:45'));
     }
 
     /** @test */

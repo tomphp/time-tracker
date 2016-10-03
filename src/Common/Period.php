@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace TomPHP\TimeTracker\Slack;
+namespace TomPHP\TimeTracker\Common;
 
 final class Period
 {
@@ -19,10 +19,13 @@ final class Period
     {
         $parts = explode(':', $string);
 
-        $hours   = (int) array_shift($parts);
-        $minutes = (int) array_shift($parts);
+        if (count($parts) == 1) {
+            array_push($parts, 0);
+        }
 
-        return new self($hours, $minutes);
+        list($hours, $minutes) = $parts;
+
+        return new self((int) $hours, (int) $minutes);
     }
 
     private function __construct(int $hours, int $minutes)
@@ -39,6 +42,19 @@ final class Period
     public function minutes() : int
     {
         return $this->minutes;
+    }
+
+    public function add(self $other) : self
+    {
+        $hours   = $this->hours + $other->hours();
+        $minutes = $this->minutes + $other->minutes();
+
+        if ($minutes >= 60) {
+            $minutes -= 60;
+            $hours += 1;
+        }
+
+        return new self($hours, $minutes);
     }
 
     public function __toString() : string

@@ -3,11 +3,11 @@
 namespace test\unit\TomPHP\TimeTracker\Tracker\EventHandlers;
 
 use Prophecy\Prophecy\ObjectProphecy;
-use TomPHP\TimeTracker\Tracker\Date;
+use TomPHP\TimeTracker\Common\Date;
+use TomPHP\TimeTracker\Common\Period;
 use TomPHP\TimeTracker\Tracker\DeveloperId;
 use TomPHP\TimeTracker\Tracker\EventHandlers\TimeEntryProjectionHandler;
 use TomPHP\TimeTracker\Tracker\Events\TimeEntryLogged;
-use TomPHP\TimeTracker\Tracker\Period;
 use TomPHP\TimeTracker\Tracker\ProjectId;
 use TomPHP\TimeTracker\Tracker\TimeEntryProjection;
 use TomPHP\TimeTracker\Tracker\TimeEntryProjections;

@@ -2,7 +2,7 @@
 
 namespace test\unit\TomPHP\TimeTracker\Tracker;
 
-use TomPHP\TimeTracker\Tracker\Period;
+use TomPHP\TimeTracker\Common\Period;
 use TomPHP\TimeTracker\Tracker\ProjectId;
 use TomPHP\TimeTracker\Tracker\ProjectProjection;
 

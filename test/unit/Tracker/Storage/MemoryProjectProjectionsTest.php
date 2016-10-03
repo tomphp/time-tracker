@@ -2,7 +2,7 @@
 
 namespace test\unit\TomPHP\TimeTracker\Storage;
 
-use TomPHP\TimeTracker\Tracker\Period;
+use TomPHP\TimeTracker\Common\Period;
 use TomPHP\TimeTracker\Tracker\ProjectId;
 use TomPHP\TimeTracker\Tracker\ProjectProjection;
 use TomPHP\TimeTracker\Tracker\Storage\MemoryProjectProjections;
@@ -38,6 +38,25 @@ final class MemoryProjectProjectionsTest extends \PHPUnit_Framework_TestCase
 
     /** @test */
     public function on_withId_it_throws_if_there_is_no_project_projection_for_the_given_id()
+    {
+        $this->markTestIncomplete();
+    }
+
+    /** @test */
+    public function on_withName_it_returns_the_project_with_that_name()
+    {
+        $projects = new MemoryProjectProjections();
+
+        $projectId = ProjectId::generate();
+        $project   = new ProjectProjection($projectId, 'Project One', Period::fromString('0'));
+
+        $projects->add($project);
+
+        assertSame($project, $projects->withName('Project One'));
+    }
+
+    /** @test */
+    public function on_withName_it_throws_if_there_is_no_project_projection_with_the_given_name()
     {
         $this->markTestIncomplete();
     }

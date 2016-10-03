@@ -5,8 +5,12 @@ use TomPHP\TimeTracker\Slack\CommandRunner;
 use TomPHP\TimeTracker\Slack\Command\LogCommand;
 use TomPHP\TimeTracker\Slack\Command\LogCommandParser;
 use TomPHP\TimeTracker\Slack\Command\LogCommandHandler;
-use TomPHP\TimeTracker\Slack\Date;
+use TomPHP\TimeTracker\Common\Date;
 use TomPHP\TimeTracker\Slack\SlackMessenger;
+use TomPHP\TimeTracker\Tracker\DeveloperProjections;
+use TomPHP\TimeTracker\Tracker\Storage\MemoryDeveloperProjections;
+use TomPHP\TimeTracker\Tracker\ProjectProjections;
+use TomPHP\ContainerConfigurator\Configurator;
 
 return [
     'slack' => [
@@ -17,11 +21,19 @@ return [
     ],
     'di' => [
         'services' => [
-            TimeTracker::class => [],
+            DeveloperProjections::class => [
+                'class' => MemoryDeveloperProjections::class,
+            ],
+            TimeTracker::class => [
+                'arguments' => [
+                    DeveloperProjections::class,
+                    ProjectProjections::class,
+                ],
+            ],
             SlackMessenger::class => [],
             CommandRunner::class => [
                 'arguments' => [
-                    'CONTAINER', // requires an update to container-configurator
+                    Configurator::container(),
                     'config.slack.commands',
                 ],
             ],
