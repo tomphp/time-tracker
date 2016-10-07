@@ -7,6 +7,7 @@ use Behat\Behat\Context\SnippetAcceptingContext;
 use Interop\Container\ContainerInterface;
 use Prophecy\Argument;
 use Prophecy\Prophet;
+use Slim\Container;
 use TomPHP\ContainerConfigurator\Configurator;
 use TomPHP\TimeTracker\Common\Date;
 use TomPHP\TimeTracker\Common\Period;
@@ -16,7 +17,6 @@ use TomPHP\TimeTracker\Slack\Developer;
 use TomPHP\TimeTracker\Slack\Project;
 use TomPHP\TimeTracker\Slack\SlackMessenger;
 use TomPHP\TimeTracker\Slack\TimeTracker;
-use Slim\Container;
 
 class SlackContext implements Context, SnippetAcceptingContext
 {
