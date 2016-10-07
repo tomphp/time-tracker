@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "c1013aa198f7415baf480c941d4a0bf7",
-    "content-hash": "663258606f4b055b2df19627655f1c92",
+    "hash": "e9b6b8117da3c06d140db6f10312d3f2",
+    "content-hash": "528316b1e293f17adb93bc2dbff3d348",
     "packages": [
         {
             "name": "beberlei/assert",
@@ -466,41 +466,6 @@
                 "uuid"
             ],
             "time": "2016-10-02 15:51:17"
-        },
-        {
-            "name": "samburns/pimple3-containerinterop",
-            "version": "1.2.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/Sam-Burns/pimple3-containerinterop.git",
-                "reference": "e518a0d3a3d9f9b0510311e8ad4b94b855c467ca"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/Sam-Burns/pimple3-containerinterop/zipball/e518a0d3a3d9f9b0510311e8ad4b94b855c467ca",
-                "reference": "e518a0d3a3d9f9b0510311e8ad4b94b855c467ca",
-                "shasum": ""
-            },
-            "require": {
-                "container-interop/container-interop": "~1.1.0",
-                "php": ">=5.5.0",
-                "pimple/pimple": "^3.0"
-            },
-            "require-dev": {
-                "phpspec/phpspec": "2.4.0",
-                "phpunit/phpunit": ">=4.8.0 <5.1.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "SamBurns\\Pimple3ContainerInterop\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "time": "2015-12-16 19:28:33"
         },
         {
             "name": "sebastian/diff",

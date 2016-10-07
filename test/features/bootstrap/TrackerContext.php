@@ -5,7 +5,7 @@ namespace test\features\TomPHP\TimeTracker;
 use Behat\Behat\Context\Context;
 use Behat\Behat\Context\SnippetAcceptingContext;
 use Behat\Gherkin\Node\TableNode;
-use Pimple\Container;
+use Slim\Container;
 use TomPHP\ContainerConfigurator\Configurator;
 use TomPHP\TimeTracker\Common\Date;
 use TomPHP\TimeTracker\Common\Period;

@@ -5,10 +5,8 @@ namespace test\features\TomPHP\TimeTracker;
 use Behat\Behat\Context\Context;
 use Behat\Behat\Context\SnippetAcceptingContext;
 use Interop\Container\ContainerInterface;
-use Pimple\Container;
 use Prophecy\Argument;
 use Prophecy\Prophet;
-use SamBurns\Pimple3ContainerInterop\ServiceContainer;
 use TomPHP\ContainerConfigurator\Configurator;
 use TomPHP\TimeTracker\Common\Date;
 use TomPHP\TimeTracker\Common\Period;
@@ -18,6 +16,7 @@ use TomPHP\TimeTracker\Slack\Developer;
 use TomPHP\TimeTracker\Slack\Project;
 use TomPHP\TimeTracker\Slack\SlackMessenger;
 use TomPHP\TimeTracker\Slack\TimeTracker;
+use Slim\Container;
 
 class SlackContext implements Context, SnippetAcceptingContext
 {
@@ -44,22 +43,12 @@ class SlackContext implements Context, SnippetAcceptingContext
     public function __construct()
     {
         $this->prophet     = new Prophet();
-        $pimple            = new Container();
-        $this->services    = new ServiceContainer($pimple);
+        $this->services    = new Container();
 
         Configurator::apply()
             ->configFromFile(__DIR__ . '/../../../config/slack.global.php')
-            ->configFromArray([
-                'di' => [
-                    'services' => [
-                        CommandRunner::class => [
-                            'arguments' => [$this->services, 'config.slack.commands'],
-                        ],
-                    ],
-                ],
-            ])
             ->withSetting(Configurator::SETTING_DEFAULT_SINGLETON_SERVICES, true)
-            ->to($pimple);
+            ->to($this->services);
 
         $this->timeTracker = $this->prophet->prophesize(TimeTracker::class);
         $this->messenger   = $this->prophet->prophesize(SlackMessenger::class);
