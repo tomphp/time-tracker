@@ -4,8 +4,7 @@ $finder = PhpCsFixer\Finder::create()
     ->in(__DIR__ . '/src')
     ->in(__DIR__ . '/public')
     ->in(__DIR__ . '/test/unit')
-    ->in(__DIR__ . '/test/features/bootstrap')
-    ;
+    ->in(__DIR__ . '/test/features/bootstrap');
 
 return PhpCsFixer\Config::create()
     ->setRules([
@@ -13,7 +12,6 @@ return PhpCsFixer\Config::create()
         'align_double_arrow'                          => true,
         'align_equals'                                => true,
         'concat_with_spaces'                          => true,
-        'declare_strict_types'                        => true,
         'function_typehint_space'                     => true,
         'hash_to_slash_comment'                       => true,
         'include'                                     => true,
@@ -71,6 +69,6 @@ return PhpCsFixer\Config::create()
         'unary_operator_spaces'                       => true,
         'whitespace_after_comma_in_array'             => true,
     ])
-    ->setRiskyAllowed(true)
-    ->finder($finder)
-    ;
+    ->setUsingCache(true)
+    ->setUsingLinter(true)
+    ->finder($finder);
