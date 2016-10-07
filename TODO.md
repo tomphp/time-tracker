@@ -1,0 +1,21 @@
+- [x] Use handlers over subscribers
+- [x] Replace magic properties with methods
+- [x] Add php-cs-fixer
+- [x] Add declare strict to all files
+- [x] Rename ProjectProjection::projectName to name
+- [x] Rename domain to tracker
+- [x] Move storage into domain
+- [x] Integration tests
+- [x] Add SlackHandle value
+- [ ] Use `id()` instead of `xxxxId()`
+- [ ] Add queries
+- [ ] Make CommandRunner use the container
+- [ ] Have an equality method for IDs
+- [ ] Change user to developer
+- [ ] Create an abstract aggregate test
+- [ ] Add a command bus
+- [ ] Add phpcs
+- [ ] Persistence
+- [ ] Test SQL repositories
+
++34 949 228 228 

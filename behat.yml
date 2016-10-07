@@ -1,4 +1,4 @@
-default:
+features:
   suites:
     tracker:
       paths: [ %paths.base%/test/features/tracker ]
@@ -12,13 +12,17 @@ default:
       filters:
         tags: "~@ui-only&&~@wip"
 
-    integration:
+integration:
+  suites:
+    default:
       paths: [ %paths.base%/test/features ]
       contexts: [ test\features\TomPHP\TimeTracker\IntegrationContext ]
       filters:
         tags: "@integration&&~@wip"
 
-    e2e:
+e2e:
+  suites:
+    default:
       paths: [ %paths.base%/test/features ]
       contexts: [ test\features\TomPHP\TimeTracker\E2EContext ]
       filters:

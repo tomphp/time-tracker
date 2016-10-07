@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="tomphp/time-tracker" default="test">
+    <!-- property name="cmd.docker_cli" value="docker-compose run - -rm cli sh -c" /-->
+    <property name="cmd.docker_cli" value="sh -c" />
+
+    <target name="style:check">
+        <property name="style.dry_run" value="--dry-run" override="true" />
+        <property name="style.command" value="vendor/bin/php-cs-fixer fix ${style.dry_run} --ansi -v" />
+
+        <exec command="${style.command}"
+            checkreturn="true"
+            passthru="true" />
+    </target>
+
+    <target name="style:fix">
+        <phingcall target="style:check">
+            <property name="style.dry_run" value="" />
+        </phingcall>
+    </target>
+
+    <target name="test:unit">
+        <echo message="Running unit tests" />
+        <exec command="${cmd.docker_cli} 'vendor/bin/phpunit --colors=always --testdox'"
+              checkreturn="true"
+              passthru="true" />
+    </target>
+
+    <target name="test:features">
+        <echo message="Running Bounded Context features" />
+        <exec command="${cmd.docker_cli} 'vendor/bin/behat --colors -p features'"
+              checkreturn="true"
+              passthru="true" />
+    </target>
+
+    <target name="test:integrated-features">
+        <echo message="Running Integrated features" />
+        <exec command="${cmd.docker_cli} 'vendor/bin/behat --colors -p integration'"
+              checkreturn="true"
+              passthru="true" />
+    </target>
+
+    <target name="test:e2e">
+        <echo message="Running Integrated features" />
+        <exec command="${cmd.docker_cli} 'vendor/bin/behat --colors -p e2e'"
+              checkreturn="true"
+              passthru="true" />
+    </target>
+
+    <target name="test" depends="test:unit,test:features,test:integrated-features,test:e2e">
+    </target>
+
+    <target name="ci" depends="style:check,test">
+    </target>
+</project>
