@@ -76,7 +76,7 @@ class IntegrationContext implements Context, SnippetAcceptingContext
      */
     public function fetchProjectByName(string $name) : ProjectId
     {
-        return $this->projectProjections()->withName($name)->projectId();
+        return $this->projectProjections()->withName($name)->id();
     }
 
     /**

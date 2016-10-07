@@ -22,7 +22,7 @@ final class MemoryProjectProjections implements ProjectProjections
 
     public function add(ProjectProjection $project)
     {
-        $this->projectionsById[(string) $project->projectId()] = $project;
+        $this->projectionsById[(string) $project->id()] = $project;
         $this->projectionsByName[$project->name()]             = $project;
     }
 
@@ -41,7 +41,7 @@ final class MemoryProjectProjections implements ProjectProjections
         $project = $this->withId($id);
 
         $this->projectionsById[(string) $id] = new ProjectProjection(
-            $project->projectId(),
+            $project->id(),
             $project->name(),
             $totalTime
         );

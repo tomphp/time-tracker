@@ -25,7 +25,7 @@ final class ProjectProjection
         $this->totalTime   = $totalTime;
     }
 
-    public function projectId() : ProjectId
+    public function id() : ProjectId
     {
         return $this->projectId;
     }

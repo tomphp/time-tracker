@@ -17,7 +17,7 @@ final class ProjectProjectionTest extends \PHPUnit_Framework_TestCase
 
         $project = new ProjectProjection($projectId, $name, $totalTime);
 
-        assertSame($projectId, $project->projectId());
+        assertSame($projectId, $project->id());
         assertSame($name, $project->name());
         assertSame($totalTime, $project->totalTime());
     }
