@@ -5,12 +5,14 @@ default:
       contexts: [ test\features\TomPHP\TimeTracker\TrackerContext ]
       filters:
         tags: "~@ui-only&&~@wip"
+
     slack:
       paths: [ %paths.base%/test/features/slack ]
       contexts: [ test\features\TomPHP\TimeTracker\SlackContext ]
       filters:
         tags: "~@ui-only&&~@wip"
-    e2e:
+
+    integration:
       paths: [ %paths.base%/test/features ]
       contexts: [ test\features\TomPHP\TimeTracker\IntegrationContext ]
       filters:
@@ -21,4 +23,3 @@ default:
       contexts: [ test\features\TomPHP\TimeTracker\E2EContext ]
       filters:
         tags: "@critical&&~@wip"
-

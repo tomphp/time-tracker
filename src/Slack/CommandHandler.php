@@ -2,8 +2,10 @@
 
 namespace TomPHP\TimeTracker\Slack;
 
+use TomPHP\TimeTracker\Common\SlackHandle;
+
 interface CommandHandler
 {
     /** @return void */
-    public function handle(string $slackHandle, Command $command);
+    public function handle(SlackHandle $slackHandle, Command $command);
 }

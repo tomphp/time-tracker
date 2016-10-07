@@ -2,6 +2,7 @@
 
 namespace test\unit\TomPHP\TimeTracker\Tracker\Storage;
 
+use TomPHP\TimeTracker\Common\SlackHandle;
 use TomPHP\TimeTracker\Tracker\DeveloperId;
 use TomPHP\TimeTracker\Tracker\DeveloperProjection;
 use TomPHP\TimeTracker\Tracker\Storage\MemoryDeveloperProjections;
@@ -14,11 +15,11 @@ final class MemoryDeveloperProjectionsTest extends \PHPUnit_Framework_TestCase
         $developers = new MemoryDeveloperProjections();
 
         $developerId = DeveloperId::generate();
-        $developer   = new DeveloperProjection($developerId, 'Tom', 'tom');
+        $developer   = new DeveloperProjection($developerId, 'Tom', SlackHandle::fromString('tom'));
 
         $developers->add($developer);
 
-        assertSame($developer, $developers->withSlackHandle('tom'));
+        assertSame($developer, $developers->withSlackHandle(SlackHandle::fromString('tom')));
     }
 
     /** @test */

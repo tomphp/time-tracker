@@ -2,10 +2,12 @@
 
 namespace TomPHP\TimeTracker\Tracker;
 
+use TomPHP\TimeTracker\Common\SlackHandle;
+
 interface DeveloperProjections
 {
     /** @return void */
     public function add(DeveloperProjection $developer);
 
-    public function withSlackHandle(string $handle) : DeveloperProjection;
+    public function withSlackHandle(SlackHandle $handle) : DeveloperProjection;
 }

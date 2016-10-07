@@ -2,6 +2,7 @@
 
 namespace TomPHP\TimeTracker\Slack\Command;
 
+use TomPHP\TimeTracker\Common\SlackHandle;
 use TomPHP\TimeTracker\Slack\Command;
 use TomPHP\TimeTracker\Slack\CommandHandler;
 use TomPHP\TimeTracker\Slack\SlackMessenger;
@@ -21,7 +22,7 @@ final class LogCommandHandler implements CommandHandler
         $this->messenger   = $messenger;
     }
 
-    public function handle(string $slackHandle, Command $command)
+    public function handle(SlackHandle $slackHandle, Command $command)
     {
         $developer = $this->timeTracker->fetchDeveloperBySlackHandle($slackHandle);
         $project   = $this->timeTracker->fetchProjectByName($command->projectName());

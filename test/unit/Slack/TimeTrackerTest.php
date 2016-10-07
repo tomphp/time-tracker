@@ -4,6 +4,7 @@ namespace test\unit\TomPHP\TimeTracker\Slack;
 
 use Prophecy\Argument;
 use TomPHP\TimeTracker\Common\Period;
+use TomPHP\TimeTracker\Common\SlackHandle;
 use TomPHP\TimeTracker\Slack\Developer;
 use TomPHP\TimeTracker\Slack\Project;
 use TomPHP\TimeTracker\Slack\TimeTracker;
@@ -42,7 +43,7 @@ final class TimeTrackerTest extends \PHPUnit_Framework_TestCase
             ->willReturn(new DeveloperProjection(
                 DeveloperId::fromString(self::DEVELOPER_ID),
                 self::DEVELOPER_NAME,
-                self::DEVELOPER_SLACK
+                SlackHandle::fromString(self::DEVELOPER_SLACK)
             ));
 
         $this->projects
@@ -62,17 +63,17 @@ final class TimeTrackerTest extends \PHPUnit_Framework_TestCase
     /** @test */
     public function on_fetchDeveloperBySlackHandle_it_fetches_the_DeveloperProject_by_slack_handle()
     {
-        $this->subject->fetchDeveloperBySlackHandle('@tom');
+        $this->subject->fetchDeveloperBySlackHandle(SlackHandle::fromString('@tom'));
 
-        $this->developers->withSlackHandle('@tom')->shouldHaveBeenCalled();
+        $this->developers->withSlackHandle(SlackHandle::fromString('@tom'))->shouldHaveBeenCalled();
     }
 
     /** @test */
     public function on_fetchDeveloperBySlackHandle_it_returns_the_developer()
     {
         assertEquals(
-            new Developer(self::DEVELOPER_ID, self::DEVELOPER_NAME, self::DEVELOPER_SLACK),
-            $this->subject->fetchDeveloperBySlackHandle('@tom')
+            new Developer(self::DEVELOPER_ID, self::DEVELOPER_NAME, SlackHandle::fromString(self::DEVELOPER_SLACK)),
+            $this->subject->fetchDeveloperBySlackHandle(SlackHandle::fromString('@tom'))
         );
     }
 

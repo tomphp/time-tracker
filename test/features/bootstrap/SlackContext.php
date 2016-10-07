@@ -12,6 +12,7 @@ use SamBurns\Pimple3ContainerInterop\ServiceContainer;
 use TomPHP\ContainerConfigurator\Configurator;
 use TomPHP\TimeTracker\Common\Date;
 use TomPHP\TimeTracker\Common\Period;
+use TomPHP\TimeTracker\Common\SlackHandle;
 use TomPHP\TimeTracker\Slack\CommandRunner;
 use TomPHP\TimeTracker\Slack\Developer;
 use TomPHP\TimeTracker\Slack\Project;
@@ -74,6 +75,14 @@ class SlackContext implements Context, SnippetAcceptingContext
     }
 
     /**
+     * @Transform
+     */
+    public function castStringToSlackHandle(string $string) : SlackHandle
+    {
+        return SlackHandle::fromString($string);
+    }
+
+    /**
      * @Transform :developer
      */
     public function fetchDeveloperByName(string $name) : Developer
@@ -92,7 +101,7 @@ class SlackContext implements Context, SnippetAcceptingContext
     /**
      * @Given :developerName is a developer with Slack handle @:slackHandle
      */
-    public function createDeveloper(string $developerName, string $slackHandle)
+    public function createDeveloper(string $developerName, SlackHandle $slackHandle)
     {
         $developer = new Developer("developer-id-$developerName", $developerName, $slackHandle);
 

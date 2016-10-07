@@ -5,6 +5,7 @@ namespace test\unit\TomPHP\TimeTracker\Slack\Command;
 use Prophecy\Argument;
 use TomPHP\TimeTracker\Common\Date;
 use TomPHP\TimeTracker\Common\Period;
+use TomPHP\TimeTracker\Common\SlackHandle;
 use TomPHP\TimeTracker\Slack\Command\LogCommand;
 use TomPHP\TimeTracker\Slack\Command\LogCommandHandler;
 use TomPHP\TimeTracker\Slack\Developer;
@@ -41,7 +42,11 @@ final class LogCommandHandlerTest extends \PHPUnit_Framework_TestCase
     {
         $this->timeTracker = $this->prophesize(TimeTracker::class);
         $this->messenger   = $this->prophesize(SlackMessenger::class);
-        $this->developer   = new Developer('dev-id', 'dev-name', 'dev-slack-handle');
+        $this->developer   = new Developer(
+            'dev-id',
+            'dev-name',
+            SlackHandle::fromString('dev-slack-handle')
+        );
         $this->project     = new Project('project-id', 'project-name');
 
         $this->timeTracker->fetchDeveloperBySlackHandle(Argument::any())->willReturn($this->developer);
@@ -61,17 +66,17 @@ final class LogCommandHandlerTest extends \PHPUnit_Framework_TestCase
     /** @test */
     public function it_fetches_the_developer_by_slack_handle()
     {
-        $this->subject->handle('tom', $this->command);
+        $this->subject->handle(SlackHandle::fromString('tom'), $this->command);
 
         $this->timeTracker
-            ->fetchDeveloperBySlackHandle('tom')
+            ->fetchDeveloperBySlackHandle(SlackHandle::fromString('tom'))
             ->shouldHaveBeenCalled();
     }
 
     /** @test */
     public function it_fetches_the_project_by_name()
     {
-        $this->subject->handle('tom', $this->command);
+        $this->subject->handle(SlackHandle::fromString('tom'), $this->command);
 
         $this->timeTracker
             ->fetchProjectByName(self::PROJECT_NAME)
@@ -81,7 +86,7 @@ final class LogCommandHandlerTest extends \PHPUnit_Framework_TestCase
     /** @test */
     public function it_logs_the_time_entry_with_the_time_tracker()
     {
-        $this->subject->handle('tom', $this->command);
+        $this->subject->handle(SlackHandle::fromString('tom'), $this->command);
 
         $this->timeTracker
             ->logTimeEntry(
@@ -96,7 +101,7 @@ final class LogCommandHandlerTest extends \PHPUnit_Framework_TestCase
     /** @test */
     public function it_sends_a_confirmation_message_to_slack()
     {
-        $this->subject->handle('tom', $this->command);
+        $this->subject->handle(SlackHandle::fromString('tom'), $this->command);
 
         $this->messenger
             ->send('dev-name logged 2:00 hours against project-name')

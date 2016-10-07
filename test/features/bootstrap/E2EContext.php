@@ -6,6 +6,7 @@ use Behat\Behat\Context\Context;
 use Behat\Behat\Context\SnippetAcceptingContext;
 use Behat\Behat\Tester\Exception\PendingException;
 use GuzzleHttp\Client;
+use TomPHP\TimeTracker\Common\SlackHandle;
 use TomPHP\TimeTracker\Tracker\Developer;
 use TomPHP\TimeTracker\Tracker\DeveloperId;
 use TomPHP\TimeTracker\Tracker\Project;
@@ -35,9 +36,17 @@ class E2EContext implements Context, SnippetAcceptingContext
     }
 
     /**
+     * @Transform
+     */
+    public function castStringToSlackHandle(string $string) : SlackHandle
+    {
+        return SlackHandle::fromString($string);
+    }
+
+    /**
      * @Given :name is a developer with Slack handle @:slackHandle
      */
-    public function createDeveloper(string $name, string $slackHandle)
+    public function createDeveloper(string $name, SlackHandle $slackHandle)
     {
         $id                      = DeveloperId::generate();
         $this->developers[$name] = ['id' => (string) $id, 'slack_handle' => $slackHandle];
@@ -81,8 +90,12 @@ class E2EContext implements Context, SnippetAcceptingContext
     /**
      * @Then :period hours should have been logged today by :developerName against :projectName for :description
      */
-    public function assertTimeLoggedAgainstProject($period, string $developerName, string $projectName, string $description)
-    {
+    public function assertTimeLoggedAgainstProject(
+        $period,
+        string $developerName,
+        string $projectName,
+        string $description
+    ) {
         $projectId = $this->projects[$projectName]['id'];
 
         $response = $this->client->get("/api/v1/projects/$projectId/time-entries");

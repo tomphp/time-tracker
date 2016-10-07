@@ -4,6 +4,7 @@ namespace test\unit\TomPHP\TimeTracker\Slack;
 
 use Interop\Container\ContainerInterface;
 use Prophecy\Argument;
+use TomPHP\TimeTracker\Common\SlackHandle;
 use TomPHP\TimeTracker\Slack\Command;
 use TomPHP\TimeTracker\Slack\CommandHandler;
 use TomPHP\TimeTracker\Slack\CommandParser;
@@ -49,7 +50,7 @@ final class CommandRunnerTest extends \PHPUnit_Framework_TestCase
     /** @test */
     public function it_fetches_the_parser_from_the_container()
     {
-        $this->subject->run('tom', 'foo command');
+        $this->subject->run(SlackHandle::fromString('tom'), 'foo command');
 
         $this->container->get('Namespace\FooCommandParser')->shouldHaveBeenCalled();
     }
@@ -57,7 +58,7 @@ final class CommandRunnerTest extends \PHPUnit_Framework_TestCase
     /** @test */
     public function it_parses_the_command()
     {
-        $this->subject->run('tom', 'bar command arguments');
+        $this->subject->run(SlackHandle::fromString('tom'), 'bar command arguments');
 
         $this->parser->parse('command arguments')->shouldHaveBeenCalled();
     }
@@ -65,7 +66,7 @@ final class CommandRunnerTest extends \PHPUnit_Framework_TestCase
     /** @test */
     public function it_fetches_the_command_handler()
     {
-        $this->subject->run('tom', 'foo command');
+        $this->subject->run(SlackHandle::fromString('tom'), 'foo command');
 
         $this->container->get('Namespace\FooCommandHandler')->shouldHaveBeenCalled();
     }
@@ -73,8 +74,8 @@ final class CommandRunnerTest extends \PHPUnit_Framework_TestCase
     /** @test */
     public function it_handles_the_command()
     {
-        $this->subject->run('tom', 'foo command');
+        $this->subject->run(SlackHandle::fromString('tom'), 'foo command');
 
-        $this->handler->handle('tom', $this->command)->shouldHaveBeenCalled();
+        $this->handler->handle(SlackHandle::fromString('tom'), $this->command)->shouldHaveBeenCalled();
     }
 }

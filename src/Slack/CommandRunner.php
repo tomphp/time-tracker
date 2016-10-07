@@ -3,6 +3,7 @@
 namespace TomPHP\TimeTracker\Slack;
 
 use Interop\Container\ContainerInterface;
+use TomPHP\TimeTracker\Common\SlackHandle;
 
 final class CommandRunner
 {
@@ -19,7 +20,7 @@ final class CommandRunner
     }
 
     /** @return void */
-    public function run(string $slackHandle, string $commandString)
+    public function run(SlackHandle $slackHandle, string $commandString)
     {
         list($name, $arguments) = explode(' ', $commandString, 2);
 
