@@ -14,6 +14,8 @@ use TomPHP\TimeTracker\Tracker\ProjectId;
 
 class E2EContext implements Context, SnippetAcceptingContext
 {
+    use CommonTransforms;
+
     const SLACK_ENDPOINT = '/slack/slash-command-endpoint';
 
     /** Client */
@@ -33,14 +35,6 @@ class E2EContext implements Context, SnippetAcceptingContext
         $this->client = new Client([
             'base_uri' => 'http://localhost:8080/',
         ]);
-    }
-
-    /**
-     * @Transform
-     */
-    public function castStringToSlackHandle(string $string) : SlackHandle
-    {
-        return SlackHandle::fromString($string);
     }
 
     /**

@@ -21,6 +21,8 @@ use TomPHP\TimeTracker\Slack\TimeTracker;
 
 class SlackContext implements Context, SnippetAcceptingContext
 {
+    use CommonTransforms;
+
     /** @var Prophet */
     private $prophet;
 
@@ -64,22 +66,6 @@ class SlackContext implements Context, SnippetAcceptingContext
 
         $this->services[TimeTracker::class]    = $this->timeTracker->reveal();
         $this->services[SlackMessenger::class] = $this->messenger->reveal();
-    }
-
-    /**
-     * @Transform :period
-     */
-    public function castStringToPeriod(string $string) : Period
-    {
-        return Period::fromString($string);
-    }
-
-    /**
-     * @Transform
-     */
-    public function castStringToSlackHandle(string $string) : SlackHandle
-    {
-        return SlackHandle::fromString($string);
     }
 
     /**

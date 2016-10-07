@@ -23,6 +23,8 @@ use TomPHP\Transform as T;
 
 class TrackerContext implements Context, SnippetAcceptingContext
 {
+    use CommonTransforms;
+
     /** @var DeveloperId[] */
     private $developers = [];
 
@@ -69,22 +71,6 @@ class TrackerContext implements Context, SnippetAcceptingContext
     public function castProjectNameToProjectId(string $name) : ProjectId
     {
         return $this->projects[$name];
-    }
-
-    /**
-     * @Transform
-     */
-    public function castStringToPeriod(string $string) : Period
-    {
-        return Period::fromString($string);
-    }
-
-    /**
-     * @Transform
-     */
-    public function castStringToDate(string $string) : Date
-    {
-        return Date::fromString($string);
     }
 
     /**

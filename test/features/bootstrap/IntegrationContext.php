@@ -23,6 +23,8 @@ use TomPHP\TimeTracker\Tracker\TimeEntryProjections;
 
 class IntegrationContext implements Context, SnippetAcceptingContext
 {
+    use CommonTransforms;
+
     /** @var Prophet */
     private $prophet;
 
@@ -57,22 +59,6 @@ class IntegrationContext implements Context, SnippetAcceptingContext
         $this->messenger = $this->prophet->prophesize(SlackMessenger::class);
 
         $this->services[SlackMessenger::class] = $this->messenger->reveal();
-    }
-
-    /**
-     * @Transform
-     */
-    public function castStringToPeriod(string $string) : Period
-    {
-        return Period::fromString($string);
-    }
-
-    /**
-     * @Transform
-     */
-    public function castStringToSlackHandle(string $string) : SlackHandle
-    {
-        return SlackHandle::fromString($string);
     }
 
     /**
