@@ -16,8 +16,14 @@ final class SlackHandleTest extends \PHPUnit_Framework_TestCase
     }
 
     /** @test */
+    public function on_value_it_returns_the_name()
+    {
+        assertSame('tom', SlackHandle::fromString('tom')->value());
+    }
+
+    /** @test */
     public function it_can_be_converted_to_a_string()
     {
-        assertEquals('@tom', (string) SlackHandle::fromString('tom'));
+        assertSame('@tom', (string) SlackHandle::fromString('tom'));
     }
 }

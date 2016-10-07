@@ -72,7 +72,7 @@ class E2EContext implements Context, SnippetAcceptingContext
                     'channel_id'   => 'C2147483705',
                     'channel_name' => 'test',
                     'user_id'      => 'U2147483697',
-                    'user_name'    => $this->developers[$name]['slack_handle'],
+                    'user_name'    => $this->developers[$name]['slack_handle']->value(),
                     'command'      => "/tt $command",
                     'text'         => '94070',
                     'response_url' => 'https://hooks.slack.com/commands/1234/5678',

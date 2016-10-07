@@ -8,6 +8,7 @@ use TomPHP\TimeTracker\Slack\CommandRunner;
 use TomPHP\TimeTracker\Tracker\ProjectId;
 use TomPHP\TimeTracker\Tracker\TimeEntryProjection;
 use TomPHP\TimeTracker\Tracker\TimeEntryProjections;
+use TomPHP\TimeTracker\Common\SlackHandle;
 
 const PROJECT_ROOT = __DIR__ . '/..';
 
@@ -38,7 +39,7 @@ $app->group('/slack', function () {
 
         list($slash, $command) = explode(' ', $params['command'], 2);
 
-        $this->get(CommandRunner::class)->run($params['user_name'], $command);
+        $this->get(CommandRunner::class)->run(SlackHandle::fromString($params['user_name']), $command);
     });
 });
 

@@ -17,6 +17,11 @@ final class SlackHandle
         $this->value = preg_replace('/^@?(.*)$/', '\1', $value);
     }
 
+    public function value() : string
+    {
+        return $this->value;
+    }
+
     public function __toString() : string
     {
         return '@' . $this->value;
