@@ -1,41 +1,22 @@
 <?php declare(strict_types=1);
 
-namespace test\unit\TomPHP\TimeTracker\Storage;
+namespace test\unit\TomPHP\TimeTracker\Tracker\Storage;
 
-use TomPHP\TimeTracker\Common\Date;
-use TomPHP\TimeTracker\Common\Period;
-use TomPHP\TimeTracker\Tracker\DeveloperId;
-use TomPHP\TimeTracker\Tracker\ProjectId;
 use TomPHP\TimeTracker\Tracker\Storage\MemoryTimeEntryProjections;
-use TomPHP\TimeTracker\Tracker\TimeEntryProjection;
+use TomPHP\TimeTracker\Tracker\TimeEntryProjections;
 
-final class MemoryTimeEntryProjectionsTest extends \PHPUnit_Framework_TestCase
+final class MemoryTimeEntryProjectionsTest extends AbstractTimeEntryProjectionsTest
 {
-    /** @test */
-    public function on_forProject_it_returns_all_added_projections_for_that_project()
+    /** @var TimeEntryProjections */
+    private $timeEntries;
+
+    protected function setUp()
     {
-        $projects = new MemoryTimeEntryProjections();
+        $this->timeEntries = new MemoryTimeEntryProjections();
+    }
 
-        $projectId = ProjectId::generate();
-
-        $projection1 = new TimeEntryProjection(
-            DeveloperId::generate(),
-            $projectId,
-            Date::fromString('2016-09-19'),
-            Period::fromString('0'),
-            'Example entry 1'
-        );
-        $projection2 = new TimeEntryProjection(
-            DeveloperId::generate(),
-            ProjectId::generate(),
-            Date::fromString('2016-09-21'),
-            Period::fromString('0'),
-            'Example entry 2'
-        );
-
-        $projects->add($projection1);
-        $projects->add($projection2);
-
-        assertSame([$projection1], $projects->forProject($projectId));
+    protected function timeEntries() : TimeEntryProjections
+    {
+        return $this->timeEntries;
     }
 }

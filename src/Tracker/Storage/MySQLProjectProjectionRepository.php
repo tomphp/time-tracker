@@ -82,7 +82,7 @@ final class MySQLProjectProjectionRepository implements ProjectProjections
 
     public function updateTotalTimeFor(ProjectId $id, Period $totalTime)
     {
-        $statement = $this->pdo->prepare('UPDATE `project_projections` SET name="UPDATED",  totalTime = :totalTime WHERE `id` = :id');
+        $statement = $this->pdo->prepare('UPDATE `project_projections` SET totalTime = :totalTime WHERE `id` = :id');
 
         $statement->execute([
             ':id'        => (string) $id,
