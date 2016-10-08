@@ -5,8 +5,8 @@ namespace TomPHP\TimeTracker\Tracker\Storage;
 use PDO;
 use TomPHP\TimeTracker\Common\SlackHandle;
 use TomPHP\TimeTracker\Tracker\DeveloperId;
-use TomPHP\TimeTracker\Tracker\DeveloperProjections;
 use TomPHP\TimeTracker\Tracker\DeveloperProjection;
+use TomPHP\TimeTracker\Tracker\DeveloperProjections;
 
 final class MySQLDeveloperProjectionRepository implements DeveloperProjections
 {
