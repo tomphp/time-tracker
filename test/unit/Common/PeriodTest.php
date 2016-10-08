@@ -25,6 +25,15 @@ final class PeriodTest extends \PHPUnit_Framework_TestCase
     }
 
     /** @test */
+    public function on_fromString_it_the_hours_suffix()
+    {
+        $period = Period::fromString('1:11 hours');
+
+        assertSame(1, $period->hours());
+        assertSame(11, $period->minutes());
+    }
+
+    /** @test */
     public function on_fromHours_it_constructs_from_an_integer()
     {
         $period = Period::fromHours(2);

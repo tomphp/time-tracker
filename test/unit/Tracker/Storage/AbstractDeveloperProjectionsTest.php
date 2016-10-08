@@ -19,7 +19,7 @@ abstract class AbstractDeveloperProjectionsTest extends \PHPUnit_Framework_TestC
 
         $this->developers()->add($developer);
 
-        assertSame($developer, $this->developers()->withSlackHandle(SlackHandle::fromString('tom')));
+        assertEquals($developer, $this->developers()->withSlackHandle(SlackHandle::fromString('tom')));
     }
 
     /** @test */
