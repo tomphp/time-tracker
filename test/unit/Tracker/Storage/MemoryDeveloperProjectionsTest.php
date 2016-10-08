@@ -9,17 +9,22 @@ use TomPHP\TimeTracker\Tracker\Storage\MemoryDeveloperProjections;
 
 final class MemoryDeveloperProjectionsTest extends \PHPUnit_Framework_TestCase
 {
+    private $developers;
+
+    public function setUp()
+    {
+        $this->developers = new MemoryDeveloperProjections();
+    }
+
     /** @test */
     public function on_withSlackHandle_it_returns_the_developer_with_that_handle()
     {
-        $developers = new MemoryDeveloperProjections();
-
         $developerId = DeveloperId::generate();
         $developer   = new DeveloperProjection($developerId, 'Tom', SlackHandle::fromString('tom'));
 
-        $developers->add($developer);
+        $this->developers->add($developer);
 
-        assertSame($developer, $developers->withSlackHandle(SlackHandle::fromString('tom')));
+        assertSame($developer, $this->developers->withSlackHandle(SlackHandle::fromString('tom')));
     }
 
     /** @test */

@@ -20,5 +20,8 @@
         <testsuite name="unit">
             <directory>test/unit</directory>
         </testsuite>
+        <testsuite name="mysql">
+            <directory>test/mysql</directory>
+        </testsuite>
     </testsuites>
 </phpunit>

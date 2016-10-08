@@ -17,6 +17,13 @@
         </phingcall>
     </target>
 
+    <target name="migrate-db:test">
+        <echo message="Set up the test database" />
+        <exec command="${cmd.docker_cli} 'vendor/bin/phinx migrate -e testing'"
+              checkreturn="true"
+              passthru="true" />
+    </target>
+
     <target name="test:unit">
         <echo message="Running unit tests" />
         <exec command="${cmd.docker_cli} 'vendor/bin/phpunit --colors=always --testsuite unit'"
@@ -34,6 +41,13 @@
     <target name="test:integrated-features">
         <echo message="Running Integrated features" />
         <exec command="${cmd.docker_cli} 'vendor/bin/behat --colors -p integration'"
+              checkreturn="true"
+              passthru="true" />
+    </target>
+
+    <target name="test:mysql">
+        <echo message="Running MySQL tests" />
+        <exec command="${cmd.docker_cli} 'vendor/bin/phpunit --colors=always --testsuite mysql'"
               checkreturn="true"
               passthru="true" />
     </target>
