@@ -2,7 +2,7 @@
 
 use Phinx\Migration\AbstractMigration;
 
-class CreateDeveloperProjectsTableMigration extends AbstractMigration
+class CreateDeveloperProjectionsTableMigration extends AbstractMigration
 {
     public function change()
     {
