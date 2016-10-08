@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="tomphp/time-tracker" default="test">
-    <!-- property name="cmd.docker_cli" value="docker-compose run - -rm cli sh -c" /-->
-    <property name="cmd.docker_cli" value="sh -c" />
+<project name="tomphp/time-tracker" default="build">
+    <property name="cmd.docker_cli" value="docker-compose run --rm cli sh -c" />
 
     <target name="style:check">
         <property name="style.dry_run" value="--dry-run" override="true" />
@@ -20,7 +19,7 @@
 
     <target name="test:unit">
         <echo message="Running unit tests" />
-        <exec command="${cmd.docker_cli} 'vendor/bin/phpunit --colors=always --testdox'"
+        <exec command="${cmd.docker_cli} 'vendor/bin/phpunit --colors=always --testsuite unit'"
               checkreturn="true"
               passthru="true" />
     </target>
@@ -50,5 +49,17 @@
     </target>
 
     <target name="ci" depends="style:check,test">
+    </target>
+
+    <target name="build">
+        <exec command="docker-compose down"
+            checkreturn="true"
+            passthru="true" />
+        <exec command="docker-compose build --no-cache codebase"
+            checkreturn="true"
+            passthru="true" />
+        <exec command="docker-compose up -d"
+            checkreturn="true"
+            passthru="true" />
     </target>
 </project>
