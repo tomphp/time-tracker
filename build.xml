@@ -59,7 +59,7 @@
               passthru="true" />
     </target>
 
-    <target name="test" depends="test:unit,test:features,test:integrated-features,test:e2e">
+    <target name="test" depends="test:unit,test:features,test:integrated-features,test:mysql,test:e2e">
     </target>
 
     <target name="ci" depends="style:check,test">

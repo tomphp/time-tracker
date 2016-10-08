@@ -5,7 +5,10 @@ volumes:
 
 services:
   codebase:
-    build: .
+    # build: .
+    image: busybox
+    volumes:
+      - ./:/var/www/html
 
   db:
     image: mariadb
@@ -19,10 +22,17 @@ services:
 
   webserver:
     build: containers/webserver
+    ports:
+      - 8080:80
     volumes_from:
       - codebase
     links:
       - db
+    environment:
+      MYSQL_DBNAME: tracker
+      MYSQL_HOSTNAME: db
+      MYSQL_USERNAME: username
+      MYSQL_PASSWORD: password
     depends_on:
       - db
 
@@ -30,6 +40,7 @@ services:
     build: containers/webserver
     links:
       - db
+      - webserver
     volumes_from:
       - codebase
     command: echo "CLI Initialised..."
@@ -38,3 +49,5 @@ services:
       MYSQL_HOSTNAME: db
       MYSQL_USERNAME: username
       MYSQL_PASSWORD: password
+    depends_on:
+      - webserver

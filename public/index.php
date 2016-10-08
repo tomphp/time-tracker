@@ -1,11 +1,13 @@
 <?php declare(strict_types=1);
 
+use Fig\Http\Message\StatusCodeInterface as HttpStatus;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\App;
 use TomPHP\ContainerConfigurator\Configurator;
 use TomPHP\TimeTracker\Common\SlackHandle;
 use TomPHP\TimeTracker\Slack\CommandRunner;
+use TomPHP\TimeTracker\Tracker\EventBus;
 use TomPHP\TimeTracker\Tracker\ProjectId;
 use TomPHP\TimeTracker\Tracker\TimeEntryProjection;
 use TomPHP\TimeTracker\Tracker\TimeEntryProjections;
@@ -17,18 +19,13 @@ require PROJECT_ROOT . '/vendor/autoload.php';
 $app = new App([]);
 
 Configurator::apply()
-    ->configFromFiles(PROJECT_ROOT . '/config/*')
-    ->configFromArray([
-        'di' => [
-            'services' => [
-                CommandRunner::class => [
-                    'arguments' => [$app->getContainer(), 'config.slack.commands'],
-                ],
-            ],
-        ],
-    ])
+    ->configFromFiles(PROJECT_ROOT . '/config/*.global.php')
     ->withSetting(Configurator::SETTING_DEFAULT_SINGLETON_SERVICES, true)
     ->to($app->getContainer());
+
+foreach ($app->getContainer()->get('config.tracker.event_handlers') as $name) {
+    EventBus::addHandler($app->getContainer()->get($name));
+}
 
 $app->group('/slack', function () {
     $this->post('/slash-command-endpoint', function (Request $request, Response $response) {
@@ -40,6 +37,8 @@ $app->group('/slack', function () {
         list($slash, $command) = explode(' ', $params['command'], 2);
 
         $this->get(CommandRunner::class)->run(SlackHandle::fromString($params['user_name']), $command);
+
+        return $response->withJson($results, HttpStatus::STATUS_CREATED);
     });
 });
 
@@ -50,17 +49,17 @@ $app->group('/api/v1', function () {
         $results = array_map(
             function (TimeEntryProjection $timeEntry) {
                 return [
-                    'projectId'   => $timeEntry->projectId(),
-                    'developerId' => $timeEntry->developerId(),
-                    'date'        => $timeEntry->date(),
-                    'period'      => $timeEntry->period(),
+                    'projectId'   => (string) $timeEntry->projectId(),
+                    'developerId' => (string) $timeEntry->developerId(),
+                    'date'        => (string) $timeEntry->date(),
+                    'period'      => (string) $timeEntry->period(),
                     'description' => $timeEntry->description(),
                 ];
             },
             $timeEntries->forProject(ProjectId::fromString($args['projectId']))
         );
 
-        return $response->getBody()->write(json_encode($results));
+        return $response->withJson($results, HttpStatus::STATUS_OK);
     });
 });
 

@@ -123,7 +123,7 @@ class SlackContext implements Context, SnippetAcceptingContext
         $this->timeTracker->logTimeEntry(
             $developer,
             $project,
-            $this->today(),
+            Date::today(),
             $period,
             $description
         )->shouldHaveBeenCalled();
@@ -135,11 +135,6 @@ class SlackContext implements Context, SnippetAcceptingContext
     public function messageSayingShouldHaveBeenSentToSlack(string $message)
     {
         $this->messenger->send($message)->shouldHaveBeenCalled();
-    }
-
-    private function today() : Date
-    {
-        return new Date();
     }
 
     private function commandRunner() : CommandRunner

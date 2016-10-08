@@ -7,15 +7,17 @@
 - [x] Move storage into domain
 - [x] Integration tests
 - [x] Add SlackHandle value
-- [ ] Use `id()` instead of `xxxxId()`
-- [ ] Add queries
-- [ ] Make CommandRunner use the container
-- [ ] Have an equality method for IDs
-- [ ] Change user to developer
-- [ ] Create an abstract aggregate test
+- [x] Use `id()` instead of `xxxxId()`
+- [x] Change user to developer
+- [x] Create an abstract aggregate test
+- [x] Persistence
+- [x] Test SQL repositories
+- [x] Make CommandRunner use the container
+- [ ] Add LogEntryId
+- [ ] ~Have an equality method for IDs~ - using string value instead
 - [ ] Add a command bus
+- [ ] Add queries
 - [ ] Add phpcs
-- [ ] Persistence
-- [ ] Test SQL repositories
+- [ ] Use Aura SQL
 
 +34 949 228 228 

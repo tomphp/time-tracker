@@ -10,6 +10,7 @@
     },
     "require": {
         "php": "^7.0",
+        "fig/http-message-util": "^1.1",
         "friendsofphp/php-cs-fixer": "2.0.0-alpha",
         "ramsey/uuid": "^3.5",
         "robmorgan/phinx": "^0.6.4",

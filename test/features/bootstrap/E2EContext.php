@@ -5,10 +5,16 @@ namespace test\features\TomPHP\TimeTracker;
 use Behat\Behat\Context\Context;
 use Behat\Behat\Context\SnippetAcceptingContext;
 use Behat\Behat\Tester\Exception\PendingException;
+use Fig\Http\Message\StatusCodeInterface as HttpStatus;
 use GuzzleHttp\Client;
+use Slim\Container;
+use TomPHP\ContainerConfigurator\Configurator;
+use TomPHP\TimeTracker\Common\Date;
+use TomPHP\TimeTracker\Common\Period;
 use TomPHP\TimeTracker\Common\SlackHandle;
 use TomPHP\TimeTracker\Tracker\Developer;
 use TomPHP\TimeTracker\Tracker\DeveloperId;
+use TomPHP\TimeTracker\Tracker\EventBus;
 use TomPHP\TimeTracker\Tracker\Project;
 use TomPHP\TimeTracker\Tracker\ProjectId;
 
@@ -27,14 +33,27 @@ class E2EContext implements Context, SnippetAcceptingContext
     /** @var array */
     private $projects;
 
-    /** @var string */
-    private $today = '2016-09-19';
-
     public function __construct()
     {
         $this->client = new Client([
-            'base_uri' => 'http://localhost:8080/',
+            'base_uri' => 'http://webserver/',
         ]);
+
+        $services = new Container();
+
+        Configurator::apply()
+            ->configFromFiles(__DIR__ . '/../../../config/*.global.php')
+            ->withSetting(Configurator::SETTING_DEFAULT_SINGLETON_SERVICES, true)
+            ->to($services);
+
+        EventBus::clearHandlers();
+        foreach ($services['config.tracker.event_handlers'] as $name) {
+            EventBus::addHandler($services->get($name));
+        }
+
+        $services->get('database')->exec('TRUNCATE `developer_projections`');
+        $services->get('database')->exec('TRUNCATE `project_projections`');
+        $services->get('database')->exec('TRUNCATE `time_entry_projections`');
     }
 
     /**
@@ -44,7 +63,8 @@ class E2EContext implements Context, SnippetAcceptingContext
     {
         $id                      = DeveloperId::generate();
         $this->developers[$name] = ['id' => (string) $id, 'slack_handle' => $slackHandle];
-        Developer::create(DeveloperId::generate(), $name, $slackHandle);
+
+        Developer::create($id, $name, $slackHandle);
     }
 
     /**
@@ -62,7 +82,7 @@ class E2EContext implements Context, SnippetAcceptingContext
      */
     public function tomIssuesTheCommand(string $name, string $command)
     {
-        $this->client->post(
+        $response = $this->client->post(
             self::SLACK_ENDPOINT,
             [
                 'form_params' => [
@@ -79,13 +99,15 @@ class E2EContext implements Context, SnippetAcceptingContext
                 ],
             ]
         );
+
+        assertSame(HttpStatus::STATUS_CREATED, $response->getStatusCode());
     }
 
     /**
      * @Then :period hours should have been logged today by :developerName against :projectName for :description
      */
     public function assertTimeLoggedAgainstProject(
-        $period,
+        Period $period,
         string $developerName,
         string $projectName,
         string $description
@@ -94,13 +116,15 @@ class E2EContext implements Context, SnippetAcceptingContext
 
         $response = $this->client->get("/api/v1/projects/$projectId/time-entries");
 
-        $timeEntries = json_decode((string)$response->getBody());
+        assertSame(HttpStatus::STATUS_OK, $response->getStatusCode());
+
+        $timeEntries = json_decode((string) $response->getBody());
 
         $expectedEntry = (object) [
-            'projectId'   => $this->projects[$projectName]['id'],
-            'developerId' => $this->developers[$developerName]['id'],
-            'date'        => $this->today,
-            'period'      => $period,
+            'projectId'   => (string) $this->projects[$projectName]['id'],
+            'developerId' => (string) $this->developers[$developerName]['id'],
+            'date'        => (string) Date::today(),
+            'period'      => (string) $period,
             'description' => $description,
         ];
 

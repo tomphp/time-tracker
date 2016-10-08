@@ -4,7 +4,7 @@ Feature: Slack Integration
   I want a simple slack interface
 
   @integration
-  #@critical
+  @critical
   Scenario: Logging time against a project
     Given Tom is a developer with Slack handle @tom
     And there is a project named "Time Tracker"
