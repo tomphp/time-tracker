@@ -13,11 +13,10 @@
 - [x] Persistence
 - [x] Test SQL repositories
 - [x] Make CommandRunner use the container
+- [ ] Add the EventStore
 - [ ] Add LogEntryId
 - [ ] ~Have an equality method for IDs~ - using string value instead
 - [ ] Add a command bus
 - [ ] Add queries
 - [ ] Add phpcs
 - [ ] Use Aura SQL
-
-+34 949 228 228 
