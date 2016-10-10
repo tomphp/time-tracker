@@ -135,7 +135,7 @@ $app->group('/api/v1', function () {
             $timeEntries->forProject(ProjectId::fromString($args['projectId']))
         );
 
-        return $response->withJson($results, HttpStatus::STATUS_OK);
+        return $response->withJson($timeEntries, HttpStatus::STATUS_OK);
     });
 });
 
