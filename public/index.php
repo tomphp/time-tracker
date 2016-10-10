@@ -12,6 +12,8 @@ use TomPHP\TimeTracker\Tracker\DeveloperId;
 use TomPHP\TimeTracker\Tracker\EventBus;
 use TomPHP\TimeTracker\Tracker\Project;
 use TomPHP\TimeTracker\Tracker\ProjectId;
+use TomPHP\TimeTracker\Tracker\ProjectProjection;
+use TomPHP\TimeTracker\Tracker\ProjectProjections;
 use TomPHP\TimeTracker\Tracker\TimeEntryProjection;
 use TomPHP\TimeTracker\Tracker\TimeEntryProjections;
 
@@ -71,10 +73,56 @@ $app->group('/api/v1', function () {
             ->withHeader('Location', "/api/v1/projects/$id");
     });
 
+    // untested
+    $this->get('/projects', function (Request $request, Response $response) {
+        $projects = $this->get(ProjectProjections::class);
+
+        $result = array_map(
+            function (ProjectProjection $project) {
+                return [
+                    'id'         => (string) $project->id(),
+                    'name'       => $project->name(),
+                    'total-time' => (string) $project->totalTime(),
+                ];
+            },
+            $projects->all()
+        );
+
+        return $response->withJson($result, HttpStatus::STATUS_OK);
+    });
+
+    // untested
+    $this->get('/projects/{projectId}', function (Request $request, Response $response, array $args) {
+        $projects    = $this->get(ProjectProjections::class);
+        $project     = $projects->withId(ProjectId::fromString($args['projectId']));
+        $timeEntries = $this->get(TimeEntryProjections::class);
+
+        $timeEntries = array_map(
+            function (TimeEntryProjection $timeEntry) {
+                return [
+                    'developerId' => (string) $timeEntry->developerId(),
+                    'date'        => (string) $timeEntry->date(),
+                    'period'      => (string) $timeEntry->period(),
+                    'description' => $timeEntry->description(),
+                ];
+            },
+            $timeEntries->forProject(ProjectId::fromString($args['projectId']))
+        );
+
+        $result = [
+            'id'           => (string) $project->id(),
+            'name'         => $project->name(),
+            'total-time'   => (string) $project->totalTime(),
+            'time-entries' => $timeEntries,
+        ];
+
+        return $response->withJson($result, HttpStatus::STATUS_OK);
+    });
+
     $this->get('/projects/{projectId}/time-entries', function (Request $request, Response $response, array $args) {
         $timeEntries = $this->get(TimeEntryProjections::class);
 
-        $results = array_map(
+        $timeEntries = array_map(
             function (TimeEntryProjection $timeEntry) {
                 return [
                     'projectId'   => (string) $timeEntry->projectId(),

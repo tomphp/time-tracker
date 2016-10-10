@@ -15,6 +15,7 @@
 - [x] Make CommandRunner use the container
 - [ ] Add the EventStore
 - [ ] Walk the API (HATEOS)
+- [ ] Remove IDs from the API (HATEOS)
 - [ ] Add LogEntryId
 - [ ] ~Have an equality method for IDs~ - using string value instead
 - [ ] Add a command bus
