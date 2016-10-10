@@ -1,0 +1,34 @@
+version: '2'
+
+volumes:
+  mysql_data:
+
+services:
+  codebase:
+    build: .
+
+  db:
+    image: mariadb
+    volumes:
+      - mysql_data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: tracker
+      MYSQL_USER: username
+      MYSQL_PASSWORD: password
+
+  webserver:
+    build: containers/webserver
+    ports:
+      - 80:80
+    volumes_from:
+      - codebase
+    links:
+      - db
+    environment:
+      MYSQL_DBNAME: tracker
+      MYSQL_HOSTNAME: db
+      MYSQL_USERNAME: username
+      MYSQL_PASSWORD: password
+    depends_on:
+      - db

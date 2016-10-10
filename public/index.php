@@ -36,12 +36,17 @@ $app->group('/slack', function () {
 
         error_log('Slack name = ' . $params['user_name']);
         error_log('Command    = ' . $params['command']);
+        error_log('Text       = ' . $params['text']);
+        error_log(print_r($params, true));
 
-        list($slash, $command) = explode(' ', $params['command'], 2);
+        $this->get(CommandRunner::class)->run(SlackHandle::fromString($params['user_name']), $params['text']);
 
-        $this->get(CommandRunner::class)->run(SlackHandle::fromString($params['user_name']), $command);
+        $result = [
+            'response_type' => 'ephemeral',
+            'text'          => 'Your time has been logged.',
+        ];
 
-        return $response->withJson($results, HttpStatus::STATUS_CREATED);
+        return $response->withJson($result, HttpStatus::STATUS_CREATED);
     });
 });
 
