@@ -10,6 +10,7 @@ use TomPHP\TimeTracker\Slack\CommandRunner;
 use TomPHP\TimeTracker\Tracker\Developer;
 use TomPHP\TimeTracker\Tracker\DeveloperId;
 use TomPHP\TimeTracker\Tracker\EventBus;
+use TomPHP\TimeTracker\Tracker\Project;
 use TomPHP\TimeTracker\Tracker\ProjectId;
 use TomPHP\TimeTracker\Tracker\TimeEntryProjection;
 use TomPHP\TimeTracker\Tracker\TimeEntryProjections;
@@ -53,6 +54,16 @@ $app->group('/api/v1', function () {
 
         return $response->withJson([], HttpStatus::STATUS_CREATED)
             ->withHeader('Location', "/api/v1/developers/$id");
+    });
+
+    $this->post('/projects', function (Request $request, Response $response) {
+        $params = $request->getParsedBody();
+
+        $id = ProjectId::generate();
+        Project::create($id, $params['name']);
+
+        return $response->withJson([], HttpStatus::STATUS_CREATED)
+            ->withHeader('Location', "/api/v1/projects/$id");
     });
 
     $this->get('/projects/{projectId}/time-entries', function (Request $request, Response $response, array $args) {

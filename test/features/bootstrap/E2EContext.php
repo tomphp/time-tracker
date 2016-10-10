@@ -7,6 +7,7 @@ use Behat\Behat\Context\SnippetAcceptingContext;
 use Behat\Behat\Tester\Exception\PendingException;
 use Fig\Http\Message\StatusCodeInterface as HttpStatus;
 use GuzzleHttp\Client;
+use GuzzleHttp\Psr7\Response;
 use Slim\Container;
 use TomPHP\ContainerConfigurator\Configurator;
 use TomPHP\TimeTracker\Common\Date;
@@ -72,18 +73,9 @@ class E2EContext implements Context, SnippetAcceptingContext
             ]
         );
 
-        assertSame(HttpStatus::STATUS_CREATED, $response->getStatusCode());
-        $locations = $response->getHeader('Location');
-        assertCount(1, $locations, 'Exactly one location header should have been returned.');
-        assertTrue(
-            (bool) preg_match('!^.*/api/v1/developers/(.*?)$!', $locations[0], $matches),
-            sprintf('Location "%s" was not for a developer resource.', $locations[0])
-        );
+        $id = $this->assertCreatedResponseAndGetId($response, '!^.*/api/v1/developers/(.*?)$!');
 
-        $this->developers[$name] = [
-            'id'           => $matches[1],
-            'slack_handle' => $slackHandle,
-        ];
+        $this->developers[$name] = ['id' => $id, 'slack_handle' => $slackHandle];
     }
 
     /**
@@ -91,9 +83,16 @@ class E2EContext implements Context, SnippetAcceptingContext
      */
     public function createProject(string $name)
     {
-        $projectId             = ProjectId::generate();
-        $this->projects[$name] = ['id' => (string) $projectId];
-        Project::create($projectId, $name);
+        $response = $this->client->post(
+            '/api/v1/projects',
+            [
+                'json' => ['name' => $name],
+            ]
+        );
+
+        $id = $this->assertCreatedResponseAndGetId($response, '!^.*/api/v1/projects/(.*?)$!');
+
+        $this->projects[$name] = ['id' => $id];
     }
 
     /**
@@ -157,5 +156,18 @@ class E2EContext implements Context, SnippetAcceptingContext
     {
         throw new PendingException();
         // Mountebank?
+    }
+
+    private function assertCreatedResponseAndGetId(Response $response, string $idRegex) : string
+    {
+        assertSame(HttpStatus::STATUS_CREATED, $response->getStatusCode());
+        $locations = $response->getHeader('Location');
+        assertCount(1, $locations, 'Exactly one location header should have been returned.');
+        assertTrue(
+            (bool) preg_match($idRegex, $locations[0], $matches),
+            sprintf('Location "%s" does not match regex "%s".', $locations[0], $idRegex)
+        );
+
+        return $matches[1];
     }
 }
