@@ -37,7 +37,6 @@ return [
                     'config.slack.commands',
                 ],
             ],
-            SlackMessenger::class => [],
             LogCommandParser::class => [
                 'arguments' => ['config.slack.today'],
             ],
