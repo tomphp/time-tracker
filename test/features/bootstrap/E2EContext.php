@@ -36,7 +36,8 @@ class E2EContext implements Context, SnippetAcceptingContext
     public function __construct()
     {
         $this->client = new Client([
-            'base_uri' => 'http://webserver/',
+            'base_uri'        => 'http://webserver/',
+            'allow_redirects' => false,
         ]);
 
         $services = new Container();
@@ -61,10 +62,28 @@ class E2EContext implements Context, SnippetAcceptingContext
      */
     public function createDeveloper(string $name, SlackHandle $slackHandle)
     {
-        $id                      = DeveloperId::generate();
-        $this->developers[$name] = ['id' => (string) $id, 'slack_handle' => $slackHandle];
+        $response = $this->client->post(
+            '/api/v1/developers',
+            [
+                'json' => [
+                    'name'         => $name,
+                    'slack-handle' => (string) $slackHandle,
+                ],
+            ]
+        );
 
-        Developer::create($id, $name, $slackHandle);
+        assertSame(HttpStatus::STATUS_CREATED, $response->getStatusCode());
+        $locations = $response->getHeader('Location');
+        assertCount(1, $locations, 'Exactly one location header should have been returned.');
+        assertTrue(
+            (bool) preg_match('!^.*/api/v1/developers/(.*?)$!', $locations[0], $matches),
+            sprintf('Location "%s" was not for a developer resource.', $locations[0])
+        );
+
+        $this->developers[$name] = [
+            'id'           => $matches[1],
+            'slack_handle' => $slackHandle,
+        ];
     }
 
     /**

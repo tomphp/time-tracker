@@ -7,6 +7,8 @@ use Slim\App;
 use TomPHP\ContainerConfigurator\Configurator;
 use TomPHP\TimeTracker\Common\SlackHandle;
 use TomPHP\TimeTracker\Slack\CommandRunner;
+use TomPHP\TimeTracker\Tracker\Developer;
+use TomPHP\TimeTracker\Tracker\DeveloperId;
 use TomPHP\TimeTracker\Tracker\EventBus;
 use TomPHP\TimeTracker\Tracker\ProjectId;
 use TomPHP\TimeTracker\Tracker\TimeEntryProjection;
@@ -43,6 +45,16 @@ $app->group('/slack', function () {
 });
 
 $app->group('/api/v1', function () {
+    $this->post('/developers', function (Request $request, Response $response) {
+        $params = $request->getParsedBody();
+
+        $id = DeveloperId::generate();
+        Developer::create($id, $params['name'], SlackHandle::fromString($params['slack-handle']));
+
+        return $response->withJson([], HttpStatus::STATUS_CREATED)
+            ->withHeader('Location', "/api/v1/developers/$id");
+    });
+
     $this->get('/projects/{projectId}/time-entries', function (Request $request, Response $response, array $args) {
         $timeEntries = $this->get(TimeEntryProjections::class);
 
