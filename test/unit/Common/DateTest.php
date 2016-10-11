@@ -11,4 +11,10 @@ final class DateTest extends \PHPUnit_Framework_TestCase
     {
         assertSame('2016-10-05', (string) Date::fromString('2016-10-05'));
     }
+
+    /** @test */
+    public function on_today_it_creates_an_instance_with_todays_date()
+    {
+        assertSame(date('Y-m-d'), (string) Date::today());
+    }
 }

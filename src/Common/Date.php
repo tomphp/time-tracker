@@ -9,7 +9,7 @@ final class Date
 
     public static function today() : self
     {
-        return new self('today');
+        return new self(date('Y-m-d'));
     }
 
     public static function fromString(string $string) : self
