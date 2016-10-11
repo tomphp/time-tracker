@@ -2,19 +2,20 @@
 
 namespace test\unit\TomPHP\TimeTracker\Api\Resources;
 
-use TomPHP\TimeTracker\Api\Resources\DeveloperResource;
+use TomPHP\TimeTracker\Api\Resources\ProjectResource;
+use TomPHP\TimeTracker\Common\Period;
 
-final class DeveloperResourceTest extends \PHPUnit_Framework_TestCase
+final class ProjectResourceTest extends \PHPUnit_Framework_TestCase
 {
-    /** @var DeveloperResource */
+    /** @var ProjectResource */
     private $resource;
 
     protected function setUp()
     {
-        $this->resource = new DeveloperResource(
-            'developer-id',
-            'Developer Name',
-            'developer-slack-handle'
+        $this->resource = new ProjectResource(
+            'project-id',
+            'Project Name',
+            (string) Period::fromString('2')
         );
     }
 
@@ -24,14 +25,14 @@ final class DeveloperResourceTest extends \PHPUnit_Framework_TestCase
         assertEquals(
             [
                 'links' => [
-                    'self' => 'https://api.example.com/v1/developers/developer-id',
+                    'self' => 'https://api.example.com/v1/projects/project-id',
                 ],
                 'data' => [
-                    'type'       => 'developers',
-                    'id'         => 'developer-id',
+                    'type'       => 'projects',
+                    'id'         => 'project-id',
                     'attributes' => [
-                        'name'         => 'Developer Name',
-                        'slack-handle' => 'developer-slack-handle',
+                        'name'       => 'Project Name',
+                        'total-time' => '2:00 hours',
                     ],
                 ],
             ],
@@ -44,11 +45,11 @@ final class DeveloperResourceTest extends \PHPUnit_Framework_TestCase
     {
         assertEquals(
             [
-                'type'       => 'developers',
-                'id'         => 'developer-id',
+                'type'       => 'projects',
+                'id'         => 'project-id',
                 'attributes' => [
-                    'name'         => 'Developer Name',
-                    'slack-handle' => 'developer-slack-handle',
+                    'name'       => 'Project Name',
+                    'total-time' => '2:00 hours',
                 ],
             ],
             $this->resource->data()
@@ -59,7 +60,7 @@ final class DeveloperResourceTest extends \PHPUnit_Framework_TestCase
     public function it_returns_it_self_link()
     {
         assertSame(
-            'https://api.example.com/v1/developers/developer-id',
+            'https://api.example.com/v1/projects/project-id',
             $this->resource->linkSelf('https://api.example.com/v1')
         );
     }

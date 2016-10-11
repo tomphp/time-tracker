@@ -6,6 +6,7 @@ use Fig\Http\Message\StatusCodeInterface as HttpStatus;
 use Interop\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use TomPHP\TimeTracker\Api\Resources\ProjectResource;
 use TomPHP\TimeTracker\Tracker\Project;
 use TomPHP\TimeTracker\Tracker\ProjectId;
 use TomPHP\TimeTracker\Tracker\ProjectProjection;
@@ -98,22 +99,16 @@ final class ProjectsController
             $timeEntries->forProject(ProjectId::fromString($args['projectId']))
         );
 
-        $result = [
-            'links' => [
-                'self' => apiUrl('/projects/' . $args['projectId']),
-            ],
-            'data' => [
-                'type'         => 'projects',
-                'id'           => (string) $project->id(),
-                'attributes'   => [
-                    'name'         => $project->name(),
-                    'total-time'   => (string) $project->totalTime(),
-                ],
-            ],
-            'included' => $timeEntries,
-        ];
+        $resource = new ProjectResource(
+            (string) $project->id(),
+            $project->name(),
+            (string) $project->totalTime()
+        );
 
-        return $response->withJson($result, HttpStatus::STATUS_OK)
+        $json             = $resource->toJsonApiResource(apiUrl(''));
+        $json['included'] = $timeEntries;
+
+        return $response->withJson($json, HttpStatus::STATUS_OK)
             ->withHeader('Content-Type', 'application/hal+json');
     }
 }
