@@ -5,15 +5,13 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\App;
 use TomPHP\ContainerConfigurator\Configurator;
+use TomPHP\TimeTracker\Api\Controllers\DevelopersControllor;
+use TomPHP\TimeTracker\Api\Controllers\ProjectsController;
 use TomPHP\TimeTracker\Common\SlackHandle;
 use TomPHP\TimeTracker\Slack\CommandRunner;
-use TomPHP\TimeTracker\Tracker\Developer;
 use TomPHP\TimeTracker\Tracker\DeveloperId;
 use TomPHP\TimeTracker\Tracker\EventBus;
-use TomPHP\TimeTracker\Tracker\Project;
 use TomPHP\TimeTracker\Tracker\ProjectId;
-use TomPHP\TimeTracker\Tracker\ProjectProjection;
-use TomPHP\TimeTracker\Tracker\ProjectProjections;
 use TomPHP\TimeTracker\Tracker\TimeEntryProjection;
 use TomPHP\TimeTracker\Tracker\TimeEntryProjections;
 
@@ -21,7 +19,11 @@ const PROJECT_ROOT = __DIR__ . '/..';
 
 require PROJECT_ROOT . '/vendor/autoload.php';
 
-$app = new App([]);
+$app = new App([
+    'settings' => [
+        'displayErrorDetails' => true,
+    ],
+]);
 
 Configurator::apply()
     ->configFromFiles(PROJECT_ROOT . '/config/*.global.php')
@@ -80,100 +82,13 @@ $app->group('/api/v1', function () {
             ->withHeader('Content-Type', 'application/vnd.api+json');
     });
 
-    $this->post('/developers', 'TomPHP\TimeTracker\Api\Controllers\DevelopersControllor:postToCollection');
+    $this->post('/developers', DevelopersControllor::class . ':postToCollection');
     /* Untested */
-    $this->get('/developers/{developerId}', 'TomPHP\TimeTracker\Api\Controllers\DevelopersControllor:getResource');
+    $this->get('/developers/{developerId}', DevelopersControllor::class . ':getResource');
 
-    $this->post('/projects', function (Request $request, Response $response) {
-        $params = $request->getParsedBody();
-
-        $id = ProjectId::generate();
-        Project::create($id, $params['name']);
-
-        return $response->withJson([], HttpStatus::STATUS_CREATED)
-            ->withHeader('Location', "/api/v1/projects/$id");
-    });
-
-    $this->get('/projects', function (Request $request, Response $response) {
-        $projects = $this->get(ProjectProjections::class);
-
-        $formattedProjects = array_map(
-            function (ProjectProjection $project) use ($request) {
-                return [
-                    'type'       => 'projects',
-                    'id'         => (string) $project->id(),
-                    'attributes' => [
-                        'name'       => $project->name(),
-                        'total-time' => (string) $project->totalTime(),
-                    ],
-                    'links' => [
-                        'self' => apiUrl('/projects/' . $project->id()),
-                    ],
-                ];
-            },
-            $projects->all()
-        );
-
-        $result = [
-            'links' => [
-                'self' => apiUrl('/projects'),
-            ],
-            'data' => $formattedProjects,
-        ];
-
-        return $response->withJson($result, HttpStatus::STATUS_OK)
-            ->withHeader('Content-Type', 'application/hal+json');
-    });
-
-    $this->get('/projects/{projectId}', function (Request $request, Response $response, array $args) {
-        $projects    = $this->get(ProjectProjections::class);
-        $project     = $projects->withId(ProjectId::fromString($args['projectId']));
-        $timeEntries = $this->get(TimeEntryProjections::class);
-
-        $timeEntries = array_map(
-            function (TimeEntryProjection $timeEntry) {
-                return [
-                    'type'       => 'time-entries',
-                    'id'         => 'missing-time-entry-id',
-                    'attributes' => [
-                        'date'        => (string) $timeEntry->date(),
-                        'period'      => (string) $timeEntry->period(),
-                        'description' => $timeEntry->description(),
-                    ],
-                    'relationships' => [
-                        'developer' => [
-                            'data' => [
-                                'type' => 'developers',
-                                'id'   => (string) $timeEntry->developerId(),
-                            ],
-                            'links' => [
-                                'self' => apiUrl('/developers/' . $timeEntry->developerId()),
-                            ],
-                        ],
-                    ],
-                ];
-            },
-            $timeEntries->forProject(ProjectId::fromString($args['projectId']))
-        );
-
-        $result = [
-            'links' => [
-                'self' => apiUrl('/projects/' . $args['projectId']),
-            ],
-            'data' => [
-                'type'         => 'projects',
-                'id'           => (string) $project->id(),
-                'attributes'   => [
-                    'name'         => $project->name(),
-                    'total-time'   => (string) $project->totalTime(),
-                ],
-            ],
-            'included' => $timeEntries,
-        ];
-
-        return $response->withJson($result, HttpStatus::STATUS_OK)
-            ->withHeader('Content-Type', 'application/hal+json');
-    });
+    $this->post('/projects', ProjectsController::class . ':postToCollection');
+    $this->get('/projects', ProjectsController::class . ':getCollection');
+    $this->get('/projects/{projectId}', ProjectsController::class . ':getResource');
 
     /*
     $this->get('/projects/{projectId}/time-entries', function (Request $request, Response $response, array $args) {
