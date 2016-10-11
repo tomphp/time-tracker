@@ -52,7 +52,34 @@ $app->group('/slack', function () {
     });
 });
 
+function apiUrl(string $path) : string
+{
+    return 'http://' . $_SERVER['HTTP_HOST'] . '/api/v1' . $path;
+}
+
 $app->group('/api/v1', function () {
+    $this->get('', function (Request $request, Response $response) {
+        $result = [
+            'links' => [
+                'self' => apiUrl(''),
+            ],
+            'data' => [
+                'type'          => 'font-page',
+                'id'            => '1',
+                'relationships' => [
+                    'projects' => [
+                        'links' => [
+                            'related' => apiUrl('/projects'),
+                        ],
+                    ],
+                ],
+            ],
+        ];
+
+        return $response->withJson($result, HttpStatus::STATUS_OK)
+            ->withHeader('Content-Type', 'application/vnd.api+json');
+    });
+
     $this->post('/developers', function (Request $request, Response $response) {
         $params = $request->getParsedBody();
 
@@ -73,25 +100,37 @@ $app->group('/api/v1', function () {
             ->withHeader('Location', "/api/v1/projects/$id");
     });
 
-    // untested
     $this->get('/projects', function (Request $request, Response $response) {
         $projects = $this->get(ProjectProjections::class);
 
-        $result = array_map(
-            function (ProjectProjection $project) {
+        $formattedProjects = array_map(
+            function (ProjectProjection $project) use ($request) {
                 return [
+                    'type'       => 'projects',
                     'id'         => (string) $project->id(),
-                    'name'       => $project->name(),
-                    'total-time' => (string) $project->totalTime(),
+                    'attributes' => [
+                        'name'       => $project->name(),
+                        'total-time' => (string) $project->totalTime(),
+                    ],
+                    'links' => [
+                        'self' => apiUrl('/projects/' . $project->id()),
+                    ],
                 ];
             },
             $projects->all()
         );
 
-        return $response->withJson($result, HttpStatus::STATUS_OK);
+        $result = [
+            'links' => [
+                'self' => apiUrl('/projects'),
+            ],
+            'data' => $formattedProjects,
+        ];
+
+        return $response->withJson($result, HttpStatus::STATUS_OK)
+            ->withHeader('Content-Type', 'application/hal+json');
     });
 
-    // untested
     $this->get('/projects/{projectId}', function (Request $request, Response $response, array $args) {
         $projects    = $this->get(ProjectProjections::class);
         $project     = $projects->withId(ProjectId::fromString($args['projectId']));
@@ -100,25 +139,49 @@ $app->group('/api/v1', function () {
         $timeEntries = array_map(
             function (TimeEntryProjection $timeEntry) {
                 return [
-                    'developerId' => (string) $timeEntry->developerId(),
-                    'date'        => (string) $timeEntry->date(),
-                    'period'      => (string) $timeEntry->period(),
-                    'description' => $timeEntry->description(),
+                    'type'       => 'time-entries',
+                    'id'         => 'missing-time-entry-id',
+                    'attributes' => [
+                        'date'        => (string) $timeEntry->date(),
+                        'period'      => (string) $timeEntry->period(),
+                        'description' => $timeEntry->description(),
+                    ],
+                    'relationships' => [
+                        'developer' => [
+                            'data' => [
+                                'type' => 'developers',
+                                'id'   => (string) $timeEntry->developerId(),
+                            ],
+                            'links' => [
+                                'self' => apiUrl('/developers/' . $timeEntry->developerId()),
+                            ],
+                        ],
+                    ],
                 ];
             },
             $timeEntries->forProject(ProjectId::fromString($args['projectId']))
         );
 
         $result = [
-            'id'           => (string) $project->id(),
-            'name'         => $project->name(),
-            'total-time'   => (string) $project->totalTime(),
-            'time-entries' => $timeEntries,
+            'links' => [
+                'self' => apiUrl('/projects/' . $args['projectId']),
+            ],
+            'data' => [
+                'type'         => 'projects',
+                'id'           => (string) $project->id(),
+                'attributes'   => [
+                    'name'         => $project->name(),
+                    'total-time'   => (string) $project->totalTime(),
+                ],
+            ],
+            'included' => $timeEntries,
         ];
 
-        return $response->withJson($result, HttpStatus::STATUS_OK);
+        return $response->withJson($result, HttpStatus::STATUS_OK)
+            ->withHeader('Content-Type', 'application/hal+json');
     });
 
+    /*
     $this->get('/projects/{projectId}/time-entries', function (Request $request, Response $response, array $args) {
         $timeEntries = $this->get(TimeEntryProjections::class);
 
@@ -137,6 +200,7 @@ $app->group('/api/v1', function () {
 
         return $response->withJson($timeEntries, HttpStatus::STATUS_OK);
     });
+     */
 });
 
 $app->run();

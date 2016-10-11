@@ -2,6 +2,8 @@
 
 namespace test\features\TomPHP\TimeTracker;
 
+use Art4\JsonApiClient\Document;
+use Art4\JsonApiClient\Utils\Manager;
 use Behat\Behat\Context\Context;
 use Behat\Behat\Context\SnippetAcceptingContext;
 use Behat\Behat\Tester\Exception\PendingException;
@@ -13,17 +15,14 @@ use TomPHP\ContainerConfigurator\Configurator;
 use TomPHP\TimeTracker\Common\Date;
 use TomPHP\TimeTracker\Common\Period;
 use TomPHP\TimeTracker\Common\SlackHandle;
-use TomPHP\TimeTracker\Tracker\Developer;
-use TomPHP\TimeTracker\Tracker\DeveloperId;
 use TomPHP\TimeTracker\Tracker\EventBus;
-use TomPHP\TimeTracker\Tracker\Project;
-use TomPHP\TimeTracker\Tracker\ProjectId;
 
 class E2EContext implements Context, SnippetAcceptingContext
 {
     use CommonTransforms;
 
     const SLACK_ENDPOINT = '/slack/slash-command-endpoint';
+    const REST_ENDPOINT  = '/api/v1';
 
     /** Client */
     private $client;
@@ -34,8 +33,13 @@ class E2EContext implements Context, SnippetAcceptingContext
     /** @var array */
     private $projects;
 
+    /** @var Manager */
+    private $jsonApiManager;
+
     public function __construct()
     {
+        $this->jsonApiManager = new Manager();
+
         $this->client = new Client([
             'base_uri'        => 'http://webserver/',
             'allow_redirects' => false,
@@ -130,13 +134,47 @@ class E2EContext implements Context, SnippetAcceptingContext
         string $projectName,
         string $description
     ) {
-        $projectId = $this->projects[$projectName]['id'];
+        // Fetch front page
+        $document = $this->jsonApiGet(self::REST_ENDPOINT);
 
-        $response = $this->client->get("/api/v1/projects/$projectId/time-entries");
+        assertTrue($document->has('data.relationships.projects.links.related'));
+        $link = $document->get('data.relationships.projects.links.related');
 
-        assertSame(HttpStatus::STATUS_OK, $response->getStatusCode());
+        // Fetch projects
+        $document = $this->jsonApiGet($link);
 
-        $timeEntries = json_decode((string) $response->getBody());
+        $resources = $document->get('data')->asArray();
+        $project   = null;
+        foreach ($resources as $resource) {
+            if ($resource->get('attributes.name') === $projectName) {
+                $project = $resource;
+                break;
+            }
+        }
+
+        assertNotNull($project, 'Project not found');
+        assertSame('projects', $project->get('type'));
+        assertTrue($project->has('links.self'), 'Failed to get links.self');
+
+        $projectId = $project->get('id');
+        $link      = $project->get('links.self');
+
+        // Fetch project
+        $document = $this->jsonApiGet($link);
+
+        assertSame('projects', $document->get('data.type'));
+        assertSame($projectName, $document->get('data.attributes.name'));
+
+        $timeEntry = $document->get('included')->asArray()[0];
+        assertSame('time-entries', $timeEntry->get('type'));
+
+        $timeEntryObject = (object) [
+            'projectId'   => $projectId,
+            'developerId' => $timeEntry->get('relationships.developer.data.id'),
+            'date'        => $timeEntry->get('attributes.date'),
+            'period'      => $timeEntry->get('attributes.period'),
+            'description' => $timeEntry->get('attributes.description'),
+        ];
 
         $expectedEntry = (object) [
             'projectId'   => (string) $this->projects[$projectName]['id'],
@@ -146,7 +184,7 @@ class E2EContext implements Context, SnippetAcceptingContext
             'description' => $description,
         ];
 
-        assertEquals($expectedEntry, $timeEntries[0]);
+        assertEquals($expectedEntry, $timeEntryObject);
     }
 
     /**
@@ -169,5 +207,15 @@ class E2EContext implements Context, SnippetAcceptingContext
         );
 
         return $matches[1];
+    }
+
+    private function jsonApiGet(string $uri) : Document
+    {
+        $response = $this->client->get($uri);
+
+        assertSame(HttpStatus::STATUS_OK, $response->getStatusCode());
+        $json = (string) $response->getBody();
+
+        return $this->jsonApiManager->parse($json);
     }
 }

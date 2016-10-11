@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "efc23047aa1ef73e76b8b6f15778e52d",
-    "content-hash": "380b53737e25957d660c26ad9e15412a",
+    "hash": "ebf82ae7dd63b1b31a40cbb4496ff70c",
+    "content-hash": "ab851819c2c610ebdf6240c95d418d14",
     "packages": [
         {
             "name": "beberlei/assert",
@@ -1463,6 +1463,55 @@
         }
     ],
     "packages-dev": [
+        {
+            "name": "art4/json-api-client",
+            "version": "0.6.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Art4/json-api-client.git",
+                "reference": "4579f73df016d0c17e67fd53330e6f7d2539df3d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Art4/json-api-client/zipball/4579f73df016d0c17e67fd53330e6f7d2539df3d",
+                "reference": "4579f73df016d0c17e67fd53330e6f7d2539df3d",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Art4\\JsonApiClient\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL2"
+            ],
+            "authors": [
+                {
+                    "name": "Artur Weigandt",
+                    "email": "art4@wlabs.de",
+                    "homepage": "http://wlabs.de"
+                }
+            ],
+            "description": "JSON API client",
+            "homepage": "https://github.com/Art4/json-api-client",
+            "keywords": [
+                "JSON-API",
+                "api",
+                "client",
+                "json",
+                "reader",
+                "validator"
+            ],
+            "time": "2016-04-26 17:28:19"
+        },
         {
             "name": "behat/behat",
             "version": "v3.2.1",

@@ -3,6 +3,7 @@
         "sort-packages": true
     },
     "require-dev": {
+        "art4/json-api-client": "^0.6.3",
         "behat/behat": "^3.1",
         "guzzlehttp/guzzle": "^6.2",
         "phing/phing": "^2.15",
