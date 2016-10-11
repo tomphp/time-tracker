@@ -27,4 +27,21 @@ abstract class AbstractDeveloperProjectionsTest extends \PHPUnit_Framework_TestC
     {
         $this->markTestIncomplete();
     }
+
+    /** @test */
+    public function on_withId_it_returns_the_developer_projection_with_that_id()
+    {
+        $developerId = DeveloperId::generate();
+        $developer   = new DeveloperProjection($developerId, 'Tom', SlackHandle::fromString('tom'));
+
+        $this->developers()->add($developer);
+
+        assertEquals($developer, $this->developers()->withId($developerId));
+    }
+
+    /** @test */
+    public function on_withId_it_throws_if_there_is_no_developer_projection_for_the_given_id()
+    {
+        $this->markTestIncomplete();
+    }
 }

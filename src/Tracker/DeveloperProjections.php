@@ -9,5 +9,7 @@ interface DeveloperProjections
     /** @return void */
     public function add(DeveloperProjection $developer);
 
+    public function withId(DeveloperId $id) : DeveloperProjection;
+
     public function withSlackHandle(SlackHandle $handle) : DeveloperProjection;
 }

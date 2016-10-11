@@ -5,10 +5,12 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\App;
 use TomPHP\ContainerConfigurator\Configurator;
+use TomPHP\TimeTracker\Api\Resources\DeveloperResource;
 use TomPHP\TimeTracker\Common\SlackHandle;
 use TomPHP\TimeTracker\Slack\CommandRunner;
 use TomPHP\TimeTracker\Tracker\Developer;
 use TomPHP\TimeTracker\Tracker\DeveloperId;
+use TomPHP\TimeTracker\Tracker\DeveloperProjections;
 use TomPHP\TimeTracker\Tracker\EventBus;
 use TomPHP\TimeTracker\Tracker\Project;
 use TomPHP\TimeTracker\Tracker\ProjectId;
@@ -88,6 +90,23 @@ $app->group('/api/v1', function () {
 
         return $response->withJson([], HttpStatus::STATUS_CREATED)
             ->withHeader('Location', "/api/v1/developers/$id");
+    });
+
+    /* Untested */
+    $this->get('/developers/{developerId}', function (Request $request, Response $response, array $args) {
+        $developers = $this->get(DeveloperProjections::class);
+
+        $projection = $developers->withId(DeveloperId::fromString($args['developerId']));
+        $resource = new DeveloperResource(
+            (string) $projection->id(),
+            (string) $projection->name(),
+            (string) $projection->slackHandle()
+        );
+
+        return $response->withJson(
+            $resource->toJsonApiResource(apiUrl('')),
+            HttpStatus::STATUS_OK
+        );
     });
 
     $this->post('/projects', function (Request $request, Response $response) {
