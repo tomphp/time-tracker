@@ -54,7 +54,7 @@
 
     <target name="test:e2e">
         <echo message="Running Integrated features" />
-        <exec command="${cmd.docker_cli} 'vendor/bin/behat --colors -p e2e'"
+        <exec command="${cmd.docker_cli} 'vendor/bin/behat --colors -p e2e -vvv'"
               checkreturn="true"
               passthru="true" />
     </target>
