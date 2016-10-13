@@ -27,6 +27,12 @@ final class ProjectCreatedTest extends \PHPUnit_Framework_TestCase
     }
 
     /** @test */
+    public function it_exposes_the_aggregate_id()
+    {
+        assertEquals(ProjectId::fromString(self::PROJECT_ID), $this->event()->aggregateId());
+    }
+
+    /** @test */
     public function it_exposes_its_properties()
     {
         assertEquals(ProjectId::fromString(self::PROJECT_ID), $this->event()->projectId());
