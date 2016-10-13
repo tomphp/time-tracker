@@ -4,19 +4,19 @@ namespace TomPHP\TimeTracker\Tracker;
 
 use Ramsey\Uuid\Uuid;
 
-trait EntityId
+abstract class AggregateId
 {
     /** @var string */
     private $value;
 
     public static function generate() : self
     {
-        return new self((string) Uuid::uuid4());
+        return new static((string) Uuid::uuid4());
     }
 
     public static function fromString(string $string) : self
     {
-        return new self($string);
+        return new static($string);
     }
 
     private function __construct(string $value)

@@ -2,7 +2,6 @@
 
 namespace TomPHP\TimeTracker\Tracker;
 
-final class ProjectId
+final class ProjectId extends AggregateId
 {
-    use EntityId;
 }
