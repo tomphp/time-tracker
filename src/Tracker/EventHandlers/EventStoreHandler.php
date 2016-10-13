@@ -3,8 +3,8 @@
 namespace TomPHP\TimeTracker\Tracker\EventHandlers;
 
 use TomPHP\TimeTracker\Tracker\Event;
-use TomPHP\TimeTracker\Tracker\EventStore;
 use TomPHP\TimeTracker\Tracker\EventHandler;
+use TomPHP\TimeTracker\Tracker\EventStore;
 
 final class EventStoreHandler extends EventHandler
 {
