@@ -10,7 +10,7 @@ use TomPHP\TimeTracker\Tracker\Events\DeveloperCreated;
 
 final class DeveloperCreatedTest extends \PHPUnit_Framework_TestCase
 {
-    const DEVELOPER_ID           = 'some-project-id';
+    const DEVELOPER_ID           = 'some-developer-id';
     const DEVELOPER_NAME         = 'The Great Project';
     const DEVELOPER_SLACK_HANDLE = 'slack-user';
 
@@ -27,5 +27,11 @@ final class DeveloperCreatedTest extends \PHPUnit_Framework_TestCase
     public function it_exposes_its_aggregate_type()
     {
         assertSame(Developer::class, $this->event()->aggregateName());
+    }
+
+    /** @test */
+    public function it_exposes_the_aggregate_id()
+    {
+        assertEquals(DeveloperId::fromString(self::DEVELOPER_ID), $this->event()->aggregateId());
     }
 }

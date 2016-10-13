@@ -3,6 +3,7 @@
 namespace TomPHP\TimeTracker\Tracker\Events;
 
 use TomPHP\TimeTracker\Common\SlackHandle;
+use TomPHP\TimeTracker\Tracker\AggregateId;
 use TomPHP\TimeTracker\Tracker\Developer;
 use TomPHP\TimeTracker\Tracker\DeveloperId;
 use TomPHP\TimeTracker\Tracker\Event;
@@ -23,6 +24,11 @@ final class DeveloperCreated extends Event
         $this->id          = $id;
         $this->name        = $name;
         $this->slackHandle = $slackHandle;
+    }
+
+    public function aggregateId() : AggregateId
+    {
+        return $this->id;
     }
 
     public function aggregateName() : string
