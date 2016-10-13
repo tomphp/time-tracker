@@ -3,6 +3,7 @@
 namespace TomPHP\TimeTracker\Tracker\Events;
 
 use TomPHP\TimeTracker\Tracker\Event;
+use TomPHP\TimeTracker\Tracker\Project;
 use TomPHP\TimeTracker\Tracker\ProjectId;
 
 final class ProjectCreated extends Event
@@ -17,6 +18,11 @@ final class ProjectCreated extends Event
     {
         $this->projectId   = $projectId;
         $this->projectName = $projectName;
+    }
+
+    public function aggregateName() : string
+    {
+        return Project::class;
     }
 
     public function projectId() : ProjectId
