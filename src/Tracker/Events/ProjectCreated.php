@@ -15,6 +15,10 @@ final class ProjectCreated extends Event
     /** @var string */
     private $projectName;
 
+    public static function fromParams(string $idString, array $params) : Event
+    {
+    }
+
     public function __construct(ProjectId $projectId, string $projectName)
     {
         $this->projectId   = $projectId;
@@ -39,5 +43,10 @@ final class ProjectCreated extends Event
     public function projectName() : string
     {
         return $this->projectName;
+    }
+
+    public function params() : array
+    {
+        return [];
     }
 }

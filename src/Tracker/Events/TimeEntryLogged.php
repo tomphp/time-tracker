@@ -31,6 +31,10 @@ final class TimeEntryLogged extends Event
     /** @var string */
     private $description;
 
+    public static function fromParams(string $idString, array $params) : Event
+    {
+    }
+
     public function __construct(
         TimeEntryId $timeEntryId,
         DeveloperId $developerId,
@@ -80,5 +84,10 @@ final class TimeEntryLogged extends Event
     public function description() : string
     {
         return $this->description;
+    }
+
+    public function params() : array
+    {
+        return [];
     }
 }

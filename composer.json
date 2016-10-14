@@ -30,7 +30,8 @@
             "test\\features\\TomPHP\\TimeTracker\\": "test/features/bootstrap/",
             "test\\integration\\TomPHP\\TimeTracker\\": "test/integration/",
             "test\\unit\\TomPHP\\TimeTracker\\": "test/unit/",
-            "test\\mysql\\TomPHP\\TimeTracker\\": "test/mysql/"
+            "test\\mysql\\TomPHP\\TimeTracker\\": "test/mysql/",
+            "test\\support\\": "test/support/"
         }
     }
 }

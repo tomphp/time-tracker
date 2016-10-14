@@ -19,6 +19,10 @@ final class DeveloperCreated extends Event
     /** @var SlackHandle */
     private $slackHandle;
 
+    public static function fromParams(string $idString, array $params) : Event
+    {
+    }
+
     public function __construct(DeveloperId $id, string $name, SlackHandle $slackHandle)
     {
         $this->id          = $id;
@@ -49,5 +53,10 @@ final class DeveloperCreated extends Event
     public function slackHandle() : SlackHandle
     {
         return $this->slackHandle;
+    }
+
+    public function params() : array
+    {
+        return [];
     }
 }
