@@ -6,6 +6,7 @@ use TomPHP\TimeTracker\Common\Date;
 use TomPHP\TimeTracker\Common\Period;
 use TomPHP\TimeTracker\Tracker\DeveloperId;
 use TomPHP\TimeTracker\Tracker\ProjectId;
+use TomPHP\TimeTracker\Tracker\TimeEntryId;
 use TomPHP\TimeTracker\Tracker\TimeEntryProjection;
 use TomPHP\TimeTracker\Tracker\TimeEntryProjections;
 
@@ -19,6 +20,7 @@ abstract class AbstractTimeEntryProjectionsTest extends \PHPUnit_Framework_TestC
         $projectId = ProjectId::generate();
 
         $projection1 = new TimeEntryProjection(
+            TimeEntryId::generate(),
             DeveloperId::generate(),
             $projectId,
             Date::fromString('2016-09-19'),
@@ -26,6 +28,7 @@ abstract class AbstractTimeEntryProjectionsTest extends \PHPUnit_Framework_TestC
             'Example entry 1'
         );
         $projection2 = new TimeEntryProjection(
+            TimeEntryId::generate(),
             DeveloperId::generate(),
             ProjectId::generate(),
             Date::fromString('2016-09-21'),

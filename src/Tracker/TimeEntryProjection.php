@@ -23,17 +23,24 @@ final class TimeEntryProjection
     private $description;
 
     public function __construct(
+        TimeEntryId $id,
         DeveloperId $userId,
         ProjectId $projectId,
         Date $date,
         Period $period,
         string $description
     ) {
+        $this->id               = $id;
         $this->projectId        = $projectId;
         $this->developerId      = $userId;
         $this->date             = $date;
         $this->period           = $period;
         $this->description      = $description;
+    }
+
+    public function id() : TimeEntryId
+    {
+        return $this->id;
     }
 
     public function projectId() : ProjectId

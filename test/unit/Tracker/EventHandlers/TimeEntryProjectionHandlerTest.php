@@ -9,6 +9,7 @@ use TomPHP\TimeTracker\Tracker\DeveloperId;
 use TomPHP\TimeTracker\Tracker\EventHandlers\TimeEntryProjectionHandler;
 use TomPHP\TimeTracker\Tracker\Events\TimeEntryLogged;
 use TomPHP\TimeTracker\Tracker\ProjectId;
+use TomPHP\TimeTracker\Tracker\TimeEntryId;
 use TomPHP\TimeTracker\Tracker\TimeEntryProjection;
 use TomPHP\TimeTracker\Tracker\TimeEntryProjections;
 
@@ -30,6 +31,7 @@ final class TimeEntryProjectionHandlerTest extends AbstractEventHandlerTest
     /** @test */
     public function on_handle_TimeEntryLogged_it_stores_a_new_TimeEntryProjection()
     {
+        $timeEntryId      = TimeEntryId::generate();
         $developerId      = DeveloperId::generate();
         $projectId        = ProjectId::generate();
         $date             = Date::fromString('2016-09-21');
@@ -37,6 +39,7 @@ final class TimeEntryProjectionHandlerTest extends AbstractEventHandlerTest
         $description      = 'Example description';
 
         $this->subject()->handle(new TimeEntryLogged(
+            $timeEntryId,
             $developerId,
             $projectId,
             $date,
@@ -46,6 +49,7 @@ final class TimeEntryProjectionHandlerTest extends AbstractEventHandlerTest
 
         $this->timeEntries
             ->add(new TimeEntryProjection(
+                $timeEntryId,
                 $developerId,
                 $projectId,
                 $date,

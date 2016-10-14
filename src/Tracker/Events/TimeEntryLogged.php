@@ -4,12 +4,17 @@ namespace TomPHP\TimeTracker\Tracker\Events;
 
 use TomPHP\TimeTracker\Common\Date;
 use TomPHP\TimeTracker\Common\Period;
+use TomPHP\TimeTracker\Tracker\AggregateId;
 use TomPHP\TimeTracker\Tracker\DeveloperId;
 use TomPHP\TimeTracker\Tracker\Event;
 use TomPHP\TimeTracker\Tracker\ProjectId;
+use TomPHP\TimeTracker\Tracker\TimeEntryId;
 
 final class TimeEntryLogged extends Event
 {
+    /** @var TimeEntryId */
+    private $timeEntryId;
+
     /** @var ProjectId */
     private $projectId;
 
@@ -26,17 +31,24 @@ final class TimeEntryLogged extends Event
     private $description;
 
     public function __construct(
+        TimeEntryId $timeEntryId,
         DeveloperId $developerId,
         ProjectId $projectId,
         Date $date,
         Period $period,
         string $description
     ) {
+        $this->timeEntryId      = $timeEntryId;
         $this->projectId        = $projectId;
         $this->developerId      = $developerId;
         $this->date             = $date;
         $this->period           = $period;
         $this->description      = $description;
+    }
+
+    public function aggregateId() : AggregateId
+    {
+        return $this->timeEntryId;
     }
 
     public function projectId() : ProjectId

@@ -9,6 +9,7 @@ use TomPHP\TimeTracker\Tracker\Events\TimeEntryLogged;
 final class TimeEntry
 {
     public static function log(
+        TimeEntryId $id,
         DeveloperId $developerId,
         ProjectId $projectId,
         Date $date,
@@ -16,6 +17,7 @@ final class TimeEntry
         string $description
     ) : self {
         EventBus::publish(new TimeEntryLogged(
+            $id,
             $developerId,
             $projectId,
             $date,

@@ -20,6 +20,7 @@ final class TimeEntryProjectionHandler extends EventHandler
     protected function handleTimeEntryLogged(TimeEntryLogged $event)
     {
         $this->timeEntryProjections->add(new TimeEntryProjection(
+            $event->aggregateId(),
             $event->developerId(),
             $event->projectId(),
             $event->date(),

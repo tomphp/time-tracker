@@ -17,6 +17,7 @@ use TomPHP\TimeTracker\Tracker\Project;
 use TomPHP\TimeTracker\Tracker\ProjectId;
 use TomPHP\TimeTracker\Tracker\ProjectProjections;
 use TomPHP\TimeTracker\Tracker\TimeEntry;
+use TomPHP\TimeTracker\Tracker\TimeEntryId;
 use TomPHP\TimeTracker\Tracker\TimeEntryProjection;
 use TomPHP\TimeTracker\Tracker\TimeEntryProjections;
 use TomPHP\Transform as T;
@@ -112,7 +113,14 @@ class TrackerContext implements Context, SnippetAcceptingContext
         ProjectId $project,
         string $description
     ) {
-        TimeEntry::log($developer, $project, $date, $period, $description);
+        TimeEntry::log(
+            TimeEntryId::generate(),
+            $developer,
+            $project,
+            $date,
+            $period,
+            $description
+        );
     }
 
     /**

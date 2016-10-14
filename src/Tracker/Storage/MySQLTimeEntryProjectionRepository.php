@@ -7,6 +7,7 @@ use TomPHP\TimeTracker\Common\Date;
 use TomPHP\TimeTracker\Common\Period;
 use TomPHP\TimeTracker\Tracker\DeveloperId;
 use TomPHP\TimeTracker\Tracker\ProjectId;
+use TomPHP\TimeTracker\Tracker\TimeEntryId;
 use TomPHP\TimeTracker\Tracker\TimeEntryProjection;
 use TomPHP\TimeTracker\Tracker\TimeEntryProjections;
 
@@ -30,6 +31,7 @@ final class MySQLTimeEntryProjectionRepository implements TimeEntryProjections
 
         while ($row = $statement->fetch(PDO::FETCH_OBJ)) {
             $results[] = new TimeEntryProjection(
+                TimeEntryId::fromString($row->id),
                 DeveloperId::fromString($row->developerId),
                 ProjectId::fromString($row->projectId),
                 Date::fromString($row->date),
@@ -45,11 +47,12 @@ final class MySQLTimeEntryProjectionRepository implements TimeEntryProjections
     {
         $statement = $this->pdo->prepare(
             'INSERT INTO `time_entry_projections`'
-            . ' (`projectId`, `developerId`, `date`, `period`, `description`)'
-            . ' VALUES (:projectId, :developerId, :date, :period, :description)'
+            . ' (`id`, `projectId`, `developerId`, `date`, `period`, `description`)'
+            . ' VALUES (:id, :projectId, :developerId, :date, :period, :description)'
         );
 
         $statement->execute([
+            ':id'          => (string) $projection->id(),
             ':projectId'   => (string) $projection->projectId(),
             ':developerId' => (string) $projection->developerId(),
             ':date'        => (string) $projection->date(),

@@ -10,6 +10,7 @@ use TomPHP\TimeTracker\Tracker\DeveloperProjections;
 use TomPHP\TimeTracker\Tracker\ProjectId;
 use TomPHP\TimeTracker\Tracker\ProjectProjections;
 use TomPHP\TimeTracker\Tracker\TimeEntry;
+use TomPHP\TimeTracker\Tracker\TimeEntryId;
 
 /** @final */
 class TimeTracker
@@ -58,6 +59,7 @@ class TimeTracker
         string $description
     ) {
         TimeEntry::log(
+            TimeEntryId::generate(),
             DeveloperId::fromString($developer->id()),
             ProjectId::fromString($project->id()),
             $date,
