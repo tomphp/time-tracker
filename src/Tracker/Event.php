@@ -4,4 +4,7 @@ namespace TomPHP\TimeTracker\Tracker;
 
 abstract class Event
 {
+    abstract public function aggregateId() : AggregateId;
+
+    abstract public function aggregateName() : string;
 }
