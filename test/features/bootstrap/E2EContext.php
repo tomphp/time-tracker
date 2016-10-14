@@ -72,6 +72,7 @@ class E2EContext implements Context, SnippetAcceptingContext
             [
                 'json' => [
                     'name'         => $name,
+                    'email'        => 'tom@example.com',
                     'slack-handle' => (string) $slackHandle,
                 ],
             ]

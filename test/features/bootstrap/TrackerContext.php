@@ -8,6 +8,7 @@ use Behat\Gherkin\Node\TableNode;
 use Slim\Container;
 use TomPHP\ContainerConfigurator\Configurator;
 use TomPHP\TimeTracker\Common\Date;
+use TomPHP\TimeTracker\Common\Email;
 use TomPHP\TimeTracker\Common\Period;
 use TomPHP\TimeTracker\Common\SlackHandle;
 use TomPHP\TimeTracker\Tracker\Developer;
@@ -58,7 +59,12 @@ class TrackerContext implements Context, SnippetAcceptingContext
     {
         if (!isset($this->developers[$developerName])) {
             $developerId = DeveloperId::generate();
-            Developer::create($developerId, $developerName, SlackHandle::fromString(uniqid('@slack-')));
+            Developer::create(
+                $developerId,
+                $developerName,
+                Email::fromString('something@example.com'),
+                SlackHandle::fromString(uniqid('@slack-'))
+            );
 
             $this->developers[$developerName] = $developerId;
         }

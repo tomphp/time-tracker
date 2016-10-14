@@ -22,6 +22,7 @@ final class DeveloperProjectionHandler extends EventHandler
         $this->developers->add(new DeveloperProjection(
             $event->id(),
             $event->name(),
+            $event->email(),
             $event->slackHandle()
         ));
     }

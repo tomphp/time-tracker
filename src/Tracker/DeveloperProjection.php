@@ -2,6 +2,7 @@
 
 namespace TomPHP\TimeTracker\Tracker;
 
+use TomPHP\TimeTracker\Common\Email;
 use TomPHP\TimeTracker\Common\SlackHandle;
 
 final class DeveloperProjection
@@ -12,13 +13,17 @@ final class DeveloperProjection
     /** @var string */
     private $name;
 
+    /** @var Email */
+    private $email;
+
     /** @var string */
     private $slackHandle;
 
-    public function __construct(DeveloperId $id, string $name, SlackHandle $slackHandle)
+    public function __construct(DeveloperId $id, string $name, Email $email, SlackHandle $slackHandle)
     {
         $this->id          = $id;
         $this->name        = $name;
+        $this->email       = $email;
         $this->slackHandle = $slackHandle;
     }
 
@@ -30,6 +35,11 @@ final class DeveloperProjection
     public function name() : string
     {
         return $this->name;
+    }
+
+    public function email() : Email
+    {
+        return $this->email;
     }
 
     public function slackHandle() : SlackHandle

@@ -7,6 +7,7 @@ use Interop\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use TomPHP\TimeTracker\Api\Resources\DeveloperResource;
+use TomPHP\TimeTracker\Common\Email;
 use TomPHP\TimeTracker\Common\SlackHandle;
 use TomPHP\TimeTracker\Tracker\Developer;
 use TomPHP\TimeTracker\Tracker\DeveloperId;
@@ -27,7 +28,12 @@ final class DevelopersControllor
         $params = $request->getParsedBody();
 
         $id = DeveloperId::generate();
-        Developer::create($id, $params['name'], SlackHandle::fromString($params['slack-handle']));
+        Developer::create(
+            $id,
+            $params['name'],
+            Email::fromString($params['email']),
+            SlackHandle::fromString($params['slack-handle'])
+        );
 
         return $response->withJson([], HttpStatus::STATUS_CREATED)
             ->withHeader('Location', "/api/v1/developers/$id");

@@ -8,6 +8,7 @@ use Interop\Container\ContainerInterface;
 use Prophecy\Prophet;
 use Slim\Container;
 use TomPHP\ContainerConfigurator\Configurator;
+use TomPHP\TimeTracker\Common\Email;
 use TomPHP\TimeTracker\Common\Period;
 use TomPHP\TimeTracker\Common\SlackHandle;
 use TomPHP\TimeTracker\Slack\CommandRunner;
@@ -94,6 +95,7 @@ class IntegrationContext implements Context, SnippetAcceptingContext
         Developer::create(
             DeveloperId::generate(),
             $developerName,
+            Email::fromString('something@example.com'),
             $slackHandle
         );
     }

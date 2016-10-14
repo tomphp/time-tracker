@@ -3,6 +3,7 @@
 namespace test\unit\TomPHP\TimeTracker\Slack;
 
 use Prophecy\Argument;
+use TomPHP\TimeTracker\Common\Email;
 use TomPHP\TimeTracker\Common\Period;
 use TomPHP\TimeTracker\Common\SlackHandle;
 use TomPHP\TimeTracker\Slack\Developer;
@@ -20,6 +21,7 @@ final class TimeTrackerTest extends \PHPUnit_Framework_TestCase
     const DEVELOPER_ID    = 'developer-id';
     const DEVELOPER_NAME  = 'Tom';
     const DEVELOPER_SLACK = '@tom';
+    const DEVELOPER_EMAIL = 'tom@example.com';
 
     const PROJECT_ID   = 'project-id';
     const PROJECT_NAME = 'Time Tracker';
@@ -43,6 +45,7 @@ final class TimeTrackerTest extends \PHPUnit_Framework_TestCase
             ->willReturn(new DeveloperProjection(
                 DeveloperId::fromString(self::DEVELOPER_ID),
                 self::DEVELOPER_NAME,
+                Email::fromString(self::DEVELOPER_EMAIL),
                 SlackHandle::fromString(self::DEVELOPER_SLACK)
             ));
 

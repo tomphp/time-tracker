@@ -3,6 +3,7 @@
 namespace TomPHP\TimeTracker\Tracker\Storage;
 
 use PDO;
+use TomPHP\TimeTracker\Common\Email;
 use TomPHP\TimeTracker\Common\SlackHandle;
 use TomPHP\TimeTracker\Tracker\DeveloperId;
 use TomPHP\TimeTracker\Tracker\DeveloperProjection;
@@ -22,13 +23,14 @@ final class MySQLDeveloperProjectionRepository implements DeveloperProjections
     {
         $statement = $this->pdo->prepare(
             'INSERT INTO `developer_projections`'
-            . ' (`id`, `name`, `slackHandle`)'
-            . ' VALUES (:id, :name, :slackHandle)'
+            . ' (`id`, `name`, `email`, `slackHandle`)'
+            . ' VALUES (:id, :name, :email, :slackHandle)'
         );
 
         $statement->execute([
             ':id'          => $developer->id(),
             ':name'        => $developer->name(),
+            ':email'       => $developer->email(),
             ':slackHandle' => (string) $developer->slackHandle(),
         ]);
     }
@@ -50,6 +52,7 @@ final class MySQLDeveloperProjectionRepository implements DeveloperProjections
         return new DeveloperProjection(
             DeveloperId::fromString($row->id),
             $row->name,
+            Email::fromString($row->email),
             SlackHandle::fromString($row->slackHandle)
         );
     }
@@ -71,6 +74,7 @@ final class MySQLDeveloperProjectionRepository implements DeveloperProjections
         return new DeveloperProjection(
             DeveloperId::fromString($row->id),
             $row->name,
+            Email::fromString($row->email),
             SlackHandle::fromString($row->slackHandle)
         );
     }

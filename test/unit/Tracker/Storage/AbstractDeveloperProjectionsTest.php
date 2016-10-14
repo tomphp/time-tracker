@@ -2,6 +2,7 @@
 
 namespace test\unit\TomPHP\TimeTracker\Tracker\Storage;
 
+use TomPHP\TimeTracker\Common\Email;
 use TomPHP\TimeTracker\Common\SlackHandle;
 use TomPHP\TimeTracker\Tracker\DeveloperId;
 use TomPHP\TimeTracker\Tracker\DeveloperProjection;
@@ -15,7 +16,12 @@ abstract class AbstractDeveloperProjectionsTest extends \PHPUnit_Framework_TestC
     public function on_withSlackHandle_it_returns_the_developer_with_that_handle()
     {
         $developerId = DeveloperId::generate();
-        $developer   = new DeveloperProjection($developerId, 'Tom', SlackHandle::fromString('tom'));
+        $developer   = new DeveloperProjection(
+            $developerId,
+            'Tom',
+            Email::fromString('tom@example.com'),
+            SlackHandle::fromString('tom')
+        );
 
         $this->developers()->add($developer);
 
@@ -32,7 +38,12 @@ abstract class AbstractDeveloperProjectionsTest extends \PHPUnit_Framework_TestC
     public function on_withId_it_returns_the_developer_projection_with_that_id()
     {
         $developerId = DeveloperId::generate();
-        $developer   = new DeveloperProjection($developerId, 'Tom', SlackHandle::fromString('tom'));
+        $developer   = new DeveloperProjection(
+            $developerId,
+            'Tom',
+            Email::fromString('tom@example.com'),
+            SlackHandle::fromString('tom')
+        );
 
         $this->developers()->add($developer);
 

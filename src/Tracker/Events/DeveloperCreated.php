@@ -2,6 +2,7 @@
 
 namespace TomPHP\TimeTracker\Tracker\Events;
 
+use TomPHP\TimeTracker\Common\Email;
 use TomPHP\TimeTracker\Common\SlackHandle;
 use TomPHP\TimeTracker\Tracker\AggregateId;
 use TomPHP\TimeTracker\Tracker\Developer;
@@ -16,6 +17,9 @@ final class DeveloperCreated extends Event
     /** @var string */
     private $name;
 
+    /** @var Email */
+    private $email;
+
     /** @var SlackHandle */
     private $slackHandle;
 
@@ -23,10 +27,11 @@ final class DeveloperCreated extends Event
     {
     }
 
-    public function __construct(DeveloperId $id, string $name, SlackHandle $slackHandle)
+    public function __construct(DeveloperId $id, string $name, Email $email, SlackHandle $slackHandle)
     {
         $this->id          = $id;
         $this->name        = $name;
+        $this->email       = $email;
         $this->slackHandle = $slackHandle;
     }
 
@@ -48,6 +53,11 @@ final class DeveloperCreated extends Event
     public function name() : string
     {
         return $this->name;
+    }
+
+    public function email() : Email
+    {
+        return $this->email;
     }
 
     public function slackHandle() : SlackHandle
