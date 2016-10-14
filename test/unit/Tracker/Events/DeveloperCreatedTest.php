@@ -3,12 +3,13 @@
 namespace test\unit\TomPHP\TimeTracker\Tracker\Events;
 
 use TomPHP\TimeTracker\Common\SlackHandle;
+use TomPHP\TimeTracker\Tracker\AggregateId;
 use TomPHP\TimeTracker\Tracker\Developer;
 use TomPHP\TimeTracker\Tracker\DeveloperId;
 use TomPHP\TimeTracker\Tracker\Event;
 use TomPHP\TimeTracker\Tracker\Events\DeveloperCreated;
 
-final class DeveloperCreatedTest extends \PHPUnit_Framework_TestCase
+final class DeveloperCreatedTest extends AbstractEventTest
 {
     const DEVELOPER_ID           = 'some-developer-id';
     const DEVELOPER_NAME         = 'The Great Project';
@@ -17,21 +18,19 @@ final class DeveloperCreatedTest extends \PHPUnit_Framework_TestCase
     protected function event() : Event
     {
         return new DeveloperCreated(
-            DeveloperId::fromString(self::DEVELOPER_ID),
+            $this->aggregateId(),
             self::DEVELOPER_NAME,
             SlackHandle::fromString(self::DEVELOPER_SLACK_HANDLE)
         );
     }
 
-    /** @test */
-    public function it_exposes_its_aggregate_type()
+    protected function aggregateId() : AggregateId
     {
-        assertSame(Developer::class, $this->event()->aggregateName());
+        return DeveloperId::fromString(self::DEVELOPER_ID);
     }
 
-    /** @test */
-    public function it_exposes_the_aggregate_id()
+    protected function aggregateName() : string
     {
-        assertEquals(DeveloperId::fromString(self::DEVELOPER_ID), $this->event()->aggregateId());
+        return Developer::class;
     }
 }

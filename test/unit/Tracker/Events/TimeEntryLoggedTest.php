@@ -4,6 +4,7 @@ namespace test\unit\TomPHP\TimeTracker\Tracker\Events;
 
 use TomPHP\TimeTracker\Common\Date;
 use TomPHP\TimeTracker\Common\Period;
+use TomPHP\TimeTracker\Tracker\AggregateId;
 use TomPHP\TimeTracker\Tracker\DeveloperId;
 use TomPHP\TimeTracker\Tracker\Event;
 use TomPHP\TimeTracker\Tracker\Events\TimeEntryLogged;
@@ -11,14 +12,14 @@ use TomPHP\TimeTracker\Tracker\ProjectId;
 use TomPHP\TimeTracker\Tracker\TimeEntry;
 use TomPHP\TimeTracker\Tracker\TimeEntryId;
 
-final class TimeEntryLoggedTest extends \PHPUnit_Framework_TestCase
+final class TimeEntryLoggedTest extends AbstractEventTest
 {
     const TIME_ENTRY_ID = 'example-time-entry-id';
 
     protected function event() : Event
     {
         return new TimeEntryLogged(
-            TimeEntryId::fromString(self::TIME_ENTRY_ID),
+            $this->aggregateId(),
             DeveloperId::generate(),
             ProjectId::generate(),
             Date::today(),
@@ -27,15 +28,13 @@ final class TimeEntryLoggedTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    /** @test */
-    public function it_exposes_its_aggregate_type()
+    protected function aggregateId() : AggregateId
     {
-        assertSame(TimeEntry::class, $this->event()->aggregateName());
+        return TimeEntryId::fromString(self::TIME_ENTRY_ID);
     }
 
-    /** @test */
-    public function it_exposes_the_aggregate_id()
+    protected function aggregateName() : string
     {
-        assertEquals(TimeEntryId::fromString(self::TIME_ENTRY_ID), $this->event()->aggregateId());
+        return TimeEntry::class;
     }
 }

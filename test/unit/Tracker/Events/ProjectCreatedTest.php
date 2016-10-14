@@ -2,34 +2,30 @@
 
 namespace test\unit\TomPHP\TimeTracker\Tracker\Events;
 
+use TomPHP\TimeTracker\Tracker\AggregateId;
 use TomPHP\TimeTracker\Tracker\Event;
 use TomPHP\TimeTracker\Tracker\Events\ProjectCreated;
 use TomPHP\TimeTracker\Tracker\Project;
 use TomPHP\TimeTracker\Tracker\ProjectId;
 
-final class ProjectCreatedTest extends \PHPUnit_Framework_TestCase
+final class ProjectCreatedTest extends AbstractEventTest
 {
     const PROJECT_ID   = 'some-project-id';
     const PROJECT_NAME = 'The Great Project';
 
     protected function event() : Event
     {
-        return new ProjectCreated(
-            ProjectId::fromString(self::PROJECT_ID),
-            self::PROJECT_NAME
-        );
+        return new ProjectCreated($this->aggregateId(), self::PROJECT_NAME);
     }
 
-    /** @test */
-    public function it_exposes_its_aggregate_type()
+    protected function aggregateId() : AggregateId
     {
-        assertSame(Project::class, $this->event()->aggregateName());
+        return ProjectId::fromString(self::PROJECT_ID);
     }
 
-    /** @test */
-    public function it_exposes_the_aggregate_id()
+    protected function aggregateName() : string
     {
-        assertEquals(ProjectId::fromString(self::PROJECT_ID), $this->event()->aggregateId());
+        return Project::class;
     }
 
     /** @test */
