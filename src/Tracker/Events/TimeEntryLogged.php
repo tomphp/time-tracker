@@ -8,6 +8,7 @@ use TomPHP\TimeTracker\Tracker\AggregateId;
 use TomPHP\TimeTracker\Tracker\DeveloperId;
 use TomPHP\TimeTracker\Tracker\Event;
 use TomPHP\TimeTracker\Tracker\ProjectId;
+use TomPHP\TimeTracker\Tracker\TimeEntry;
 use TomPHP\TimeTracker\Tracker\TimeEntryId;
 
 final class TimeEntryLogged extends Event
@@ -49,6 +50,11 @@ final class TimeEntryLogged extends Event
     public function aggregateId() : AggregateId
     {
         return $this->timeEntryId;
+    }
+
+    public function aggregateName() : string
+    {
+        return TimeEntry::class;
     }
 
     public function projectId() : ProjectId

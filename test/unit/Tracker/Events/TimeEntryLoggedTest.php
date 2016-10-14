@@ -5,11 +5,13 @@ namespace test\unit\TomPHP\TimeTracker\Tracker\Events;
 use TomPHP\TimeTracker\Common\Date;
 use TomPHP\TimeTracker\Common\Period;
 use TomPHP\TimeTracker\Tracker\DeveloperId;
+use TomPHP\TimeTracker\Tracker\Event;
 use TomPHP\TimeTracker\Tracker\Events\TimeEntryLogged;
 use TomPHP\TimeTracker\Tracker\ProjectId;
+use TomPHP\TimeTracker\Tracker\TimeEntry;
 use TomPHP\TimeTracker\Tracker\TimeEntryId;
 
-final class TimeEntryLoggedTest
+final class TimeEntryLoggedTest extends \PHPUnit_Framework_TestCase
 {
     const TIME_ENTRY_ID = 'example-time-entry-id';
 
@@ -28,19 +30,12 @@ final class TimeEntryLoggedTest
     /** @test */
     public function it_exposes_its_aggregate_type()
     {
-        assertSame(TimeEntryLogged::class, $this->event()->aggregateName());
+        assertSame(TimeEntry::class, $this->event()->aggregateName());
     }
 
     /** @test */
     public function it_exposes_the_aggregate_id()
     {
         assertEquals(TimeEntryId::fromString(self::TIME_ENTRY_ID), $this->event()->aggregateId());
-    }
-
-    /** @test */
-    public function it_exposes_its_properties()
-    {
-        assertEquals(ProjectId::fromString(self::PROJECT_ID), $this->event()->projectId());
-        assertSame(self::PROJECT_NAME, $this->event()->projectName());
     }
 }
