@@ -8,6 +8,7 @@ use TomPHP\TimeTracker\Tracker\TimeEntryProjections;
 use TomPHP\TimeTracker\Tracker\Storage\MemoryTimeEntryProjections;
 use TomPHP\TimeTracker\Tracker\DeveloperProjections;
 use TomPHP\TimeTracker\Tracker\Storage\MemoryDeveloperProjections;
+use TomPHP\TimeTracker\Tracker\Storage\MemoryEventStore;
 
 return [
     'di' => [
@@ -20,6 +21,10 @@ return [
             ],
             TimeEntryProjections::class => [
                 'class' => MemoryTimeEntryProjections::class,
+            ],
+            MemoryEventStore::class => [
+                'class' => MySQLEventStore::class,
+                'arguments' => ['database'],
             ],
         ],
     ],

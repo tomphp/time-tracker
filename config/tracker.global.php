@@ -11,10 +11,14 @@ use TomPHP\TimeTracker\Tracker\DeveloperProjections;
 use TomPHP\TimeTracker\Tracker\Storage\MySQLDeveloperProjectionRepository;
 use TomPHP\TimeTracker\Tracker\Storage\MySQLProjectProjectionRepository;
 use TomPHP\TimeTracker\Tracker\Storage\MySQLTimeEntryProjectionRepository;
+use TomPHP\TimeTracker\Tracker\EventHandlers\EventStoreHandler;
+use TomPHP\TimeTracker\Tracker\EventStore;
+use TomPHP\TimeTracker\Tracker\Storage\MySQLEventStore;
 
 return [
     'tracker' => [
         'event_handlers' => [
+            EventStoreHandler::class,
             DeveloperProjectionHandler::class,
             ProjectProjectionHandler::class,
             TimeEntryProjectionHandler::class,
@@ -35,6 +39,9 @@ return [
                     'config.db.password',
                 ],
             ],
+            EventStoreHandler::class => [
+                'arguments' => [EventStore::class],
+            ],
             DeveloperProjectionHandler::class => [
                 'arguments' => [DeveloperProjections::class],
             ],
@@ -43,6 +50,10 @@ return [
             ],
             TimeEntryProjectionHandler::class => [
                 'arguments' => [TimeEntryProjections::class],
+            ],
+            EventStore::class => [
+                'class' => MySQLEventStore::class,
+                'arguments' => ['database'],
             ],
             DeveloperProjections::class => [
                 'class' => MySQLDeveloperProjectionRepository::class,
