@@ -19,14 +19,13 @@ final class CommandRunner
         $this->container = $container;
     }
 
-    /** @return void */
-    public function run(SlackHandle $slackHandle, string $commandString)
+    public function run(SlackHandle $slackHandle, string $commandString) : array
     {
         list($name, $arguments) = explode(' ', $commandString, 2);
 
         $command = $this->parser($name)->parse($arguments);
 
-        $this->handler($name)->handle($slackHandle, $command);
+        return $this->handler($name)->handle($slackHandle, $command);
     }
 
     private function parser(string $name) : CommandParser

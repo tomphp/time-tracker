@@ -31,6 +31,7 @@ final class CommandRunnerTest extends \PHPUnit_Framework_TestCase
         $this->command   = $this->prophesize(Command::class);
         $this->handler   = $this->prophesize(CommandHandler::class);
 
+        $this->handler->handle(Argument::cetera())->willReturn([]);
         $this->container->get('Namespace\FooCommandParser')->willReturn($this->parser->reveal());
         $this->container->get('Namespace\BarCommandParser')->willReturn($this->parser->reveal());
         $this->container->get('Namespace\FooCommandHandler')->willReturn($this->handler->reveal());
@@ -77,5 +78,14 @@ final class CommandRunnerTest extends \PHPUnit_Framework_TestCase
         $this->subject->run(SlackHandle::fromString('tom'), 'foo command');
 
         $this->handler->handle(SlackHandle::fromString('tom'), $this->command)->shouldHaveBeenCalled();
+    }
+
+    /** @test */
+    public function it_returns_the_command_handler_response()
+    {
+        $result = ['the result'];
+        $this->handler->handle(Argument::cetera())->willReturn($result);
+
+        assertSame($result, $this->subject->run(SlackHandle::fromString('tom'), 'foo command'));
     }
 }

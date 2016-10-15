@@ -36,6 +36,9 @@ class E2EContext implements Context, SnippetAcceptingContext
     /** @var Manager */
     private $jsonApiManager;
 
+    /** @var array|\stdClass */
+    private $result;
+
     public function __construct()
     {
         $this->jsonApiManager = new Manager();
@@ -124,6 +127,7 @@ class E2EContext implements Context, SnippetAcceptingContext
         );
 
         assertSame(HttpStatus::STATUS_CREATED, $response->getStatusCode());
+        $this->result = json_decode((string) $response->getBody());
     }
 
     /**
@@ -186,6 +190,15 @@ class E2EContext implements Context, SnippetAcceptingContext
         ];
 
         assertEquals($expectedEntry, $timeEntryObject);
+    }
+
+    /**
+     * @Then :developerName should receive a response message saying :message
+     */
+    public function assertSlackResponseMessage(string $message)
+    {
+        assertSame('ephemeral', $this->result->response_type);
+        assertSame($message, $this->result->text);
     }
 
     /**

@@ -10,7 +10,6 @@ use TomPHP\TimeTracker\Slack\Command\LogCommand;
 use TomPHP\TimeTracker\Slack\Command\LogCommandHandler;
 use TomPHP\TimeTracker\Slack\Developer;
 use TomPHP\TimeTracker\Slack\Project;
-use TomPHP\TimeTracker\Slack\SlackMessenger;
 use TomPHP\TimeTracker\Slack\TimeTracker;
 
 final class LogCommandHandlerTest extends \PHPUnit_Framework_TestCase
@@ -26,9 +25,6 @@ final class LogCommandHandlerTest extends \PHPUnit_Framework_TestCase
     /** @var TimeTracker */
     private $timeTracker;
 
-    /** @var SlackMessenger */
-    private $messenger;
-
     /** @var LogCommand */
     private $command;
 
@@ -41,7 +37,6 @@ final class LogCommandHandlerTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->timeTracker = $this->prophesize(TimeTracker::class);
-        $this->messenger   = $this->prophesize(SlackMessenger::class);
         $this->developer   = new Developer(
             'dev-id',
             'dev-name',
@@ -60,7 +55,7 @@ final class LogCommandHandlerTest extends \PHPUnit_Framework_TestCase
             self::DESCRIPTION
         );
 
-        $this->subject = new LogCommandHandler($this->timeTracker->reveal(), $this->messenger->reveal());
+        $this->subject = new LogCommandHandler($this->timeTracker->reveal());
     }
 
     /** @test */
@@ -101,10 +96,9 @@ final class LogCommandHandlerTest extends \PHPUnit_Framework_TestCase
     /** @test */
     public function it_sends_a_confirmation_message_to_slack()
     {
-        $this->subject->handle(SlackHandle::fromString('tom'), $this->command);
+        $result = $this->subject->handle(SlackHandle::fromString('tom'), $this->command);
 
-        $this->messenger
-            ->send('dev-name logged 2:00 hours against project-name')
-            ->shouldHaveBeenCalled();
+        assertSame('ephemeral', $result['response_type']);
+        assertSame('dev-name logged 2:00 hours against project-name', $result['text']);
     }
 }

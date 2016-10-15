@@ -10,6 +10,7 @@ use Prophecy\Prophet;
 use Slim\Container;
 use TomPHP\ContainerConfigurator\Configurator;
 use TomPHP\TimeTracker\Common\Date;
+use TomPHP\TimeTracker\Common\Email;
 use TomPHP\TimeTracker\Common\Period;
 use TomPHP\TimeTracker\Common\SlackHandle;
 use TomPHP\TimeTracker\Slack\CommandRunner;
@@ -39,6 +40,9 @@ class SlackContext implements Context, SnippetAcceptingContext
 
     /** @var SlackMessenger */
     private $messenger;
+
+    /** @var array */
+    private $result;
 
     public function __construct()
     {
@@ -108,7 +112,8 @@ class SlackContext implements Context, SnippetAcceptingContext
     {
         $this->timeTracker->logTimeEntry(Argument::cetera())->willReturn();
 
-        $this->commandRunner()->run($developer->slackHandle(), $command);
+        $this->result = $this->commandRunner()
+                             ->run($developer->slackHandle(), $command);
     }
 
     /**
@@ -127,6 +132,15 @@ class SlackContext implements Context, SnippetAcceptingContext
             $period,
             $description
         )->shouldHaveBeenCalled();
+    }
+
+    /**
+     * @Then :developerName should receive a response message saying :message
+     */
+    public function assertSlackResponseMessage(string $message)
+    {
+        assertSame('ephemeral', $this->result['response_type']);
+        assertSame($message, $this->result['text']);
     }
 
     /**

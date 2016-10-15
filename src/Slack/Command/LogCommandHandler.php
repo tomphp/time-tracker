@@ -5,7 +5,6 @@ namespace TomPHP\TimeTracker\Slack\Command;
 use TomPHP\TimeTracker\Common\SlackHandle;
 use TomPHP\TimeTracker\Slack\Command;
 use TomPHP\TimeTracker\Slack\CommandHandler;
-use TomPHP\TimeTracker\Slack\SlackMessenger;
 use TomPHP\TimeTracker\Slack\TimeTracker;
 
 final class LogCommandHandler implements CommandHandler
@@ -13,16 +12,12 @@ final class LogCommandHandler implements CommandHandler
     /** @var TimeTracker */
     private $timeTracker;
 
-    /** @var SlackMessenger */
-    private $messenger;
-
-    public function __construct(TimeTracker $timeTracker, SlackMessenger $messenger)
+    public function __construct(TimeTracker $timeTracker)
     {
         $this->timeTracker = $timeTracker;
-        $this->messenger   = $messenger;
     }
 
-    public function handle(SlackHandle $slackHandle, Command $command)
+    public function handle(SlackHandle $slackHandle, Command $command) : array
     {
         $developer = $this->timeTracker->fetchDeveloperBySlackHandle($slackHandle);
         $project   = $this->timeTracker->fetchProjectByName($command->projectName());
@@ -35,11 +30,16 @@ final class LogCommandHandler implements CommandHandler
             $command->description()
         );
 
-        $this->messenger->send(sprintf(
+        $message = sprintf(
             '%s logged %s against %s',
             $developer->name(),
             $command->period(),
             $project->name()
-        ));
+        );
+
+        return [
+            'response_type' => 'ephemeral',
+            'text'          => $message,
+        ];
     }
 }

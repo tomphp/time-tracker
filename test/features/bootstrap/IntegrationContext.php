@@ -38,6 +38,9 @@ class IntegrationContext implements Context, SnippetAcceptingContext
     /** @var Project[] */
     private $projects = [];
 
+    /** @var array */
+    private $result;
+
     /** @var SlackMessenger */
     private $messenger;
 
@@ -117,7 +120,7 @@ class IntegrationContext implements Context, SnippetAcceptingContext
      */
     public function developerIssuesCommand(string $developer, string $command)
     {
-        $this->commandRunner()
+        $this->result = $this->commandRunner()
             ->run($this->developers[$developer]['slack_handle'], $command);
     }
 
@@ -135,6 +138,15 @@ class IntegrationContext implements Context, SnippetAcceptingContext
         assertEquals($period, $entry->period());
         assertEquals($developerId, $entry->developerId());
         assertEquals($description, $entry->description());
+    }
+
+    /**
+     * @Then :developerName should receive a response message saying :message
+     */
+    public function assertSlackResponseMessage(string $message)
+    {
+        assertSame('ephemeral', $this->result['response_type']);
+        assertSame($message, $this->result['text']);
     }
 
     /**

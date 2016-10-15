@@ -43,12 +43,8 @@ $app->group('/slack', function () {
         error_log('Text       = ' . $params['text']);
         error_log(print_r($params, true));
 
-        $this->get(CommandRunner::class)->run(SlackHandle::fromString($params['user_name']), $params['text']);
-
-        $result = [
-            'response_type' => 'ephemeral',
-            'text'          => 'Your time has been logged.',
-        ];
+        $result = $this->get(CommandRunner::class)
+            ->run(SlackHandle::fromString($params['user_name']), $params['text']);
 
         return $response->withJson($result, HttpStatus::STATUS_CREATED);
     });
