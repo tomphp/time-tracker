@@ -175,7 +175,7 @@ class TrackerContext implements Context, SnippetAcceptingContext
     }
 
     /**
-     * @When I retrieve the details for :project
+     * @When :user retrieves the details for :project
      */
     public function fetchProjectProjection(ProjectId $project)
     {
@@ -183,7 +183,7 @@ class TrackerContext implements Context, SnippetAcceptingContext
     }
 
     /**
-     * @Then I should see that the total hours spent on the project is :period
+     * @Then she should see that the total hours spent on the project is :period
      */
     public function assertProjectTotalTime(Period $period)
     {
