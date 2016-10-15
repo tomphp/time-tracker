@@ -37,34 +37,34 @@ applications for small businesses..
 ### Employees
 
 #### Fran
-| Job          | Senior Developer    |
-| Project Role | Developer           |
-| Email        | fran@rgsoftware.com |
-| Slack Handle | @fran               |
+- **Job:** Senior Developer
+- **Project Role:** Developer
+- **Email:** fran@rgsoftware.com
+- **Slack Handle:** @fran
 
 #### Betty
-| Job          | Project Manager      |
-| Project Role | Project Manager      |
-| Email        | betty@rgsoftware.com |
-| Slack Handle | @betty               |
+- **Job:** Project Manager
+- **Project Role:** Project Manager
+- **Email:** betty@rgsoftware.com
+- **Slack Handle:** @betty
 
 #### Ed
-| Job          | Finance           |
-| Project Role | Invoicing         |
-| Email        | ed@rgsoftware.com |
-| Slack Handle | @ed               |
+- **Job:** Finance
+- **Project Role:** Invoicing
+- **Email:** ed@rgsoftware.com
+- **Slack Handle:** @ed
 
 #### Mike
-| Job          | Junior Developer    |
-| Project Role | Developer           |
-| Email        | mike@rgsoftware.com |
-| Slack Handle | @mike               |
+- **Job:** Junior Developer
+- **Project Role:** Developer
+- **Email:** mike@rgsoftware.com
+- **Slack Handle:** @mike
 
 #### Jill
-| Job          | [TBD]               |
-| Project Role | [TBD]               |
-| Email        | jill@rgsoftware.com |
-| Slack Handle | @jill               |
+- **Job:** [TBD]
+- **Project Role:** [TBD]
+- **Email:** jill@rgsoftware.com
+- **Slack Handle:** @jill
 
 ### Cakes and Bakes Bakery
 
@@ -77,7 +77,7 @@ Software* to help them solve this problem.
 ### Employees
 
 #### Peter
-| Job          | Bakery owner            |
-| Project Role | Product Owner           |
-| Email        | peter@cakesandbakes.com |
-| Slack Handle | @phil                   |
+- **Job:** Bakery owner
+- **Project Role:** Product Owner
+- **Email:** peter@cakesandbakes.com
+- **Slack Handle:** @phil
