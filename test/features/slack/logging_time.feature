@@ -5,9 +5,9 @@ Feature: Logging time against a project using Slack
 
   @integration
   @critical
-  Scenario: Logging time against a project
-    Given Tom is a developer with Slack handle @tom
-    And there is a project named "Time Tracker"
-    When Tom issues the command "log 3hrs against Time Tracker for Implementing Slack integration"
-    Then "3:00" hours should have been logged today by Tom against "Time Tracker" for "Implementing Slack integration"
-    And message saying "Tom logged 3:00 hours against Time Tracker" should have been sent to Slack
+  Scenario: The one where Fran logs time against the project using Slack
+    Given Fran is a developer with Slack handle @fran
+    And there is a project named "Ingredient Invetory"
+    When Fran issues the command "log 3hrs against Ingredient Invetory for Feature: Use an ingredient"
+    Then "3:00" hours should have been logged today by Fran against "Ingredient Invetory" for "Feature: Use an ingredient"
+    And message saying "Fran logged 3:00 hours against Ingredient Invetory" should have been sent to Slack
