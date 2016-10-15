@@ -1,4 +1,4 @@
-Feature: Slack Integration
+Feature: Logging time against a project using Slack
   In order to easily log my development on a project
   As a Developer
   I want a simple slack interface
