@@ -138,7 +138,7 @@ class TrackerContext implements Context, SnippetAcceptingContext
     }
 
     /**
-     * @When I retrieve a list of all active projects
+     * @When :user retrieves a list of all active projects
      */
     public function fetchAllActiveProjectProjections()
     {
@@ -146,7 +146,7 @@ class TrackerContext implements Context, SnippetAcceptingContext
     }
 
     /**
-     * @Then I should get the following projects:
+     * @Then she should get the following projects:
      */
     public function assertResultMatchesProjectTable(TableNode $table)
     {
