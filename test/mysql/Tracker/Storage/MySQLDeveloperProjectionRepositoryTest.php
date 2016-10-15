@@ -9,20 +9,20 @@ use TomPHP\TimeTracker\Tracker\DeveloperProjection;
 use TomPHP\TimeTracker\Common\SlackHandle;
 use TomPHP\TimeTracker\Tracker\DeveloperProjections;
 use test\unit\TomPHP\TimeTracker\Tracker\Storage\AbstractDeveloperProjectionsTest;
+use test\mysql\TomPHP\TimeTracker\MySQLConnection;
 
 final class MySQLDeveloperProjectionRepositoryTest extends AbstractDeveloperProjectionsTest
 {
+    use MySQLConnection;
+
     /** @var MySQLDeveloperProjectionRepository */
     private $developers;
 
     public function setUp()
     {
-        $dsn = sprintf('mysql:host=%s;dbname=%s', getenv('MYSQL_HOSTNAME'), getenv('MYSQL_DBNAME'));
-        $pdo = new PDO($dsn, getenv('MYSQL_USERNAME'), getenv('MYSQL_PASSWORD'));
+        $this->clearTable('developer_projections');
 
-        $pdo->exec('TRUNCATE `developer_projections`');
-
-        $this->developers = new MySQLDeveloperProjectionRepository($pdo);
+        $this->developers = new MySQLDeveloperProjectionRepository($this->pdo());
     }
 
     protected function developers() : DeveloperProjections

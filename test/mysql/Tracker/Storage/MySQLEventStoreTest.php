@@ -9,20 +9,20 @@ use TomPHP\TimeTracker\Tracker\AggregateId;
 use TomPHP\TimeTracker\Tracker\Event;
 use test\support\MockEvent;
 use test\support\MockAggregateId;
+use test\mysql\TomPHP\TimeTracker\MySQLConnection;
 
 final class MySQLEventStoreTest extends \PHPUnit_Framework_TestCase
 {
+    use MySQLConnection;
+
     /** @var MySQLEventStore */
     private $eventStore;
 
     protected function setUp()
     {
-        $dsn = sprintf('mysql:host=%s;dbname=%s', getenv('MYSQL_HOSTNAME'), getenv('MYSQL_DBNAME'));
-        $pdo = new PDO($dsn, getenv('MYSQL_USERNAME'), getenv('MYSQL_PASSWORD'));
+        $this->clearTable('tracker_events');
 
-        $pdo->exec('TRUNCATE `tracker_events`');
-
-        $this->eventStore = new MySQLEventStore($pdo);
+        $this->eventStore = new MySQLEventStore($this->pdo());
     }
 
     /** @test */

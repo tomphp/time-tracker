@@ -6,20 +6,20 @@ use TomPHP\TimeTracker\Tracker\Storage\MySQLTimeEntryProjectionRepository;
 use PDO;
 use test\unit\TomPHP\TimeTracker\Tracker\Storage\AbstractTimeEntryProjectionsTest;
 use TomPHP\TimeTracker\Tracker\TimeEntryProjections;
+use test\mysql\TomPHP\TimeTracker\MySQLConnection;
 
 final class MySQLTimeEntryProjectionRepositoryTest extends AbstractTimeEntryProjectionsTest
 {
+    use MySQLConnection;
+
     /** @var ProjectProjections */
     private $timeEntries;
 
     protected function setUp()
     {
-        $dsn = sprintf('mysql:host=%s;dbname=%s', getenv('MYSQL_HOSTNAME'), getenv('MYSQL_DBNAME'));
-        $pdo = new PDO($dsn, getenv('MYSQL_USERNAME'), getenv('MYSQL_PASSWORD'));
+        $this->clearTable('time_entry_projections');
 
-        $pdo->exec('TRUNCATE `time_entry_projections`');
-
-        $this->timeEntries = new MySQLTimeEntryProjectionRepository($pdo);
+        $this->timeEntries = new MySQLTimeEntryProjectionRepository($this->pdo());
     }
 
     protected function timeEntries() : TimeEntryProjections
