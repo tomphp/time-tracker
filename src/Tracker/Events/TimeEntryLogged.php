@@ -33,6 +33,14 @@ final class TimeEntryLogged extends Event
 
     public static function fromParams(string $idString, array $params) : Event
     {
+        return new self(
+            TimeEntryId::fromString($idString),
+            DeveloperId::fromString($params['developer_id']),
+            ProjectId::fromString($params['project_id']),
+            Date::fromString($params['date']),
+            Period::fromString($params['period']),
+            $params['description']
+        );
     }
 
     public function __construct(
@@ -88,6 +96,12 @@ final class TimeEntryLogged extends Event
 
     public function params() : array
     {
-        return [];
+        return [
+            'project_id'   => (string) $this->projectId,
+            'developer_id' => (string) $this->developerId,
+            'date'         => (string) $this->date,
+            'period'       => (string) $this->period,
+            'description'  => $this->description,
+        ];
     }
 }

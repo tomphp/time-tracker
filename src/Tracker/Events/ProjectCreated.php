@@ -17,6 +17,10 @@ final class ProjectCreated extends Event
 
     public static function fromParams(string $idString, array $params) : Event
     {
+        return new self(
+            ProjectId::fromString($idString),
+            $params['name']
+        );
     }
 
     public function __construct(ProjectId $projectId, string $projectName)
@@ -47,6 +51,6 @@ final class ProjectCreated extends Event
 
     public function params() : array
     {
-        return [];
+        return ['name' => $this->projectName];
     }
 }

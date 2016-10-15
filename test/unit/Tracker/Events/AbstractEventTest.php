@@ -24,4 +24,18 @@ abstract class AbstractEventTest extends \PHPUnit_Framework_TestCase
     {
         assertEquals($this->aggregateId(), $this->event()->aggregateId());
     }
+
+    /** @test */
+    public function it_can_be_converted_to_and_from_params()
+    {
+        $event      = $this->event();
+        $eventClass = get_class($event);
+        $idString   = (string) $event->aggregateId();
+        $params     = $event->params();
+
+        assertEquals(
+            $event,
+            $eventClass::fromParams($idString, $params)
+        );
+    }
 }

@@ -25,6 +25,12 @@ final class DeveloperCreated extends Event
 
     public static function fromParams(string $idString, array $params) : Event
     {
+        return new self(
+            DeveloperId::fromString($idString),
+            $params['name'],
+            Email::fromString($params['email']),
+            SlackHandle::fromString($params['slack_handle'])
+        );
     }
 
     public function __construct(DeveloperId $id, string $name, Email $email, SlackHandle $slackHandle)
@@ -67,6 +73,10 @@ final class DeveloperCreated extends Event
 
     public function params() : array
     {
-        return [];
+        return [
+            'name'         => $this->name,
+            'email'        => (string) $this->email,
+            'slack_handle' => (string) $this->slackHandle,
+        ];
     }
 }
