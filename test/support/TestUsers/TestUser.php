@@ -5,6 +5,7 @@ namespace test\support\TestUsers;
 use TomPHP\TimeTracker\Common\Email;
 use TomPHP\TimeTracker\Common\SlackHandle;
 use TomPHP\TimeTracker\Common\DeveloperId;
+use TomPHP\TimeTracker\Slack\SlackUserId;
 
 abstract class TestUser
 {
@@ -30,5 +31,10 @@ abstract class TestUser
     final public static function slackHandle() : SlackHandle
     {
         return SlackHandle::fromString(static::SLACK_HANDLE);
+    }
+
+    final public static function slackUserId() : SlackUserId
+    {
+        return SlackUserId::fromString(static::SLACK_USER_ID);
     }
 }

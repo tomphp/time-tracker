@@ -7,10 +7,11 @@ use test\support\TestUsers\Fran;
 use test\support\TestUsers\IngredientInventory;
 use TomPHP\TimeTracker\Common\Date;
 use TomPHP\TimeTracker\Common\Period;
-use TomPHP\TimeTracker\Common\SlackHandle;
 use TomPHP\TimeTracker\Slack\Command\LogCommand;
 use TomPHP\TimeTracker\Slack\Command\LogCommandHandler;
 use TomPHP\TimeTracker\Slack\Developer;
+use TomPHP\TimeTracker\Slack\LinkedAccount;
+use TomPHP\TimeTracker\Slack\LinkedAccounts;
 use TomPHP\TimeTracker\Slack\Project;
 use TomPHP\TimeTracker\Slack\TimeTracker;
 
@@ -22,6 +23,9 @@ final class LogCommandHandlerTest extends \PHPUnit_Framework_TestCase
 
     /** @var LogCommandHandler */
     private $subject;
+
+    /** @var LinkedAccounts */
+    private $linkedAccounts;
 
     /** @var TimeTracker */
     private $timeTracker;
@@ -37,11 +41,16 @@ final class LogCommandHandlerTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->timeTracker = $this->prophesize(TimeTracker::class);
-        $this->developer   = new Developer(Fran::id(), Fran::name(), Fran::slackHandle());
-        $this->project     = IngredientInventory::asSlackProject();
+        $this->timeTracker    = $this->prophesize(TimeTracker::class);
+        $this->linkedAccounts = $this->prophesize(LinkedAccounts::class);
+        $this->developer      = new Developer(Fran::id(), Fran::name(), Fran::slackHandle());
+        $this->project        = IngredientInventory::asSlackProject();
 
-        $this->timeTracker->fetchDeveloperBySlackHandle(Argument::any())->willReturn($this->developer);
+        $this->linkedAccounts
+            ->withSlackUserId(Argument::any())
+            ->willReturn(new LinkedAccount(Fran::id(), Fran::slackUserId()));
+
+        $this->timeTracker->fetchDeveloperById(Argument::any())->willReturn($this->developer);
         $this->timeTracker->fetchProjectByName(Argument::any())->willReturn($this->project);
         $this->timeTracker->logTimeEntry(Argument::cetera())->willReturn();
 
@@ -52,23 +61,36 @@ final class LogCommandHandlerTest extends \PHPUnit_Framework_TestCase
             self::DESCRIPTION
         );
 
-        $this->subject = new LogCommandHandler($this->timeTracker->reveal());
+        $this->subject = new LogCommandHandler(
+            $this->timeTracker->reveal(),
+            $this->linkedAccounts->reveal()
+        );
     }
 
     /** @test */
-    public function it_fetches_the_developer_by_slack_handle()
+    public function it_fetches_the_linked_account_for_the_slack_user()
     {
-        $this->subject->handle(SlackHandle::fromString('tom'), $this->command);
+        $this->subject->handle(Fran::slackUserId(), $this->command);
+
+        $this->linkedAccounts
+            ->withSlackUserId(Fran::slackUserId())
+            ->shouldHaveBeenCalled();
+    }
+
+    /** @test */
+    public function it_fetches_the_linked_developer_account()
+    {
+        $this->subject->handle(Fran::slackUserId(), $this->command);
 
         $this->timeTracker
-            ->fetchDeveloperBySlackHandle(SlackHandle::fromString('tom'))
+            ->fetchDeveloperById(Fran::id())
             ->shouldHaveBeenCalled();
     }
 
     /** @test */
     public function it_fetches_the_project_by_name()
     {
-        $this->subject->handle(SlackHandle::fromString('tom'), $this->command);
+        $this->subject->handle(Fran::slackUserId(), $this->command);
 
         $this->timeTracker
             ->fetchProjectByName(IngredientInventory::name())
@@ -78,7 +100,7 @@ final class LogCommandHandlerTest extends \PHPUnit_Framework_TestCase
     /** @test */
     public function it_logs_the_time_entry_with_the_time_tracker()
     {
-        $this->subject->handle(SlackHandle::fromString('tom'), $this->command);
+        $this->subject->handle(Fran::slackUserId(), $this->command);
 
         $this->timeTracker
             ->logTimeEntry(
@@ -93,7 +115,7 @@ final class LogCommandHandlerTest extends \PHPUnit_Framework_TestCase
     /** @test */
     public function it_sends_a_confirmation_message_to_slack()
     {
-        $result = $this->subject->handle(SlackHandle::fromString('tom'), $this->command);
+        $result = $this->subject->handle(Fran::slackUserId(), $this->command);
 
         assertSame('ephemeral', $result['response_type']);
         assertSame('Fran logged 2:00 hours against Ingredient Inventory', $result['text']);

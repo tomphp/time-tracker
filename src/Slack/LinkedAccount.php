@@ -3,20 +3,19 @@
 namespace TomPHP\TimeTracker\Slack;
 
 use TomPHP\TimeTracker\Common\DeveloperId;
-use TomPHP\TimeTracker\Common\SlackHandle;
 
 final class LinkedAccount
 {
     /** @var DeveloperId */
     private $developerId;
 
-    /** @var SlackHandle */
-    private $slackHandle;
+    /** @var SlackUserId */
+    private $slackUserId;
 
-    public function __construct(DeveloperId $developerId, SlackHandle $slackHandle)
+    public function __construct(DeveloperId $developerId, SlackUserId $slackUserId)
     {
         $this->developerId = $developerId;
-        $this->slackHandle = $slackHandle;
+        $this->slackUserId = $slackUserId;
     }
 
     public function developerId() : DeveloperId
@@ -24,8 +23,8 @@ final class LinkedAccount
         return $this->developerId;
     }
 
-    public function slackHandle() : SlackHandle
+    public function slackUserId() : SlackUserId
     {
-        return $this->slackHandle;
+        return $this->slackUserId;
     }
 }

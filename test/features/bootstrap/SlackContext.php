@@ -18,6 +18,7 @@ use TomPHP\TimeTracker\Common\SlackHandle;
 use TomPHP\TimeTracker\Slack\CommandRunner;
 use TomPHP\TimeTracker\Slack\Developer;
 use TomPHP\TimeTracker\Slack\Project;
+use TomPHP\TimeTracker\Slack\SlackUserId;
 use TomPHP\TimeTracker\Slack\TimeTracker;
 
 class SlackContext implements Context, SnippetAcceptingContext
@@ -39,13 +40,16 @@ class SlackContext implements Context, SnippetAcceptingContext
     /** @var TimeTracker */
     private $timeTracker;
 
+    /** @var SlackUserId[] */
+    private $slackUsers = [];
+
     /** @var array */
     private $result;
 
     public function __construct()
     {
-        $this->prophet     = new Prophet();
-        $this->services    = new Container();
+        $this->prophet  = new Prophet();
+        $this->services = new Container();
 
         Configurator::apply()
             ->configFromFile(__DIR__ . '/../../../config/slack.global.php')
@@ -58,7 +62,7 @@ class SlackContext implements Context, SnippetAcceptingContext
     }
 
     /**
-     * @Transform :developer
+     * @Transform
      */
     public function fetchDeveloperByName(string $name) : Developer
     {
@@ -66,7 +70,7 @@ class SlackContext implements Context, SnippetAcceptingContext
     }
 
     /**
-     * @Transform :project
+     * @Transform
      */
     public function fetchProjectByName(string $name) : Project
     {
@@ -74,7 +78,17 @@ class SlackContext implements Context, SnippetAcceptingContext
     }
 
     /**
+     * @Transform
+     */
+    public function fetchDeveloperSlackUserId(string $developerName) : SlackUserId
+    {
+        return $this->slackUsers[$developerName];
+    }
+
+    /**
      * @Given :developerName is a developer with Slack handle @:slackHandle
+     *
+     * @deprecated
      */
     public function createDeveloper(string $developerName, SlackHandle $slackHandle)
     {
@@ -110,10 +124,22 @@ class SlackContext implements Context, SnippetAcceptingContext
     }
 
     /**
-     * @Given :developerName has a Slack account with slack handle @:slackHandle
+     * @Given :developerName has linked her slack user to :email
      */
-    public function createSlackUser(string $developerName, SlackHandle $slackHandle)
+    public function linkSlackUser()
     {
+        throw new PendingException();
+    }
+
+    /**
+     * @Given :developerName has a Slack account
+     */
+    public function createSlackUser(string $developerName)
+    {
+        $count = count($this->slackUsers);
+        $id    = sprintf('U99999999%02f', $count);
+
+        $this->slackUsers[$developerName] = SlackUserId::fromString($id);
     }
 
     /**
@@ -138,12 +164,11 @@ class SlackContext implements Context, SnippetAcceptingContext
      * @When :developer issues the command :command
      * @When :developer issues the command :command again
      */
-    public function developerIssuesCommand(Developer $developer, string $command)
+    public function developerIssuesCommand(SlackUserId $userId, string $command)
     {
         $this->timeTracker->logTimeEntry(Argument::cetera())->willReturn();
 
-        $this->result = $this->commandRunner()
-                             ->run($developer->slackHandle(), $command);
+        $this->result = $this->commandRunner()->run($userId, $command);
     }
 
     /**

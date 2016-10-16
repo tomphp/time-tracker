@@ -2,9 +2,7 @@
 
 namespace TomPHP\TimeTracker\Slack;
 
-use TomPHP\TimeTracker\Common\SlackHandle;
-
 interface CommandHandler
 {
-    public function handle(SlackHandle $slackHandle, Command $command) : array;
+    public function handle(SlackUserId $userId, Command $command) : array;
 }

@@ -2,9 +2,10 @@
 
 namespace TomPHP\TimeTracker\Slack\Command;
 
-use TomPHP\TimeTracker\Common\SlackHandle;
 use TomPHP\TimeTracker\Slack\Command;
 use TomPHP\TimeTracker\Slack\CommandHandler;
+use TomPHP\TimeTracker\Slack\LinkedAccounts;
+use TomPHP\TimeTracker\Slack\SlackUserId;
 use TomPHP\TimeTracker\Slack\TimeTracker;
 
 final class LogCommandHandler implements CommandHandler
@@ -12,15 +13,20 @@ final class LogCommandHandler implements CommandHandler
     /** @var TimeTracker */
     private $timeTracker;
 
-    public function __construct(TimeTracker $timeTracker)
+    /** @var LinkedAccounts */
+    private $linkedAccounts;
+
+    public function __construct(TimeTracker $timeTracker, LinkedAccounts $linkedAccounts)
     {
-        $this->timeTracker = $timeTracker;
+        $this->timeTracker    = $timeTracker;
+        $this->linkedAccounts = $linkedAccounts;
     }
 
-    public function handle(SlackHandle $slackHandle, Command $command) : array
+    public function handle(SlackUserId $userId, Command $command) : array
     {
-        $developer = $this->timeTracker->fetchDeveloperBySlackHandle($slackHandle);
-        $project   = $this->timeTracker->fetchProjectByName($command->projectName());
+        $linkedAccount = $this->linkedAccounts->withSlackUserId($userId);
+        $developer     = $this->timeTracker->fetchDeveloperById($linkedAccount->developerId());
+        $project       = $this->timeTracker->fetchProjectByName($command->projectName());
 
         $this->timeTracker->logTimeEntry(
             $developer,

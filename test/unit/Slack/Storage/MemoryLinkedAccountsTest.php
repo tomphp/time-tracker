@@ -20,22 +20,22 @@ final class MemoryLinkedAccountsTest extends \PHPUnit_Framework_TestCase
     /** @test */
     public function on_hasSlackUser_it_returns_false_if_no_LinkedAccount_added()
     {
-        assertFalse($this->accounts->hasSlackUser(Mike::slackHandle()));
+        assertFalse($this->accounts->hasSlackUser(Mike::slackUserId()));
     }
 
     /** @test */
-    public function on_hasSlackUser_it_returns_true_if_a_LinkedAccount_with_that_handle_has_been_added()
+    public function on_hasSlackUser_it_returns_true_if_a_LinkedAccount_with_that_user_id_has_been_added()
     {
-        $this->accounts->add(new LinkedAccount(Mike::id(), Mike::slackHandle()));
+        $this->accounts->add(new LinkedAccount(Mike::id(), Mike::slackUserId()));
 
-        assertTrue($this->accounts->hasSlackUser(Mike::slackHandle()));
+        assertTrue($this->accounts->hasSlackUser(Mike::slackUserId()));
     }
 
     /** @test */
-    public function on_hasSlackUser_it_returns_false_if_a_LinkedAccount_with_a_different_handle_has_been_added()
+    public function on_hasSlackUser_it_returns_false_if_a_LinkedAccount_with_a_different_user_id_has_been_added()
     {
-        $this->accounts->add(new LinkedAccount(Fran::id(), Fran::slackHandle()));
+        $this->accounts->add(new LinkedAccount(Fran::id(), Fran::slackUserId()));
 
-        assertFalse($this->accounts->hasSlackUser(Mike::slackHandle()));
+        assertFalse($this->accounts->hasSlackUser(Mike::slackUserId()));
     }
 }
