@@ -125,7 +125,9 @@ class SlackContext implements Context, SnippetAcceptingContext
     }
 
     /**
+     * @Given :developer has already issued the command :command
      * @When :developer issues the command :command
+     * @When :developer issues the command :command again
      */
     public function developerIssuesCommand(Developer $developer, string $command)
     {

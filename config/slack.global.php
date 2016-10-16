@@ -8,6 +8,8 @@ use TomPHP\TimeTracker\Tracker\DeveloperProjections;
 use TomPHP\TimeTracker\Tracker\Storage\MemoryDeveloperProjections;
 use TomPHP\TimeTracker\Tracker\ProjectProjections;
 use TomPHP\ContainerConfigurator\Configurator;
+use TomPHP\TimeTracker\Slack\LinkedAccounts;
+use TomPHP\TimeTracker\Slack\Storage\MemoryLinkedAccounts;
 
 return [
     'slack' => [
@@ -19,9 +21,6 @@ return [
     ],
     'di' => [
         'services' => [
-            DeveloperProjections::class => [
-                'class' => MemoryDeveloperProjections::class,
-            ],
             TimeTracker::class => [
                 'arguments' => [
                     DeveloperProjections::class,
@@ -34,6 +33,9 @@ return [
                     'config.slack.commands',
                 ],
             ],
+            LinkedAccounts::class => [
+                'class' => MemoryLinkedAccounts::class,
+            ],
             Command\LogCommandParser::class => [
                 'arguments' => ['config.slack.today'],
             ],
@@ -43,7 +45,7 @@ return [
             Command\LinkCommandParser::class => [
             ],
             Command\LinkCommandHandler::class => [
-                'arguments' => [TimeTracker::class],
+                'arguments' => [TimeTracker::class, LinkedAccounts::class],
             ],
         ],
     ],

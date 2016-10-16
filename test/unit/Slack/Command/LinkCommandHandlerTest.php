@@ -3,11 +3,14 @@
 namespace test\unit\TomPHP\TimeTracker\Slack\Command;
 
 use Prophecy\Argument;
+use test\support\TestUsers\Mike;
 use TomPHP\TimeTracker\Common\Email;
 use TomPHP\TimeTracker\Common\SlackHandle;
 use TomPHP\TimeTracker\Slack\Command\LinkCommand;
 use TomPHP\TimeTracker\Slack\Command\LinkCommandHandler;
 use TomPHP\TimeTracker\Slack\Developer;
+use TomPHP\TimeTracker\Slack\LinkedAccount;
+use TomPHP\TimeTracker\Slack\LinkedAccounts;
 use TomPHP\TimeTracker\Slack\TimeTracker;
 
 final class LinkCommandHandlerTest extends \PHPUnit_Framework_TestCase
@@ -15,39 +18,72 @@ final class LinkCommandHandlerTest extends \PHPUnit_Framework_TestCase
     /** @var TimeTracker */
     private $timeTracker;
 
+    /** @var LinkCommand */
+    private $command;
+
     protected function setUp()
     {
-        $this->timeTracker = $this->prophesize(TimeTracker::class);
+        $this->timeTracker    = $this->prophesize(TimeTracker::class);
+        $this->linkedAccounts = $this->prophesize(LinkedAccounts::class);
+
+        $this->linkedAccounts->hasDeveloper(Argument::any())->willReturn(false);
+        $this->linkedAccounts->hasSlackUser(Argument::any())->willReturn(false);
+        $this->linkedAccounts->add(Argument::any())->willReturn();
 
         $this->timeTracker
             ->fetchDeveloperByEmail(Argument::any())
-            ->willReturn(new Developer(
-                'mike-developer-id',
-                'Mike',
-                SlackHandle::fromString('@mike')
-            ));
+            ->willReturn(new Developer(Mike::id(), Mike::name(), Mike::slackHandle()));
 
-        $this->subject = new LinkCommandHandler($this->timeTracker->reveal());
+        $this->command = new LinkCommand(Mike::email());
+
+        $this->subject = new LinkCommandHandler(
+            $this->timeTracker->reveal(),
+            $this->linkedAccounts->reveal()
+        );
     }
 
     /** @test */
-    public function on_handle_it_fetches_the_developer_by_email()
+    public function it_fetches_the_developer_by_email()
     {
-        $command = new LinkCommand(Email::fromString('mike@rgsoftware.com'));
-
-        $this->subject->handle(SlackHandle::fromString('mike'), $command);
+        $this->subject->handle(Mike::slackHandle(), $this->command);
 
         $this->timeTracker
-            ->fetchDeveloperByEmail(Email::fromString('mike@rgsoftware.com'))
+            ->fetchDeveloperByEmail(Mike::email())
             ->shouldHaveBeenCalled();
     }
 
     /** @test */
-    public function on_handle_it_returns_a_success_message()
+    public function it_checks_if_the_slack_account_is_already_linked()
     {
-        $command = new LinkCommand(Email::fromString('mike@rgsoftware.com'));
+        $this->subject->handle(Mike::slackHandle(), $this->command);
 
-        $result = $this->subject->handle(SlackHandle::fromString('mike'), $command);
+        $this->linkedAccounts->hasSlackUser(Mike::slackHandle())->shouldHaveBeenCalled();
+    }
+
+    /** @test */
+    public function it_returns_an_error_if_the_slack_account_is_already_linked()
+    {
+        $this->linkedAccounts->hasSlackUser(Argument::any())->willReturn(true);
+
+        $result = $this->subject->handle(Mike::slackHandle(), $this->command);
+
+        assertSame('ephemeral', $result['response_type']);
+        assertSame('ERROR: Your account has already been linked.', $result['text']);
+    }
+
+    /** @test */
+    public function it_stores_the_linked_account()
+    {
+        $result = $this->subject->handle(Mike::slackHandle(), $this->command);
+
+        $this->linkedAccounts->add(new LinkedAccount(Mike::id(), Mike::slackHandle()))
+            ->shouldHaveBeenCalled();
+    }
+
+    /** @test */
+    public function it_returns_a_success_message()
+    {
+        $result = $this->subject->handle(Mike::slackHandle(), $this->command);
 
         assertSame('ephemeral', $result['response_type']);
         assertSame('Hi Mike, your account has been successfully linked.', $result['text']);
