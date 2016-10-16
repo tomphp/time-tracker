@@ -2,7 +2,7 @@
 
 namespace TomPHP\TimeTracker\Common;
 
-final class DeveloperId
+class DeveloperId
 {
     use Id;
 }

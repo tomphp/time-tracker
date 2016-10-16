@@ -7,9 +7,10 @@ trait Id
     /** @var string */
     private $value;
 
-    public static function fromString(string $string) : self
+    /** @return static */
+    final public static function fromString(string $string)
     {
-        return new self($string);
+        return new static($string);
     }
 
     private function __construct(string $value)
@@ -17,7 +18,7 @@ trait Id
         $this->value = $value;
     }
 
-    public function __toString() : string
+    final public function __toString() : string
     {
         return $this->value;
     }

@@ -2,7 +2,7 @@
 
 namespace TomPHP\TimeTracker\Common;
 
-class ProjectId
+class TimeEntryId
 {
     use Id;
 }

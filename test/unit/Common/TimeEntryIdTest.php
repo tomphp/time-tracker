@@ -2,12 +2,12 @@
 
 namespace test\unit\TomPHP\TimeTracker\Common;
 
-use TomPHP\TimeTracker\Common\DeveloperId;
+use TomPHP\TimeTracker\Common\TimeEntryId;
 
-class DeveloperIdTest extends IdTest
+class TimeEntryIdTest extends IdTest
 {
     protected function className() : string
     {
-        return DeveloperId::class;
+        return TimeEntryId::class;
     }
 }

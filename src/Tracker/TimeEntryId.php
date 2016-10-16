@@ -2,7 +2,9 @@
 
 namespace TomPHP\TimeTracker\Tracker;
 
-final class TimeEntryId implements AggregateId
+use TomPHP\TimeTracker\Common\TimeEntryId as CommonTimeEntryId;
+
+final class TimeEntryId extends CommonTimeEntryId implements AggregateId
 {
-    use AggregateIdTrait;
+    use IdGenerator;
 }
