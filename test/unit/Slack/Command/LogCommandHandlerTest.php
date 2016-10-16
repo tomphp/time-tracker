@@ -4,6 +4,7 @@ namespace test\unit\TomPHP\TimeTracker\Slack\Command;
 
 use Prophecy\Argument;
 use test\support\TestUsers\Fran;
+use test\support\TestUsers\IngredientInventory;
 use TomPHP\TimeTracker\Common\Date;
 use TomPHP\TimeTracker\Common\Period;
 use TomPHP\TimeTracker\Common\SlackHandle;
@@ -15,7 +16,6 @@ use TomPHP\TimeTracker\Slack\TimeTracker;
 
 final class LogCommandHandlerTest extends \PHPUnit_Framework_TestCase
 {
-    const PROJECT_NAME = 'Ingredient Inventory';
     const DATE         = '2016-09-24';
     const PERIOD       = 2;
     const DESCRIPTION  = 'Work on the Slack integration';
@@ -39,14 +39,14 @@ final class LogCommandHandlerTest extends \PHPUnit_Framework_TestCase
     {
         $this->timeTracker = $this->prophesize(TimeTracker::class);
         $this->developer   = new Developer(Fran::id(), Fran::name(), Fran::slackHandle());
-        $this->project     = new Project('project-id', 'project-name');
+        $this->project     = IngredientInventory::asSlackProject();
 
         $this->timeTracker->fetchDeveloperBySlackHandle(Argument::any())->willReturn($this->developer);
         $this->timeTracker->fetchProjectByName(Argument::any())->willReturn($this->project);
         $this->timeTracker->logTimeEntry(Argument::cetera())->willReturn();
 
         $this->command = new LogCommand(
-            self::PROJECT_NAME,
+            IngredientInventory::name(),
             Date::fromString(self::DATE),
             Period::fromHours(self::PERIOD),
             self::DESCRIPTION
@@ -71,7 +71,7 @@ final class LogCommandHandlerTest extends \PHPUnit_Framework_TestCase
         $this->subject->handle(SlackHandle::fromString('tom'), $this->command);
 
         $this->timeTracker
-            ->fetchProjectByName(self::PROJECT_NAME)
+            ->fetchProjectByName(IngredientInventory::name())
             ->shouldHaveBeenCalled();
     }
 
@@ -96,6 +96,6 @@ final class LogCommandHandlerTest extends \PHPUnit_Framework_TestCase
         $result = $this->subject->handle(SlackHandle::fromString('tom'), $this->command);
 
         assertSame('ephemeral', $result['response_type']);
-        assertSame('Fran logged 2:00 hours against project-name', $result['text']);
+        assertSame('Fran logged 2:00 hours against Ingredient Inventory', $result['text']);
     }
 }

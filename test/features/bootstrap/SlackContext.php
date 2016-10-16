@@ -13,6 +13,7 @@ use TomPHP\TimeTracker\Common\Date;
 use TomPHP\TimeTracker\Common\DeveloperId;
 use TomPHP\TimeTracker\Common\Email;
 use TomPHP\TimeTracker\Common\Period;
+use TomPHP\TimeTracker\Common\ProjectId;
 use TomPHP\TimeTracker\Common\SlackHandle;
 use TomPHP\TimeTracker\Slack\CommandRunner;
 use TomPHP\TimeTracker\Slack\Developer;
@@ -120,7 +121,10 @@ class SlackContext implements Context, SnippetAcceptingContext
      */
     public function createProject(string $projectName)
     {
-        $project = new Project("project-id-$projectName", $projectName);
+        $project = new Project(
+            ProjectId::fromString("project-id-$projectName"),
+            $projectName
+        );
 
         $this->projects[$projectName] = $project;
 

@@ -2,21 +2,23 @@
 
 namespace TomPHP\TimeTracker\Slack;
 
+use TomPHP\TimeTracker\Common\ProjectId;
+
 final class Project
 {
-    /** @var string */
+    /** @var ProjectId */
     private $id;
 
     /** @var string */
     private $name;
 
-    public function __construct(string $id, string $name)
+    public function __construct(ProjectId $id, string $name)
     {
         $this->id   = $id;
         $this->name = $name;
     }
 
-    public function id() : string
+    public function id() : ProjectId
     {
         return $this->id;
     }

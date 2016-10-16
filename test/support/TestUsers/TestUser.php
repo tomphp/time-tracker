@@ -8,26 +8,26 @@ use TomPHP\TimeTracker\Common\DeveloperId;
 
 abstract class TestUser
 {
-    private function __construct()
+    final private function __construct()
     {
     }
 
-    public static function id() : DeveloperId
+    final public static function id() : DeveloperId
     {
         return DeveloperId::fromString(static::ID);
     }
 
-    public static function name() : string
+    final public static function name() : string
     {
         return static::NAME;
     }
 
-    public static function email() : Email
+    final public static function email() : Email
     {
         return Email::fromString(static::EMAIL);
     }
 
-    public static function slackHandle() : SlackHandle
+    final public static function slackHandle() : SlackHandle
     {
         return SlackHandle::fromString(static::SLACK_HANDLE);
     }

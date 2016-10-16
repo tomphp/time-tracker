@@ -3,12 +3,12 @@
 namespace test\unit\TomPHP\TimeTracker\Slack;
 
 use Prophecy\Argument;
+use test\support\TestUsers\IngredientInventory;
 use test\support\TestUsers\Mike;
 use TomPHP\TimeTracker\Common\Email;
 use TomPHP\TimeTracker\Common\Period;
 use TomPHP\TimeTracker\Common\SlackHandle;
 use TomPHP\TimeTracker\Slack\Developer;
-use TomPHP\TimeTracker\Slack\Project;
 use TomPHP\TimeTracker\Slack\TimeTracker;
 use TomPHP\TimeTracker\Tracker;
 use TomPHP\TimeTracker\Tracker\DeveloperProjection;
@@ -19,9 +19,6 @@ use TomPHP\TimeTracker\Tracker\ProjectProjections;
 
 final class TimeTrackerTest extends \PHPUnit_Framework_TestCase
 {
-    const PROJECT_ID   = 'project-id';
-    const PROJECT_NAME = 'Time Tracker';
-
     /** @var TimeTracker */
     private $subject;
 
@@ -48,8 +45,8 @@ final class TimeTrackerTest extends \PHPUnit_Framework_TestCase
         $this->projects
             ->withName(Argument::any())
             ->willReturn(new ProjectProjection(
-                ProjectId::fromString(self::PROJECT_ID),
-                self::PROJECT_NAME,
+                ProjectId::fromString((string) IngredientInventory::id()),
+                IngredientInventory::name(),
                 Period::fromString('1')
             ));
 
@@ -88,7 +85,7 @@ final class TimeTrackerTest extends \PHPUnit_Framework_TestCase
     public function on_fetchProjectByName_it_returns_the_project()
     {
         assertEquals(
-            new Project(self::PROJECT_ID, self::PROJECT_NAME),
+            IngredientInventory::asSlackProject(),
             $this->subject->fetchProjectByName('Time Tracker')
         );
     }

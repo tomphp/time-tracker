@@ -56,7 +56,7 @@ class TimeTracker
         $project = $this->projects->withName($name);
 
         return new Project(
-            (string) $project->id(),
+            Common\ProjectId::fromString((string) $project->id()),
             $project->name()
         );
     }

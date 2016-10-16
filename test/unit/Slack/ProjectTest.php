@@ -2,16 +2,16 @@
 
 namespace test\unit\TomPHP\TimeTracker\Slack;
 
-use TomPHP\TimeTracker\Slack\Project;
+use test\support\TestUsers\IngredientInventory;
 
 final class ProjectTest extends \PHPUnit_Framework_TestCase
 {
     /** @test */
     public function it_exposes_its_values()
     {
-        $developer = new Project('id', 'name');
+        $project = IngredientInventory::asSlackProject();
 
-        assertSame('id', $developer->id());
-        assertSame('name', $developer->name());
+        assertEquals(IngredientInventory::id(), $project->id());
+        assertEquals(IngredientInventory::name(), $project->name());
     }
 }
