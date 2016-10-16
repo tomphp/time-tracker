@@ -149,14 +149,6 @@ class IntegrationContext implements Context, SnippetAcceptingContext
         assertSame($message, $this->result['text']);
     }
 
-    /**
-     * @Then message saying :message should have been sent to Slack
-     */
-    public function messageSayingShouldHaveBeenSentToSlack(string $message)
-    {
-        $this->messenger->send($message)->shouldHaveBeenCalled();
-    }
-
     private function commandRunner() : CommandRunner
     {
         return $this->services->get(CommandRunner::class);

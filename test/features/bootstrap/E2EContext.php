@@ -6,7 +6,6 @@ use Art4\JsonApiClient\Document;
 use Art4\JsonApiClient\Utils\Manager;
 use Behat\Behat\Context\Context;
 use Behat\Behat\Context\SnippetAcceptingContext;
-use Behat\Behat\Tester\Exception\PendingException;
 use Fig\Http\Message\StatusCodeInterface as HttpStatus;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Response;
@@ -199,15 +198,6 @@ class E2EContext implements Context, SnippetAcceptingContext
     {
         assertSame('ephemeral', $this->result->response_type);
         assertSame($message, $this->result->text);
-    }
-
-    /**
-     * @Then message saying :message should have been sent to Slack
-     */
-    public function messageSayingShouldHaveBeenSentToSlack(string $message)
-    {
-        throw new PendingException();
-        // Mountebank?
     }
 
     private function assertCreatedResponseAndGetId(Response $response, string $idRegex) : string
