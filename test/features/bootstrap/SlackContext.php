@@ -16,7 +16,6 @@ use TomPHP\TimeTracker\Common\SlackHandle;
 use TomPHP\TimeTracker\Slack\CommandRunner;
 use TomPHP\TimeTracker\Slack\Developer;
 use TomPHP\TimeTracker\Slack\Project;
-use TomPHP\TimeTracker\Slack\SlackMessenger;
 use TomPHP\TimeTracker\Slack\TimeTracker;
 
 class SlackContext implements Context, SnippetAcceptingContext
@@ -38,9 +37,6 @@ class SlackContext implements Context, SnippetAcceptingContext
     /** @var TimeTracker */
     private $timeTracker;
 
-    /** @var SlackMessenger */
-    private $messenger;
-
     /** @var array */
     private $result;
 
@@ -55,10 +51,8 @@ class SlackContext implements Context, SnippetAcceptingContext
             ->to($this->services);
 
         $this->timeTracker = $this->prophet->prophesize(TimeTracker::class);
-        $this->messenger   = $this->prophet->prophesize(SlackMessenger::class);
 
         $this->services[TimeTracker::class]    = $this->timeTracker->reveal();
-        $this->services[SlackMessenger::class] = $this->messenger->reveal();
     }
 
     /**

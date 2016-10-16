@@ -12,7 +12,6 @@ use TomPHP\TimeTracker\Common\Email;
 use TomPHP\TimeTracker\Common\Period;
 use TomPHP\TimeTracker\Common\SlackHandle;
 use TomPHP\TimeTracker\Slack\CommandRunner;
-use TomPHP\TimeTracker\Slack\SlackMessenger;
 use TomPHP\TimeTracker\Tracker\Developer;
 use TomPHP\TimeTracker\Tracker\DeveloperId;
 use TomPHP\TimeTracker\Tracker\DeveloperProjections;
@@ -41,9 +40,6 @@ class IntegrationContext implements Context, SnippetAcceptingContext
     /** @var array */
     private $result;
 
-    /** @var SlackMessenger */
-    private $messenger;
-
     public function __construct()
     {
         $this->prophet  = new Prophet();
@@ -59,10 +55,6 @@ class IntegrationContext implements Context, SnippetAcceptingContext
         foreach ($this->services['config.tracker.event_handlers'] as $name) {
             EventBus::addHandler($this->services[$name]);
         }
-
-        $this->messenger = $this->prophet->prophesize(SlackMessenger::class);
-
-        $this->services[SlackMessenger::class] = $this->messenger->reveal();
     }
 
     /**

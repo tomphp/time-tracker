@@ -4,7 +4,6 @@ use TomPHP\TimeTracker\Slack\TimeTracker;
 use TomPHP\TimeTracker\Slack\CommandRunner;
 use TomPHP\TimeTracker\Slack\Command;
 use TomPHP\TimeTracker\Common\Date;
-use TomPHP\TimeTracker\Slack\SlackMessenger;
 use TomPHP\TimeTracker\Tracker\DeveloperProjections;
 use TomPHP\TimeTracker\Tracker\Storage\MemoryDeveloperProjections;
 use TomPHP\TimeTracker\Tracker\ProjectProjections;
@@ -29,7 +28,6 @@ return [
                     ProjectProjections::class,
                 ],
             ],
-            SlackMessenger::class => [],
             CommandRunner::class => [
                 'arguments' => [
                     Configurator::container(),
@@ -40,7 +38,7 @@ return [
                 'arguments' => ['config.slack.today'],
             ],
             Command\LogCommandHandler::class => [
-                'arguments' => [TimeTracker::class, SlackMessenger::class],
+                'arguments' => [TimeTracker::class],
             ],
             Command\LinkCommandParser::class => [
             ],
