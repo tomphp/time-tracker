@@ -92,6 +92,31 @@ class SlackContext implements Context, SnippetAcceptingContext
     }
 
     /**
+     * @Given :developerName has a developer account with email :email
+     */
+    public function createDeveloperWithEmail(string $developerName, Email $email)
+    {
+        $developer = new Developer(
+            "developer-id-$developerName",
+            $developerName,
+            SlackHandle::fromString($developerName)
+        );
+
+        $this->developers[$developerName] = $developer;
+
+        $this->timeTracker
+            ->fetchDeveloperByEmail($email)
+            ->willReturn($developer);
+    }
+
+    /**
+     * @Given :developerName has a Slack account with slack handle @:slackHandle
+     */
+    public function createSlackUser(string $developerName, SlackHandle $slackHandle)
+    {
+    }
+
+    /**
      * @Given there is a project named :projectName
      */
     public function createProject(string $projectName)

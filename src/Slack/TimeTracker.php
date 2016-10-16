@@ -3,6 +3,7 @@
 namespace TomPHP\TimeTracker\Slack;
 
 use TomPHP\TimeTracker\Common\Date;
+use TomPHP\TimeTracker\Common\Email;
 use TomPHP\TimeTracker\Common\Period;
 use TomPHP\TimeTracker\Common\SlackHandle;
 use TomPHP\TimeTracker\Tracker\DeveloperId;
@@ -27,6 +28,17 @@ class TimeTracker
     ) {
         $this->developers = $developers;
         $this->projects   = $projects;
+    }
+
+    public function fetchDeveloperByEmail(Email $email) : Developer
+    {
+        $developer = $this->developers->withEmail($email);
+
+        return new Developer(
+            (string) $developer->id(),
+            $developer->name(),
+            $developer->slackHandle()
+        );
     }
 
     public function fetchDeveloperBySlackHandle(SlackHandle $slackHandle) : Developer
