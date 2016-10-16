@@ -4,6 +4,7 @@ namespace test\support\TestUsers;
 
 use TomPHP\TimeTracker\Common\Email;
 use TomPHP\TimeTracker\Common\SlackHandle;
+use TomPHP\TimeTracker\Common\DeveloperId;
 
 abstract class TestUser
 {
@@ -11,9 +12,9 @@ abstract class TestUser
     {
     }
 
-    public static function id() : string
+    public static function id() : DeveloperId
     {
-        return static::ID;
+        return DeveloperId::fromString(static::ID);
     }
 
     public static function name() : string

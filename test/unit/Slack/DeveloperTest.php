@@ -2,6 +2,7 @@
 
 namespace test\unit\TomPHP\TimeTracker\Slack;
 
+use test\support\TestUsers\Fran;
 use TomPHP\TimeTracker\Common\SlackHandle;
 use TomPHP\TimeTracker\Slack\Developer;
 
@@ -10,10 +11,10 @@ final class DeveloperTest extends \PHPUnit_Framework_TestCase
     /** @test */
     public function it_exposes_its_values()
     {
-        $developer = new Developer('id', 'name', SlackHandle::fromString('slack'));
+        $developer = new Developer(Fran::id(), Fran::name(), Fran::slackHandle());
 
-        assertSame('id', $developer->id());
-        assertSame('name', $developer->name());
-        assertEquals(SlackHandle::fromString('slack'), $developer->slackHandle());
+        assertEquals(Fran::id(), $developer->id());
+        assertEquals(Fran::name(), $developer->name());
+        assertEquals(Fran::slackHandle(), $developer->slackHandle());
     }
 }

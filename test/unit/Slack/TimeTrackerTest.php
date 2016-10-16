@@ -3,13 +3,14 @@
 namespace test\unit\TomPHP\TimeTracker\Slack;
 
 use Prophecy\Argument;
+use test\support\TestUsers\Mike;
 use TomPHP\TimeTracker\Common\Email;
 use TomPHP\TimeTracker\Common\Period;
 use TomPHP\TimeTracker\Common\SlackHandle;
 use TomPHP\TimeTracker\Slack\Developer;
 use TomPHP\TimeTracker\Slack\Project;
 use TomPHP\TimeTracker\Slack\TimeTracker;
-use TomPHP\TimeTracker\Tracker\DeveloperId;
+use TomPHP\TimeTracker\Tracker;
 use TomPHP\TimeTracker\Tracker\DeveloperProjection;
 use TomPHP\TimeTracker\Tracker\DeveloperProjections;
 use TomPHP\TimeTracker\Tracker\ProjectId;
@@ -18,11 +19,6 @@ use TomPHP\TimeTracker\Tracker\ProjectProjections;
 
 final class TimeTrackerTest extends \PHPUnit_Framework_TestCase
 {
-    const DEVELOPER_ID    = 'developer-id';
-    const DEVELOPER_NAME  = 'Tom';
-    const DEVELOPER_SLACK = '@tom';
-    const DEVELOPER_EMAIL = 'tom@example.com';
-
     const PROJECT_ID   = 'project-id';
     const PROJECT_NAME = 'Time Tracker';
 
@@ -43,10 +39,10 @@ final class TimeTrackerTest extends \PHPUnit_Framework_TestCase
         $this->developers
             ->withSlackHandle(Argument::any())
             ->willReturn(new DeveloperProjection(
-                DeveloperId::fromString(self::DEVELOPER_ID),
-                self::DEVELOPER_NAME,
-                Email::fromString(self::DEVELOPER_EMAIL),
-                SlackHandle::fromString(self::DEVELOPER_SLACK)
+                Tracker\DeveloperId::fromString((string) Mike::id()),
+                Mike::name(),
+                Mike::email(),
+                Mike::slackHandle()
             ));
 
         $this->projects
@@ -75,7 +71,7 @@ final class TimeTrackerTest extends \PHPUnit_Framework_TestCase
     public function on_fetchDeveloperBySlackHandle_it_returns_the_developer()
     {
         assertEquals(
-            new Developer(self::DEVELOPER_ID, self::DEVELOPER_NAME, SlackHandle::fromString(self::DEVELOPER_SLACK)),
+            new Developer(Mike::id(), Mike::name(), Mike::slackHandle()),
             $this->subject->fetchDeveloperBySlackHandle(SlackHandle::fromString('@tom'))
         );
     }

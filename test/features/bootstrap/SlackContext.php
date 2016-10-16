@@ -10,6 +10,7 @@ use Prophecy\Prophet;
 use Slim\Container;
 use TomPHP\ContainerConfigurator\Configurator;
 use TomPHP\TimeTracker\Common\Date;
+use TomPHP\TimeTracker\Common\DeveloperId;
 use TomPHP\TimeTracker\Common\Email;
 use TomPHP\TimeTracker\Common\Period;
 use TomPHP\TimeTracker\Common\SlackHandle;
@@ -76,7 +77,11 @@ class SlackContext implements Context, SnippetAcceptingContext
      */
     public function createDeveloper(string $developerName, SlackHandle $slackHandle)
     {
-        $developer = new Developer("developer-id-$developerName", $developerName, $slackHandle);
+        $developer = new Developer(
+            DeveloperId::fromString("developer-id-$developerName"),
+            $developerName,
+            $slackHandle
+        );
 
         $this->developers[$developerName] = $developer;
 
@@ -91,7 +96,7 @@ class SlackContext implements Context, SnippetAcceptingContext
     public function createDeveloperWithEmail(string $developerName, Email $email)
     {
         $developer = new Developer(
-            "developer-id-$developerName",
+            DeveloperId::fromString("developer-id-$developerName"),
             $developerName,
             SlackHandle::fromString($developerName)
         );

@@ -2,16 +2,15 @@
 
 namespace TomPHP\TimeTracker\Slack;
 
+use TomPHP\TimeTracker\Common;
 use TomPHP\TimeTracker\Common\Date;
 use TomPHP\TimeTracker\Common\Email;
 use TomPHP\TimeTracker\Common\Period;
 use TomPHP\TimeTracker\Common\SlackHandle;
-use TomPHP\TimeTracker\Tracker\DeveloperId;
+use TomPHP\TimeTracker\Tracker;
 use TomPHP\TimeTracker\Tracker\DeveloperProjections;
-use TomPHP\TimeTracker\Tracker\ProjectId;
 use TomPHP\TimeTracker\Tracker\ProjectProjections;
 use TomPHP\TimeTracker\Tracker\TimeEntry;
-use TomPHP\TimeTracker\Tracker\TimeEntryId;
 
 /** @final */
 class TimeTracker
@@ -35,7 +34,7 @@ class TimeTracker
         $developer = $this->developers->withEmail($email);
 
         return new Developer(
-            (string) $developer->id(),
+            Common\DeveloperId::fromString((string) $developer->id()),
             $developer->name(),
             $developer->slackHandle()
         );
@@ -46,7 +45,7 @@ class TimeTracker
         $developer = $this->developers->withSlackHandle($slackHandle);
 
         return new Developer(
-            (string) $developer->id(),
+            Common\DeveloperId::fromString((string) $developer->id()),
             $developer->name(),
             $developer->slackHandle()
         );
@@ -71,9 +70,9 @@ class TimeTracker
         string $description
     ) {
         TimeEntry::log(
-            TimeEntryId::generate(),
-            DeveloperId::fromString($developer->id()),
-            ProjectId::fromString($project->id()),
+            Tracker\TimeEntryId::generate(),
+            Tracker\DeveloperId::fromString((string) $developer->id()),
+            Tracker\ProjectId::fromString((string) $project->id()),
             $date,
             $period,
             $description

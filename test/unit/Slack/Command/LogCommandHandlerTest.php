@@ -3,6 +3,7 @@
 namespace test\unit\TomPHP\TimeTracker\Slack\Command;
 
 use Prophecy\Argument;
+use test\support\TestUsers\Fran;
 use TomPHP\TimeTracker\Common\Date;
 use TomPHP\TimeTracker\Common\Period;
 use TomPHP\TimeTracker\Common\SlackHandle;
@@ -14,7 +15,7 @@ use TomPHP\TimeTracker\Slack\TimeTracker;
 
 final class LogCommandHandlerTest extends \PHPUnit_Framework_TestCase
 {
-    const PROJECT_NAME = 'example project';
+    const PROJECT_NAME = 'Ingredient Inventory';
     const DATE         = '2016-09-24';
     const PERIOD       = 2;
     const DESCRIPTION  = 'Work on the Slack integration';
@@ -37,11 +38,7 @@ final class LogCommandHandlerTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->timeTracker = $this->prophesize(TimeTracker::class);
-        $this->developer   = new Developer(
-            'dev-id',
-            'dev-name',
-            SlackHandle::fromString('dev-slack-handle')
-        );
+        $this->developer   = new Developer(Fran::id(), Fran::name(), Fran::slackHandle());
         $this->project     = new Project('project-id', 'project-name');
 
         $this->timeTracker->fetchDeveloperBySlackHandle(Argument::any())->willReturn($this->developer);
@@ -99,6 +96,6 @@ final class LogCommandHandlerTest extends \PHPUnit_Framework_TestCase
         $result = $this->subject->handle(SlackHandle::fromString('tom'), $this->command);
 
         assertSame('ephemeral', $result['response_type']);
-        assertSame('dev-name logged 2:00 hours against project-name', $result['text']);
+        assertSame('Fran logged 2:00 hours against project-name', $result['text']);
     }
 }
