@@ -2,6 +2,7 @@
 
 namespace test\unit\TomPHP\TimeTracker\Tracker\Storage;
 
+use test\support\TestUsers\Fran;
 use TomPHP\TimeTracker\Common\Email;
 use TomPHP\TimeTracker\Common\SlackHandle;
 use TomPHP\TimeTracker\Tracker\DeveloperId;
@@ -18,18 +19,40 @@ abstract class AbstractDeveloperProjectionsTest extends \PHPUnit_Framework_TestC
         $developerId = DeveloperId::generate();
         $developer   = new DeveloperProjection(
             $developerId,
-            'Tom',
-            Email::fromString('tom@example.com'),
-            SlackHandle::fromString('tom')
+            Fran::name(),
+            Fran::email(),
+            Fran::slackHandle()
         );
 
         $this->developers()->add($developer);
 
-        assertEquals($developer, $this->developers()->withSlackHandle(SlackHandle::fromString('tom')));
+        assertEquals($developer, $this->developers()->withSlackHandle(Fran::slackHandle()));
     }
 
     /** @test */
     public function on_withSlackHandle_it_throws_if_there_is_no_developer_projection_with_the_given_handle()
+    {
+        $this->markTestIncomplete();
+    }
+
+    /** @test */
+    public function on_withEmail_it_returns_the_developer_with_that_email()
+    {
+        $developerId = DeveloperId::generate();
+        $developer   = new DeveloperProjection(
+            $developerId,
+            Fran::name(),
+            Fran::email(),
+            Fran::slackHandle()
+        );
+
+        $this->developers()->add($developer);
+
+        assertEquals($developer, $this->developers()->withEmail(Fran::email()));
+    }
+
+    /** @test */
+    public function on_withEmail_it_throws_if_there_is_no_developer_projection_with_the_given_email()
     {
         $this->markTestIncomplete();
     }
@@ -40,9 +63,9 @@ abstract class AbstractDeveloperProjectionsTest extends \PHPUnit_Framework_TestC
         $developerId = DeveloperId::generate();
         $developer   = new DeveloperProjection(
             $developerId,
-            'Tom',
-            Email::fromString('tom@example.com'),
-            SlackHandle::fromString('tom')
+            Fran::name(),
+            Fran::email(),
+            Fran::slackHandle()
         );
 
         $this->developers()->add($developer);

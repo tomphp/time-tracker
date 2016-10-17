@@ -41,6 +41,22 @@ final class TimeTrackerTest extends \PHPUnit_Framework_TestCase
                 Mike::email(),
                 Mike::slackHandle()
             ));
+        $this->developers
+            ->withEmail(Argument::any())
+            ->willReturn(new DeveloperProjection(
+                Tracker\DeveloperId::fromString((string) Mike::id()),
+                Mike::name(),
+                Mike::email(),
+                Mike::slackHandle()
+            ));
+        $this->developers
+            ->withId(Argument::any())
+            ->willReturn(new DeveloperProjection(
+                Tracker\DeveloperId::fromString((string) Mike::id()),
+                Mike::name(),
+                Mike::email(),
+                Mike::slackHandle()
+            ));
 
         $this->projects
             ->withName(Argument::any())
@@ -57,7 +73,42 @@ final class TimeTrackerTest extends \PHPUnit_Framework_TestCase
     }
 
     /** @test */
-    public function on_fetchDeveloperBySlackHandle_it_fetches_the_DeveloperProject_by_slack_handle()
+    public function on_fetchDeveloperByEmail_it_fetches_the_DeveloperProjection_by_email()
+    {
+        $this->subject->fetchDeveloperByEmail(Mike::email());
+
+        $this->developers->withEmail(Mike::email())->shouldHaveBeenCalled();
+    }
+
+    /** @test */
+    public function on_fetchDeveloperByEmail_it_returns_the_developer()
+    {
+        assertEquals(
+            new Developer(Mike::id(), Mike::name(), Mike::slackHandle()),
+            $this->subject->fetchDeveloperByEmail(Mike::email())
+        );
+    }
+
+    /** @test */
+    public function on_fetchDeveloperById_it_fetches_the_DeveloperProjection_by_id()
+    {
+        $this->subject->fetchDeveloperById(Mike::id());
+
+        $this->developers->withId(\TomPHP\TimeTracker\Tracker\DeveloperId::fromString((string) Mike::id()))
+            ->shouldHaveBeenCalled();
+    }
+
+    /** @test */
+    public function on_fetchDeveloperById_it_returns_the_developer()
+    {
+        assertEquals(
+            new Developer(Mike::id(), Mike::name(), Mike::slackHandle()),
+            $this->subject->fetchDeveloperById(Mike::id())
+        );
+    }
+
+    /** @test */
+    public function on_fetchDeveloperBySlackHandle_it_fetches_the_DeveloperProjection_by_slack_handle()
     {
         $this->subject->fetchDeveloperBySlackHandle(SlackHandle::fromString('@tom'));
 

@@ -57,6 +57,28 @@ final class MySQLDeveloperProjectionRepository implements DeveloperProjections
         );
     }
 
+    public function withEmail(Email $email) : DeveloperProjection
+    {
+        $statement = $this->pdo->prepare(
+            'SELECT * FROM'
+            . ' `developer_projections`'
+            . ' WHERE `email` = :email'
+        );
+
+        $statement->execute([':email' => (string) $email]);
+
+        // TODO: check row count
+
+        $row = $statement->fetch(PDO::FETCH_OBJ);
+
+        return new DeveloperProjection(
+            DeveloperId::fromString($row->id),
+            $row->name,
+            Email::fromString($row->email),
+            SlackHandle::fromString($row->slackHandle)
+        );
+    }
+
     public function withSlackHandle(SlackHandle $handle) : DeveloperProjection
     {
         $statement = $this->pdo->prepare(

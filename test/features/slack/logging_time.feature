@@ -3,7 +3,7 @@ Feature: Logging time against a project using Slack
   As a Developer
   I want a simple slack interface
 
-  #@integration
+  @integration
   #@critical
   Scenario: The one where Fran logs time against the project using Slack
     Given Fran has a developer account with email "fran@rgsoftware.com"

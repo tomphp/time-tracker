@@ -12,6 +12,7 @@ use TomPHP\TimeTracker\Common\Email;
 use TomPHP\TimeTracker\Common\Period;
 use TomPHP\TimeTracker\Common\SlackHandle;
 use TomPHP\TimeTracker\Slack\CommandRunner;
+use TomPHP\TimeTracker\Slack\SlackUserId;
 use TomPHP\TimeTracker\Tracker\Developer;
 use TomPHP\TimeTracker\Tracker\DeveloperId;
 use TomPHP\TimeTracker\Tracker\DeveloperProjections;
@@ -36,6 +37,9 @@ class IntegrationContext implements Context, SnippetAcceptingContext
 
     /** @var Project[] */
     private $projects = [];
+
+    /** @var SlackUserId[] */
+    private $slackUsers = [];
 
     /** @var array */
     private $result;
@@ -62,9 +66,9 @@ class IntegrationContext implements Context, SnippetAcceptingContext
      */
     public function fetchDeveloperByName(string $name) : DeveloperId
     {
-        $slackHandle =  $this->developers[$name]['slack_handle'];
+        $id =  $this->developers[$name]['id'];
 
-        return $this->developerProjections()->withSlackHandle($slackHandle)->id();
+        return $this->developerProjections()->withId($id)->id();
     }
 
     /**
@@ -76,7 +80,17 @@ class IntegrationContext implements Context, SnippetAcceptingContext
     }
 
     /**
+     * @Transform
+     */
+    public function fetchDeveloperSlackUserId(string $developerName) : SlackUserId
+    {
+        return $this->slackUsers[$developerName];
+    }
+
+    /**
      * @Given :developerName is a developer with Slack handle @:slackHandle
+     *
+     * @deprecated
      */
     public function createDeveloper(string $developerName, SlackHandle $slackHandle)
     {
@@ -88,11 +102,28 @@ class IntegrationContext implements Context, SnippetAcceptingContext
         ];
 
         Developer::create(
-            DeveloperId::generate(),
+            $id,
             $developerName,
             Email::fromString('something@example.com'),
             $slackHandle
         );
+    }
+
+    /**
+     * @Given :developerName has a developer account with email :email
+     */
+    public function createDeveloperWithEmail(string $developerName, Email $email)
+    {
+        $id = DeveloperId::generate();
+
+        $this->developers[$developerName] = [
+            'id'           => $id,
+            'slack_handle' => $slackHandle,
+        ];
+
+        $slackHandle = SlackHandle::fromString($developerName);
+
+        Developer::create($id, $developerName, $email, $slackHandle);
     }
 
     /**
@@ -108,12 +139,30 @@ class IntegrationContext implements Context, SnippetAcceptingContext
     }
 
     /**
+     * @Given :developerName has a Slack account
+     */
+    public function createSlackUser(string $developerName)
+    {
+        $count = count($this->slackUsers);
+        $id    = sprintf('U99999999%02f', $count);
+
+        $this->slackUsers[$developerName] = SlackUserId::fromString($id);
+    }
+
+    /**
+     * @Given :developerName has linked her slack user to :email
+     */
+    public function linkSlackUser(SlackUserId $userId, Email $email)
+    {
+        $this->developerIssuesCommand($userId, "link to account $email");
+    }
+
+    /**
      * @When :developer issues the command :command
      */
-    public function developerIssuesCommand(string $developer, string $command)
+    public function developerIssuesCommand(SlackUserId $userId, string $command)
     {
-        $this->result = $this->commandRunner()
-            ->run($this->developers[$developer]['slack_handle'], $command);
+        $this->result = $this->commandRunner()->run($userId, $command);
     }
 
     /**
