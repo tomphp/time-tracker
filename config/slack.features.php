@@ -15,18 +15,8 @@ use TomPHP\TimeTracker\Slack\Storage\MemoryLinkedAccounts;
 return [
     'di' => [
         'services' => [
-            DeveloperProjections::class => [
-                'class' => MemoryDeveloperProjections::class,
-            ],
-            ProjectProjections::class => [
-                'class' => MemoryProjectProjections::class,
-            ],
-            TimeEntryProjections::class => [
-                'class' => MemoryTimeEntryProjections::class,
-            ],
-            MemoryEventStore::class => [
-                'class' => MySQLEventStore::class,
-                'arguments' => ['database'],
+            LinkedAccounts::class => [
+                'class' => MemoryLinkedAccounts::class,
             ],
         ],
     ],

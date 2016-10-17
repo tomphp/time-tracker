@@ -10,6 +10,7 @@ use TomPHP\TimeTracker\Tracker\ProjectProjections;
 use TomPHP\ContainerConfigurator\Configurator;
 use TomPHP\TimeTracker\Slack\LinkedAccounts;
 use TomPHP\TimeTracker\Slack\Storage\MemoryLinkedAccounts;
+use TomPHP\TimeTracker\Slack\Storage\MySQLLinkedAccountRepository;
 
 return [
     'slack' => [
@@ -34,7 +35,8 @@ return [
                 ],
             ],
             LinkedAccounts::class => [
-                'class' => MemoryLinkedAccounts::class,
+                'class' => MySQLLinkedAccountRepository::class,
+                'arguments' => ['database'],
             ],
             Command\LogCommandParser::class => [
                 'arguments' => ['config.slack.today'],

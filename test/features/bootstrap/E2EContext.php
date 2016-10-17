@@ -35,6 +35,9 @@ class E2EContext implements Context, SnippetAcceptingContext
     /** @var Manager */
     private $jsonApiManager;
 
+    /** @var SlackUserId[] */
+    private $slackUsers = [];
+
     /** @var array|\stdClass */
     private $result;
 
@@ -66,6 +69,8 @@ class E2EContext implements Context, SnippetAcceptingContext
 
     /**
      * @Given :name is a developer with Slack handle @:slackHandle
+     *
+     * @deprecated
      */
     public function createDeveloper(string $name, SlackHandle $slackHandle)
     {
@@ -83,6 +88,49 @@ class E2EContext implements Context, SnippetAcceptingContext
         $id = $this->assertCreatedResponseAndGetId($response, '!^.*/api/v1/developers/(.*?)$!');
 
         $this->developers[$name] = ['id' => $id, 'slack_handle' => $slackHandle];
+    }
+
+    /**
+     * @Given :name has a developer account with email :email
+     */
+    public function createDeveloperWithEmail(string $name, string $email)
+    {
+        $response = $this->client->post(
+            '/api/v1/developers',
+            [
+                'json' => [
+                    'name'         => $name,
+                    'email'        => $email,
+                    'slack-handle' => "@$name",
+                ],
+            ]
+        );
+
+        $id = $this->assertCreatedResponseAndGetId($response, '!^.*/api/v1/developers/(.*?)$!');
+
+        $this->developers[$name] = ['id' => $id, 'slack_handle' => $slackHandle];
+    }
+
+    /**
+     * @Given :developerName has a Slack account
+     */
+    public function createSlackUser(string $developerName)
+    {
+        $count = count($this->slackUsers);
+        $id    = sprintf('U99999999%02f', $count);
+
+        $this->slackUsers[$developerName] = [
+            'id'   => $id,
+            'name' => '@' . strtolower($developerName),
+        ];
+    }
+
+    /**
+     * @Given :developerName has linked her slack user to :email
+     */
+    public function linkSlackUser(string $developerName, string $email)
+    {
+        $this->issueSlackCommand($developerName, "link to account $email");
     }
 
     /**
@@ -105,8 +153,12 @@ class E2EContext implements Context, SnippetAcceptingContext
     /**
      * @When :developer issues the command :command
      */
-    public function tomIssuesTheCommand(string $name, string $command)
+    public function issueSlackCommand(string $name, string $command)
     {
+        assertArrayHasKey($name, $this->slackUsers);
+
+        $slackUser = $this->slackUsers[$name];
+
         $response = $this->client->post(
             self::SLACK_ENDPOINT,
             [
@@ -116,8 +168,8 @@ class E2EContext implements Context, SnippetAcceptingContext
                     'team_domain'  => 'example',
                     'channel_id'   => 'C2147483705',
                     'channel_name' => 'test',
-                    'user_id'      => 'U2147483697',
-                    'user_name'    => $this->developers[$name]['slack_handle']->value(),
+                    'user_id'      => $slackUser['id'],
+                    'user_name'    => $slackUser['name'],
                     'command'      => '/tt',
                     'text'         => $command,
                     'response_url' => 'https://hooks.slack.com/commands/1234/5678',

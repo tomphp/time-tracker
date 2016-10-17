@@ -154,13 +154,13 @@ class IntegrationContext implements Context, SnippetAcceptingContext
      */
     public function linkSlackUser(SlackUserId $userId, Email $email)
     {
-        $this->developerIssuesCommand($userId, "link to account $email");
+        $this->issueSlackCommand($userId, "link to account $email");
     }
 
     /**
      * @When :developer issues the command :command
      */
-    public function developerIssuesCommand(SlackUserId $userId, string $command)
+    public function issueSlackCommand(SlackUserId $userId, string $command)
     {
         $this->result = $this->commandRunner()->run($userId, $command);
     }

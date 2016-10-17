@@ -7,8 +7,8 @@ use Slim\App;
 use TomPHP\ContainerConfigurator\Configurator;
 use TomPHP\TimeTracker\Api\Controllers\DevelopersControllor;
 use TomPHP\TimeTracker\Api\Controllers\ProjectsController;
-use TomPHP\TimeTracker\Common\SlackHandle;
 use TomPHP\TimeTracker\Slack\CommandRunner;
+use TomPHP\TimeTracker\Slack\SlackUserId;
 use TomPHP\TimeTracker\Tracker\DeveloperId;
 use TomPHP\TimeTracker\Tracker\EventBus;
 use TomPHP\TimeTracker\Tracker\ProjectId;
@@ -44,7 +44,7 @@ $app->group('/slack', function () {
         error_log(print_r($params, true));
 
         $result = $this->get(CommandRunner::class)
-            ->run(SlackHandle::fromString($params['user_name']), $params['text']);
+            ->run(SlackUserId::fromString($params['user_id']), $params['text']);
 
         return $response->withJson($result, HttpStatus::STATUS_CREATED);
     });
