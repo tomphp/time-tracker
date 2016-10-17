@@ -8,12 +8,12 @@ use TomPHP\TimeTracker\Slack\SlackUserId;
 
 final class MemoryLinkedAccounts implements LinkedAccounts
 {
-    /** @var bool[] */
+    /** @var LinkedAccount[] */
     private $accountsBySlack = [];
 
     public function add(LinkedAccount $account)
     {
-        $this->accountsBySlack[(string) $account->slackUserId()] = true;
+        $this->accountsBySlack[(string) $account->slackUserId()] = $account;
     }
 
     public function hasSlackUser(SlackUserId $userId) : bool
@@ -27,5 +27,6 @@ final class MemoryLinkedAccounts implements LinkedAccounts
 
     public function withSlackUserId(SlackUserId $userId) : LinkedAccount
     {
+        return $this->accountsBySlack[(string) $userId];
     }
 }

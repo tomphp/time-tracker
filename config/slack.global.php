@@ -40,7 +40,7 @@ return [
                 'arguments' => ['config.slack.today'],
             ],
             Command\LogCommandHandler::class => [
-                'arguments' => [TimeTracker::class],
+                'arguments' => [TimeTracker::class, LinkedAccounts::class],
             ],
             Command\LinkCommandParser::class => [
             ],

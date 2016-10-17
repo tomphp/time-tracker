@@ -58,7 +58,7 @@ class SlackContext implements Context, SnippetAcceptingContext
 
         $this->timeTracker = $this->prophet->prophesize(TimeTracker::class);
 
-        $this->services[TimeTracker::class]    = $this->timeTracker->reveal();
+        $this->services[TimeTracker::class] = $this->timeTracker->reveal();
     }
 
     /**
@@ -86,49 +86,27 @@ class SlackContext implements Context, SnippetAcceptingContext
     }
 
     /**
-     * @Given :developerName is a developer with Slack handle @:slackHandle
-     *
-     * @deprecated
-     */
-    public function createDeveloper(string $developerName, SlackHandle $slackHandle)
-    {
-        $developer = new Developer(
-            DeveloperId::fromString("developer-id-$developerName"),
-            $developerName,
-            $slackHandle
-        );
-
-        $this->developers[$developerName] = $developer;
-
-        $this->timeTracker
-            ->fetchDeveloperBySlackHandle($slackHandle)
-            ->willReturn($developer);
-    }
-
-    /**
      * @Given :developerName has a developer account with email :email
      */
     public function createDeveloperWithEmail(string $developerName, Email $email)
     {
-        $developer = new Developer(
-            DeveloperId::fromString("developer-id-$developerName"),
-            $developerName,
-            SlackHandle::fromString($developerName)
-        );
+        $id = DeveloperId::fromString("developer-id-$developerName");
+
+        $developer = new Developer($id, $developerName, SlackHandle::fromString($developerName));
 
         $this->developers[$developerName] = $developer;
 
-        $this->timeTracker
-            ->fetchDeveloperByEmail($email)
-            ->willReturn($developer);
+        $this->timeTracker->fetchDeveloperByEmail($email)->willReturn($developer);
+
+        $this->timeTracker->fetchDeveloperById($id)->willReturn($developer);
     }
 
     /**
      * @Given :developerName has linked her slack user to :email
      */
-    public function linkSlackUser()
+    public function linkSlackUser(SlackUserId $userId, Email $email)
     {
-        throw new PendingException();
+        $this->developerIssuesCommand($userId, "link to account $email");
     }
 
     /**
