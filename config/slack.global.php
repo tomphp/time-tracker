@@ -1,21 +1,18 @@
-<?php
-
-use TomPHP\TimeTracker\Slack\TimeTracker;
-use TomPHP\TimeTracker\Slack\CommandRunner;
-use TomPHP\TimeTracker\Slack\Command;
-use TomPHP\TimeTracker\Common\Date;
-use TomPHP\TimeTracker\Tracker\DeveloperProjections;
-use TomPHP\TimeTracker\Tracker\Storage\MemoryDeveloperProjections;
-use TomPHP\TimeTracker\Tracker\ProjectProjections;
+<?php declare(strict_types=1);
 use TomPHP\ContainerConfigurator\Configurator;
+use TomPHP\TimeTracker\Common\Date;
+use TomPHP\TimeTracker\Slack\Command;
+use TomPHP\TimeTracker\Slack\CommandRunner;
 use TomPHP\TimeTracker\Slack\LinkedAccounts;
-use TomPHP\TimeTracker\Slack\Storage\MemoryLinkedAccounts;
 use TomPHP\TimeTracker\Slack\Storage\MySQLLinkedAccountRepository;
+use TomPHP\TimeTracker\Slack\TimeTracker;
+use TomPHP\TimeTracker\Tracker\DeveloperProjections;
+use TomPHP\TimeTracker\Tracker\ProjectProjections;
 
 return [
     'slack' => [
         'commands' => [
-            'log' => Command\LogCommand::class,
+            'log'  => Command\LogCommand::class,
             'link' => Command\LinkCommand::class,
         ],
         'today' => Date::today(),
@@ -35,7 +32,7 @@ return [
                 ],
             ],
             LinkedAccounts::class => [
-                'class' => MySQLLinkedAccountRepository::class,
+                'class'     => MySQLLinkedAccountRepository::class,
                 'arguments' => ['database'],
             ],
             Command\LogCommandParser::class => [
