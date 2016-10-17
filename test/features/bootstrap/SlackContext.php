@@ -52,9 +52,8 @@ class SlackContext implements Context, SnippetAcceptingContext
         $this->services = new Container();
 
         Configurator::apply()
-            ->configFromFile(__DIR__ . '/../../../config/db.global.php')
-            ->configFromFile(__DIR__ . '/../../../config/slack.features.php')
-            ->configFromFile(__DIR__ . '/../../../config/slack.global.php')
+            ->configFromFiles(__DIR__ . '/../../../config/*.global.php')
+            ->configFromFiles(__DIR__ . '/../../../config/*.features.php')
             ->withSetting(Configurator::SETTING_DEFAULT_SINGLETON_SERVICES, true)
             ->to($this->services);
 
