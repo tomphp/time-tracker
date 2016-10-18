@@ -33,7 +33,7 @@ final class DeveloperCollection
 
         return [
             'links' => [
-                'self' => $baseUrl . '/developers' . $this->id,
+                'self' => $baseUrl . '/developers',
             ],
             'data' => $developers,
         ];
