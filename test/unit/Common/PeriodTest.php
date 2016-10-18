@@ -165,7 +165,7 @@ final class PeriodTest extends \PHPUnit_Framework_TestCase
         }
 
         $hours = (int) $parts[1];
-        $mins = (int) $parts[2];
+        $mins  = (int) $parts[2];
 
         $period = Period::fromString($input);
 

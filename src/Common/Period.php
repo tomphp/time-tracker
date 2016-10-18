@@ -31,15 +31,15 @@ final class Period
         }
 
         if (isset($parts['single']) && $parts['single']) {
-            $hours = $parts['single'];
+            $hours   = $parts['single'];
             $minutes = 0;
         } elseif (isset($parts['decimal']) && $parts['decimal']) {
-            $hours = floor($parts['decimal']);
+            $hours   = floor($parts['decimal']);
             $minutes = ($parts['decimal'] - $hours) * 60;
         } elseif (isset($parts['compound']) && $parts['compound']) {
             list($hours, $minutes) = explode(':', $parts['compound'], 2);
         } else {
-            $hours = $parts['hours'] ?? 0;
+            $hours   = $parts['hours'] ?? 0;
             $minutes = $parts['minutes'] ?? 0;
         }
 
