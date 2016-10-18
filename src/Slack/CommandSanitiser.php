@@ -7,6 +7,6 @@ class CommandSanitiser
 {
     public function sanitise(string $command) : string
     {
-        return preg_replace('/\s+/', ' ', $command);
+        return trim(preg_replace('/\s+/', ' ', $command));
     }
 }

@@ -25,4 +25,10 @@ final class CommandSanitiserTest extends \PHPUnit_Framework_TestCase
     {
         assertSame('too much space', $this->sanitiser->sanitise('too   much  space'));
     }
+
+    /** @test */
+    public function it_trims_leading_and_trailing_whitespace()
+    {
+        assertSame('in the middle', $this->sanitiser->sanitise('   in the middle  '));
+    }
 }
