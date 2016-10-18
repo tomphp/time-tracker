@@ -7,30 +7,112 @@ use TomPHP\TimeTracker\Common\Period;
 final class PeriodTest extends \PHPUnit_Framework_TestCase
 {
     /** @test */
-    public function on_fromString_it_splits_minutes_and_hours()
+    public function on_fromString_a_single_number_is_hours()
     {
-        $period = Period::fromString('1:11');
-
-        assertSame(1, $period->hours());
-        assertSame(11, $period->minutes());
+        $this->assertFromStringWorks('5:00', '5');
     }
 
     /** @test */
-    public function on_fromString_it_is_hours_if_no_colon_is_present()
+    public function on_fromString_it_parsess_the_format_2h()
     {
-        $period = Period::fromString('5');
-
-        assertSame(5, $period->hours());
-        assertSame(0, $period->minutes());
+        $this->assertFromStringWorks('2:00', '2h');
     }
 
     /** @test */
-    public function on_fromString_it_the_hours_suffix()
+    public function on_fromString_it_parses_the_format_4hr()
     {
-        $period = Period::fromString('1:11 hours');
+        $this->assertFromStringWorks('4:00', '4hr');
+    }
 
-        assertSame(1, $period->hours());
-        assertSame(11, $period->minutes());
+    /** @test */
+    public function on_fromString_it_parses_the_format_5hrs()
+    {
+        $this->assertFromStringWorks('5:00', '5hrs');
+    }
+
+    /** @test */
+    public function on_fromString_it_parses_the_format_1hour()
+    {
+        $this->assertFromStringWorks('1:00', '1hour');
+    }
+
+    /** @test */
+    public function on_fromString_it_parses_the_format_3hours()
+    {
+        $this->assertFromStringWorks('3:00', '3hours');
+    }
+
+    /** @test */
+    public function on_fromString_it_parses_the_format_30m()
+    {
+        $this->assertFromStringWorks('0:30', '30m');
+    }
+
+    /** @test */
+    public function on_fromString_it_parses_the_format_11min()
+    {
+        $this->assertFromStringWorks('0:11', '11min');
+    }
+
+    /** @test */
+    public function on_fromString_it_parses_the_format_15mins()
+    {
+        $this->assertFromStringWorks('0:15', '15mins');
+    }
+
+    /** @test */
+    public function on_fromString_it_parses_the_format_1h5m()
+    {
+        $this->assertFromStringWorks('1:05', '1h5m');
+    }
+
+    /** @test */
+    public function on_fromString_it_parses_the_format_1hr5mins()
+    {
+        $this->assertFromStringWorks('1:05', '1hr5mins');
+    }
+
+    /** @test */
+    public function on_fromString_it_parses_the_format_3_colon_45()
+    {
+        $this->assertFromStringWorks('3:45', '3:45');
+    }
+
+    /** @test */
+    public function on_fromString_it_parses_the_format_2_point_75()
+    {
+        $this->assertFromStringWorks('2:45', '2.75');
+    }
+
+    /** @test */
+    public function on_fromString_it_parses_the_format_point_5()
+    {
+        $this->assertFromStringWorks('0:30', '.5');
+    }
+
+    /** @test */
+    public function on_fromString_it_works_with_whitespace()
+    {
+        $this->assertFromStringWorks('2:00', '2 h');
+        $this->assertFromStringWorks('4:00', '4 hr');
+        $this->assertFromStringWorks('5:00', '5 hrs');
+        $this->assertFromStringWorks('1:00', '1 hour');
+        $this->assertFromStringWorks('3:00', '3 hours');
+        $this->assertFromStringWorks('0:30', '30 m');
+        $this->assertFromStringWorks('0:11', '11 min');
+        $this->assertFromStringWorks('0:15', '15 mins');
+        $this->assertFromStringWorks('1:05', '1 h 5 m');
+        $this->assertFromStringWorks('1:05', '1 hr 5 mins');
+    }
+
+    /** @test */
+    public function on_fromString_it_handles_multiple_digits()
+    {
+        $this->assertFromStringWorks('21:00', '21 h');
+        $this->assertFromStringWorks('45:00', '45 hr');
+        $this->assertFromStringWorks('51:00', '51 hrs');
+        $this->assertFromStringWorks('19:00', '19 hour');
+        $this->assertFromStringWorks('32:00', '32 hours');
     }
 
     /** @test */
@@ -62,5 +144,30 @@ final class PeriodTest extends \PHPUnit_Framework_TestCase
         $period = Period::fromString('1:50')->add(Period::fromString('0:20'));
 
         assertEquals(Period::fromString('2:10'), $period);
+    }
+
+    private function assertFromStringWorks(string $expected, string $input)
+    {
+        if (!preg_match('/^(\d+):(\d\d)$/', $expected, $parts)) {
+            throw new \LogicException("$expected does not match format h:mm");
+        }
+
+        $hours = (int) $parts[1];
+        $mins = (int) $parts[2];
+
+        $period = Period::fromString($input);
+
+        $this->assertRegexMatches($input);
+        assertSame($hours, $period->hours());
+        assertSame($mins, $period->minutes());
+    }
+
+    private function assertRegexMatches(string $string)
+    {
+        $regex = Period::REGEX;
+
+        $result = preg_replace("/^before ($regex) after$/", '\1', "before $string after");
+
+        assertSame($string, $result, 'Regex match failed');
     }
 }

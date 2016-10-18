@@ -4,6 +4,16 @@ namespace TomPHP\TimeTracker\Common;
 
 final class Period
 {
+    const REGEX = '(?:'
+            . '(?:(?<hours>\d+)\s*(?:hours?|hrs|hr|h))?\s*(?:(?<minutes>\d+)\s*(mins?|m))?'
+            . '|'
+            . '(?<compound>\d:\d\d)'
+            . '|'
+            . '(?<decimal>\d?\.\d+)'
+            . '|'
+            . '(?<single>\d)'
+        . ')';
+
     /** @var int */
     private $hours;
 
@@ -17,13 +27,21 @@ final class Period
 
     public static function fromString(string $string) : self
     {
-        $parts = explode(':', $string);
-
-        if (count($parts) == 1) {
-            array_push($parts, 0);
+        if (!preg_match('/^' . self::REGEX . '$/', $string, $parts)) {
         }
 
-        list($hours, $minutes) = $parts;
+        if (isset($parts['single']) && $parts['single']) {
+            $hours = $parts['single'];
+            $minutes = 0;
+        } elseif (isset($parts['decimal']) && $parts['decimal']) {
+            $hours = floor($parts['decimal']);
+            $minutes = ($parts['decimal'] - $hours) * 60;
+        } elseif (isset($parts['compound']) && $parts['compound']) {
+            list($hours, $minutes) = explode(':', $parts['compound'], 2);
+        } else {
+            $hours = $parts['hours'] ?? 0;
+            $minutes = $parts['minutes'] ?? 0;
+        }
 
         return new self((int) $hours, (int) $minutes);
     }
