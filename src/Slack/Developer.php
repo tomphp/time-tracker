@@ -3,7 +3,6 @@
 namespace TomPHP\TimeTracker\Slack;
 
 use TomPHP\TimeTracker\Common\DeveloperId;
-use TomPHP\TimeTracker\Common\SlackHandle;
 
 final class Developer
 {
@@ -13,14 +12,10 @@ final class Developer
     /** @var string */
     private $name;
 
-    /** @var SlackHandle */
-    private $slackHandle;
-
-    public function __construct(DeveloperId $id, string $name, SlackHandle $slackHandle)
+    public function __construct(DeveloperId $id, string $name)
     {
         $this->id          = $id;
         $this->name        = $name;
-        $this->slackHandle = $slackHandle;
     }
 
     public function id() : DeveloperId
@@ -31,10 +26,5 @@ final class Developer
     public function name() : string
     {
         return $this->name;
-    }
-
-    public function slackHandle() : SlackHandle
-    {
-        return $this->slackHandle;
     }
 }

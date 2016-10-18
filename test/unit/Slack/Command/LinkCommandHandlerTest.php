@@ -5,7 +5,6 @@ namespace test\unit\TomPHP\TimeTracker\Slack\Command;
 use Prophecy\Argument;
 use test\support\TestUsers\Mike;
 use TomPHP\TimeTracker\Common\Email;
-use TomPHP\TimeTracker\Common\SlackHandle;
 use TomPHP\TimeTracker\Slack\Command\LinkCommand;
 use TomPHP\TimeTracker\Slack\Command\LinkCommandHandler;
 use TomPHP\TimeTracker\Slack\Developer;
@@ -32,7 +31,7 @@ final class LinkCommandHandlerTest extends \PHPUnit_Framework_TestCase
 
         $this->timeTracker
             ->fetchDeveloperByEmail(Argument::any())
-            ->willReturn(new Developer(Mike::id(), Mike::name(), Mike::slackHandle()));
+            ->willReturn(new Developer(Mike::id(), Mike::name()));
 
         $this->command = new LinkCommand(Mike::email());
 

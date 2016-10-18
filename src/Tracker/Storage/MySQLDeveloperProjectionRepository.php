@@ -4,7 +4,6 @@ namespace TomPHP\TimeTracker\Tracker\Storage;
 
 use PDO;
 use TomPHP\TimeTracker\Common\Email;
-use TomPHP\TimeTracker\Common\SlackHandle;
 use TomPHP\TimeTracker\Tracker\DeveloperId;
 use TomPHP\TimeTracker\Tracker\DeveloperProjection;
 use TomPHP\TimeTracker\Tracker\DeveloperProjections;
@@ -23,15 +22,14 @@ final class MySQLDeveloperProjectionRepository implements DeveloperProjections
     {
         $statement = $this->pdo->prepare(
             'INSERT INTO `developer_projections`'
-            . ' (`id`, `name`, `email`, `slackHandle`)'
-            . ' VALUES (:id, :name, :email, :slackHandle)'
+            . ' (`id`, `name`, `email`)'
+            . ' VALUES (:id, :name, :email)'
         );
 
         $statement->execute([
             ':id'          => $developer->id(),
             ':name'        => $developer->name(),
             ':email'       => $developer->email(),
-            ':slackHandle' => (string) $developer->slackHandle(),
         ]);
     }
 
@@ -52,8 +50,7 @@ final class MySQLDeveloperProjectionRepository implements DeveloperProjections
         return new DeveloperProjection(
             DeveloperId::fromString($row->id),
             $row->name,
-            Email::fromString($row->email),
-            SlackHandle::fromString($row->slackHandle)
+            Email::fromString($row->email)
         );
     }
 
@@ -74,30 +71,7 @@ final class MySQLDeveloperProjectionRepository implements DeveloperProjections
         return new DeveloperProjection(
             DeveloperId::fromString($row->id),
             $row->name,
-            Email::fromString($row->email),
-            SlackHandle::fromString($row->slackHandle)
-        );
-    }
-
-    public function withSlackHandle(SlackHandle $handle) : DeveloperProjection
-    {
-        $statement = $this->pdo->prepare(
-            'SELECT * FROM'
-            . ' `developer_projections`'
-            . ' WHERE `slackHandle` = :slackHandle'
-        );
-
-        $statement->execute([':slackHandle' => (string) $handle]);
-
-        // TODO: check row count
-
-        $row = $statement->fetch(PDO::FETCH_OBJ);
-
-        return new DeveloperProjection(
-            DeveloperId::fromString($row->id),
-            $row->name,
-            Email::fromString($row->email),
-            SlackHandle::fromString($row->slackHandle)
+            Email::fromString($row->email)
         );
     }
 }

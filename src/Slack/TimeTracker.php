@@ -6,7 +6,6 @@ use TomPHP\TimeTracker\Common;
 use TomPHP\TimeTracker\Common\Date;
 use TomPHP\TimeTracker\Common\Email;
 use TomPHP\TimeTracker\Common\Period;
-use TomPHP\TimeTracker\Common\SlackHandle;
 use TomPHP\TimeTracker\Tracker;
 use TomPHP\TimeTracker\Tracker\DeveloperProjections;
 use TomPHP\TimeTracker\Tracker\ProjectProjections;
@@ -35,8 +34,7 @@ class TimeTracker
 
         return new Developer(
             Common\DeveloperId::fromString((string) $developer->id()),
-            $developer->name(),
-            $developer->slackHandle()
+            $developer->name()
         );
     }
 
@@ -46,19 +44,7 @@ class TimeTracker
 
         return new Developer(
             Common\DeveloperId::fromString((string) $developer->id()),
-            $developer->name(),
-            $developer->slackHandle()
-        );
-    }
-
-    public function fetchDeveloperBySlackHandle(SlackHandle $slackHandle) : Developer
-    {
-        $developer = $this->developers->withSlackHandle($slackHandle);
-
-        return new Developer(
-            Common\DeveloperId::fromString((string) $developer->id()),
-            $developer->name(),
-            $developer->slackHandle()
+            $developer->name()
         );
     }
 

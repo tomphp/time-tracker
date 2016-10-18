@@ -10,7 +10,6 @@ use Slim\Container;
 use TomPHP\ContainerConfigurator\Configurator;
 use TomPHP\TimeTracker\Common\Email;
 use TomPHP\TimeTracker\Common\Period;
-use TomPHP\TimeTracker\Common\SlackHandle;
 use TomPHP\TimeTracker\Slack\CommandRunner;
 use TomPHP\TimeTracker\Slack\SlackUserId;
 use TomPHP\TimeTracker\Tracker\Developer;
@@ -88,42 +87,15 @@ class IntegrationContext implements Context, SnippetAcceptingContext
     }
 
     /**
-     * @Given :developerName is a developer with Slack handle @:slackHandle
-     *
-     * @deprecated
-     */
-    public function createDeveloper(string $developerName, SlackHandle $slackHandle)
-    {
-        $id = DeveloperId::generate();
-
-        $this->developers[$developerName] = [
-            'id'           => $id,
-            'slack_handle' => $slackHandle,
-        ];
-
-        Developer::create(
-            $id,
-            $developerName,
-            Email::fromString('something@example.com'),
-            $slackHandle
-        );
-    }
-
-    /**
      * @Given :developerName has a developer account with email :email
      */
     public function createDeveloperWithEmail(string $developerName, Email $email)
     {
         $id = DeveloperId::generate();
 
-        $this->developers[$developerName] = [
-            'id'           => $id,
-            'slack_handle' => $slackHandle,
-        ];
+        $this->developers[$developerName] = ['id' => $id];
 
-        $slackHandle = SlackHandle::fromString($developerName);
-
-        Developer::create($id, $developerName, $email, $slackHandle);
+        Developer::create($id, $developerName, $email);
     }
 
     /**

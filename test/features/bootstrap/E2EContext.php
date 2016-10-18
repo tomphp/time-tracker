@@ -13,7 +13,6 @@ use Slim\Container;
 use TomPHP\ContainerConfigurator\Configurator;
 use TomPHP\TimeTracker\Common\Date;
 use TomPHP\TimeTracker\Common\Period;
-use TomPHP\TimeTracker\Common\SlackHandle;
 use TomPHP\TimeTracker\Tracker\EventBus;
 
 class E2EContext implements Context, SnippetAcceptingContext
@@ -68,29 +67,6 @@ class E2EContext implements Context, SnippetAcceptingContext
     }
 
     /**
-     * @Given :name is a developer with Slack handle @:slackHandle
-     *
-     * @deprecated
-     */
-    public function createDeveloper(string $name, SlackHandle $slackHandle)
-    {
-        $response = $this->client->post(
-            '/api/v1/developers',
-            [
-                'json' => [
-                    'name'         => $name,
-                    'email'        => 'tom@example.com',
-                    'slack-handle' => (string) $slackHandle,
-                ],
-            ]
-        );
-
-        $id = $this->assertCreatedResponseAndGetId($response, '!^.*/api/v1/developers/(.*?)$!');
-
-        $this->developers[$name] = ['id' => $id, 'slack_handle' => $slackHandle];
-    }
-
-    /**
      * @Given :name has a developer account with email :email
      */
     public function createDeveloperWithEmail(string $name, string $email)
@@ -108,7 +84,7 @@ class E2EContext implements Context, SnippetAcceptingContext
 
         $id = $this->assertCreatedResponseAndGetId($response, '!^.*/api/v1/developers/(.*?)$!');
 
-        $this->developers[$name] = ['id' => $id, 'slack_handle' => $slackHandle];
+        $this->developers[$name] = ['id' => $id];
     }
 
     /**

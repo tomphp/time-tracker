@@ -43,7 +43,7 @@ final class LogCommandHandlerTest extends \PHPUnit_Framework_TestCase
     {
         $this->timeTracker    = $this->prophesize(TimeTracker::class);
         $this->linkedAccounts = $this->prophesize(LinkedAccounts::class);
-        $this->developer      = new Developer(Fran::id(), Fran::name(), Fran::slackHandle());
+        $this->developer      = new Developer(Fran::id(), Fran::name());
         $this->project        = IngredientInventory::asSlackProject();
 
         $this->linkedAccounts

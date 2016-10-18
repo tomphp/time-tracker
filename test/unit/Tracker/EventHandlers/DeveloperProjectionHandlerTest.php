@@ -3,7 +3,6 @@
 namespace test\unit\TomPHP\TimeTracker\Tracker\EventHandlers;
 
 use TomPHP\TimeTracker\Common\Email;
-use TomPHP\TimeTracker\Common\SlackHandle;
 use TomPHP\TimeTracker\Tracker\DeveloperId;
 use TomPHP\TimeTracker\Tracker\DeveloperProjection;
 use TomPHP\TimeTracker\Tracker\DeveloperProjections;
@@ -32,16 +31,14 @@ final class DeveloperProjectionHandlerTest extends AbstractEventHandlerTest
         $this->subject()->handle(new DeveloperCreated(
             $id,
             'Tom',
-            Email::fromString('tom@example.com'),
-            SlackHandle::fromString('tom')
+            Email::fromString('tom@example.com')
         ));
 
         $this->developers
             ->add(new DeveloperProjection(
                 $id,
                 'Tom',
-                Email::fromString('tom@example.com'),
-                SlackHandle::fromString('tom')
+                Email::fromString('tom@example.com')
             ))->shouldHaveBeenCalled();
     }
 }

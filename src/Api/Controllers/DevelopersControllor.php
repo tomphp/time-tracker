@@ -8,7 +8,6 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use TomPHP\TimeTracker\Api\Resources\DeveloperResource;
 use TomPHP\TimeTracker\Common\Email;
-use TomPHP\TimeTracker\Common\SlackHandle;
 use TomPHP\TimeTracker\Tracker\Developer;
 use TomPHP\TimeTracker\Tracker\DeveloperId;
 use TomPHP\TimeTracker\Tracker\DeveloperProjections;
@@ -31,8 +30,7 @@ final class DevelopersControllor
         Developer::create(
             $id,
             $params['name'],
-            Email::fromString($params['email']),
-            SlackHandle::fromString($params['slack-handle'])
+            Email::fromString($params['email'])
         );
 
         return $response->withJson([], HttpStatus::STATUS_CREATED)
@@ -46,8 +44,7 @@ final class DevelopersControllor
         $projection = $developers->withId(DeveloperId::fromString($args['developerId']));
         $resource   = new DeveloperResource(
             (string) $projection->id(),
-            (string) $projection->name(),
-            (string) $projection->slackHandle()
+            (string) $projection->name()
         );
 
         return $response->withJson(

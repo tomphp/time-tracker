@@ -14,7 +14,6 @@ use TomPHP\TimeTracker\Common\DeveloperId;
 use TomPHP\TimeTracker\Common\Email;
 use TomPHP\TimeTracker\Common\Period;
 use TomPHP\TimeTracker\Common\ProjectId;
-use TomPHP\TimeTracker\Common\SlackHandle;
 use TomPHP\TimeTracker\Slack\CommandRunner;
 use TomPHP\TimeTracker\Slack\Developer;
 use TomPHP\TimeTracker\Slack\Project;
@@ -93,7 +92,7 @@ class SlackContext implements Context, SnippetAcceptingContext
     {
         $id = DeveloperId::fromString("developer-id-$developerName");
 
-        $developer = new Developer($id, $developerName, SlackHandle::fromString($developerName));
+        $developer = new Developer($id, $developerName);
 
         $this->developers[$developerName] = $developer;
 

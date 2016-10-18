@@ -1,9 +1,7 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace test\support\TestUsers;
 
-use TomPHP\TimeTracker\Common\Email;
-use TomPHP\TimeTracker\Common\SlackHandle;
 use TomPHP\TimeTracker\Common\ProjectId;
 use TomPHP\TimeTracker\Slack;
 

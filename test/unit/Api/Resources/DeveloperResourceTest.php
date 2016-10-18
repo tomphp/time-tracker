@@ -14,7 +14,7 @@ final class DeveloperResourceTest extends \PHPUnit_Framework_TestCase
         $this->resource = new DeveloperResource(
             'developer-id',
             'Developer Name',
-            'developer-slack-handle'
+            'developer@email.com'
         );
     }
 
@@ -30,8 +30,8 @@ final class DeveloperResourceTest extends \PHPUnit_Framework_TestCase
                     'type'       => 'developers',
                     'id'         => 'developer-id',
                     'attributes' => [
-                        'name'         => 'Developer Name',
-                        'slack-handle' => 'developer-slack-handle',
+                        'name'  => 'Developer Name',
+                        'email' => 'developer@email.com',
                     ],
                 ],
             ],
@@ -47,8 +47,8 @@ final class DeveloperResourceTest extends \PHPUnit_Framework_TestCase
                 'type'       => 'developers',
                 'id'         => 'developer-id',
                 'attributes' => [
-                    'name'         => 'Developer Name',
-                    'slack-handle' => 'developer-slack-handle',
+                    'name'  => 'Developer Name',
+                    'email' => 'developer@email.com',
                 ],
             ],
             $this->resource->data()

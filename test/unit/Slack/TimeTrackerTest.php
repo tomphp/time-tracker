@@ -7,7 +7,6 @@ use test\support\TestUsers\IngredientInventory;
 use test\support\TestUsers\Mike;
 use TomPHP\TimeTracker\Common\Email;
 use TomPHP\TimeTracker\Common\Period;
-use TomPHP\TimeTracker\Common\SlackHandle;
 use TomPHP\TimeTracker\Slack\Developer;
 use TomPHP\TimeTracker\Slack\TimeTracker;
 use TomPHP\TimeTracker\Tracker;
@@ -34,28 +33,18 @@ final class TimeTrackerTest extends \PHPUnit_Framework_TestCase
         $this->projects   = $this->prophesize(ProjectProjections::class);
 
         $this->developers
-            ->withSlackHandle(Argument::any())
-            ->willReturn(new DeveloperProjection(
-                Tracker\DeveloperId::fromString((string) Mike::id()),
-                Mike::name(),
-                Mike::email(),
-                Mike::slackHandle()
-            ));
-        $this->developers
             ->withEmail(Argument::any())
             ->willReturn(new DeveloperProjection(
                 Tracker\DeveloperId::fromString((string) Mike::id()),
                 Mike::name(),
-                Mike::email(),
-                Mike::slackHandle()
+                Mike::email()
             ));
         $this->developers
             ->withId(Argument::any())
             ->willReturn(new DeveloperProjection(
                 Tracker\DeveloperId::fromString((string) Mike::id()),
                 Mike::name(),
-                Mike::email(),
-                Mike::slackHandle()
+                Mike::email()
             ));
 
         $this->projects
@@ -84,7 +73,7 @@ final class TimeTrackerTest extends \PHPUnit_Framework_TestCase
     public function on_fetchDeveloperByEmail_it_returns_the_developer()
     {
         assertEquals(
-            new Developer(Mike::id(), Mike::name(), Mike::slackHandle()),
+            new Developer(Mike::id(), Mike::name()),
             $this->subject->fetchDeveloperByEmail(Mike::email())
         );
     }
@@ -102,25 +91,8 @@ final class TimeTrackerTest extends \PHPUnit_Framework_TestCase
     public function on_fetchDeveloperById_it_returns_the_developer()
     {
         assertEquals(
-            new Developer(Mike::id(), Mike::name(), Mike::slackHandle()),
+            new Developer(Mike::id(), Mike::name()),
             $this->subject->fetchDeveloperById(Mike::id())
-        );
-    }
-
-    /** @test */
-    public function on_fetchDeveloperBySlackHandle_it_fetches_the_DeveloperProjection_by_slack_handle()
-    {
-        $this->subject->fetchDeveloperBySlackHandle(SlackHandle::fromString('@tom'));
-
-        $this->developers->withSlackHandle(SlackHandle::fromString('@tom'))->shouldHaveBeenCalled();
-    }
-
-    /** @test */
-    public function on_fetchDeveloperBySlackHandle_it_returns_the_developer()
-    {
-        assertEquals(
-            new Developer(Mike::id(), Mike::name(), Mike::slackHandle()),
-            $this->subject->fetchDeveloperBySlackHandle(SlackHandle::fromString('@tom'))
         );
     }
 

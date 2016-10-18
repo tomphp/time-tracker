@@ -10,7 +10,6 @@ use TomPHP\ContainerConfigurator\Configurator;
 use TomPHP\TimeTracker\Common\Date;
 use TomPHP\TimeTracker\Common\Email;
 use TomPHP\TimeTracker\Common\Period;
-use TomPHP\TimeTracker\Common\SlackHandle;
 use TomPHP\TimeTracker\Tracker\Developer;
 use TomPHP\TimeTracker\Tracker\DeveloperId;
 use TomPHP\TimeTracker\Tracker\EventBus;
@@ -62,8 +61,7 @@ class TrackerContext implements Context, SnippetAcceptingContext
             Developer::create(
                 $developerId,
                 $developerName,
-                Email::fromString('something@example.com'),
-                SlackHandle::fromString(uniqid('@slack-'))
+                Email::fromString('something@example.com')
             );
 
             $this->developers[$developerName] = $developerId;

@@ -3,7 +3,6 @@
 namespace TomPHP\TimeTracker\Tracker;
 
 use TomPHP\TimeTracker\Common\Email;
-use TomPHP\TimeTracker\Common\SlackHandle;
 use TomPHP\TimeTracker\Tracker\Events\DeveloperCreated;
 
 final class Developer
@@ -11,10 +10,9 @@ final class Developer
     public static function create(
         DeveloperId $id,
         string $name,
-        Email $email,
-        SlackHandle $slackHandle
+        Email $email
     ) : self {
-        EventBus::publish(new DeveloperCreated($id, $name, $email, $slackHandle));
+        EventBus::publish(new DeveloperCreated($id, $name, $email));
         return new self();
     }
 

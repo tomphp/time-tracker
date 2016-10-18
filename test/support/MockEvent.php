@@ -1,10 +1,9 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace test\support;
 
-use TomPHP\TimeTracker\Tracker\Event;
 use TomPHP\TimeTracker\Tracker\AggregateId;
-use test\support\MockAggregateId;
+use TomPHP\TimeTracker\Tracker\Event;
 
 final class MockEvent extends Event
 {
@@ -27,7 +26,7 @@ final class MockEvent extends Event
 
     public function __construct(MockAggregateId $id, string $param)
     {
-        $this->id = $id;
+        $this->id    = $id;
         $this->param = $param;
     }
 

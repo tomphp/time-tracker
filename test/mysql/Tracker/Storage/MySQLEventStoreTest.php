@@ -1,15 +1,13 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace test\mysql\TomPHP\TimeTracker\Tracker\Storage;
 
 use PDO;
-use TomPHP\TimeTracker\Tracker\Storage\MySQLEventStore;
-use TomPHP\TimeTracker\Tracker\EventStore;
-use TomPHP\TimeTracker\Tracker\AggregateId;
-use TomPHP\TimeTracker\Tracker\Event;
-use test\support\MockEvent;
-use test\support\MockAggregateId;
 use test\mysql\TomPHP\TimeTracker\MySQLConnection;
+use test\support\MockAggregateId;
+use test\support\MockEvent;
+use TomPHP\TimeTracker\Tracker\EventStore;
+use TomPHP\TimeTracker\Tracker\Storage\MySQLEventStore;
 
 final class MySQLEventStoreTest extends \PHPUnit_Framework_TestCase
 {

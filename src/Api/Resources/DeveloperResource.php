@@ -11,13 +11,13 @@ final class DeveloperResource
     private $name;
 
     /** @var string */
-    private $slackHandle;
+    private $email;
 
-    public function __construct(string $id, string $name, string $slackHandle)
+    public function __construct(string $id, string $name, string $email)
     {
-        $this->id          = $id;
-        $this->name        = $name;
-        $this->slackHandle = $slackHandle;
+        $this->id    = $id;
+        $this->name  = $name;
+        $this->email = $email;
     }
 
     public function toJsonApiResource(string $baseUrl) : array
@@ -36,8 +36,8 @@ final class DeveloperResource
             'type'       => 'developers',
             'id'         => $this->id,
             'attributes' => [
-                'name'         => $this->name,
-                'slack-handle' => $this->slackHandle,
+                'name'  => $this->name,
+                'email' => $this->email,
             ],
         ];
     }
