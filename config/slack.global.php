@@ -3,6 +3,7 @@ use TomPHP\ContainerConfigurator\Configurator;
 use TomPHP\TimeTracker\Common\Date;
 use TomPHP\TimeTracker\Slack\Command;
 use TomPHP\TimeTracker\Slack\CommandRunner;
+use TomPHP\TimeTracker\Slack\CommandSanitiser;
 use TomPHP\TimeTracker\Slack\LinkedAccounts;
 use TomPHP\TimeTracker\Slack\Storage\MySQLLinkedAccountRepository;
 use TomPHP\TimeTracker\Slack\TimeTracker;
@@ -28,6 +29,7 @@ return [
             CommandRunner::class => [
                 'arguments' => [
                     Configurator::container(),
+                    CommandSanitiser::class,
                     'config.slack.commands',
                 ],
             ],
@@ -35,6 +37,7 @@ return [
                 'class'     => MySQLLinkedAccountRepository::class,
                 'arguments' => ['database'],
             ],
+            CommandSanitiser::class         => [],
             Command\LogCommandParser::class => [
                 'arguments' => ['config.slack.today'],
             ],

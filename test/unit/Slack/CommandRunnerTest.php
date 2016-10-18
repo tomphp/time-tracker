@@ -8,6 +8,7 @@ use TomPHP\TimeTracker\Slack\Command;
 use TomPHP\TimeTracker\Slack\CommandHandler;
 use TomPHP\TimeTracker\Slack\CommandParser;
 use TomPHP\TimeTracker\Slack\CommandRunner;
+use TomPHP\TimeTracker\Slack\CommandSanitiser;
 use TomPHP\TimeTracker\Slack\SlackUserId;
 
 final class CommandRunnerTest extends \PHPUnit_Framework_TestCase
@@ -21,6 +22,9 @@ final class CommandRunnerTest extends \PHPUnit_Framework_TestCase
     /** @var CommandParser */
     private $parser;
 
+    /** @var CommandSanitiser */
+    private $sanitiser;
+
     /** @var Command */
     private $command;
 
@@ -33,6 +37,7 @@ final class CommandRunnerTest extends \PHPUnit_Framework_TestCase
         $this->parser    = $this->prophesize(CommandParser::class);
         $this->command   = $this->prophesize(Command::class);
         $this->handler   = $this->prophesize(CommandHandler::class);
+        $this->sanitiser = $this->prophesize(CommandSanitiser::class);
 
         $this->handler->handle(Argument::cetera())->willReturn([]);
         $this->container->get('Namespace\FooCommandParser')->willReturn($this->parser->reveal());
@@ -46,6 +51,7 @@ final class CommandRunnerTest extends \PHPUnit_Framework_TestCase
 
         $this->subject = new CommandRunner(
             $this->container->reveal(),
+            $this->sanitiser->reveal(),
             [
                 'foo' => 'Namespace\FooCommand',
                 'bar' => 'Namespace\BarCommand',
@@ -56,6 +62,8 @@ final class CommandRunnerTest extends \PHPUnit_Framework_TestCase
     /** @test */
     public function it_fetches_the_parser_from_the_container()
     {
+        $this->sanitiser->sanitise('foo command')->willReturn('foo command');
+
         $this->subject->run($this->userId, 'foo command');
 
         $this->container->get('Namespace\FooCommandParser')->shouldHaveBeenCalled();
@@ -64,14 +72,18 @@ final class CommandRunnerTest extends \PHPUnit_Framework_TestCase
     /** @test */
     public function it_parses_the_command()
     {
+        $this->sanitiser->sanitise('bar command arguments')->willReturn('bar command arguments sanitised');
+
         $this->subject->run($this->userId, 'bar command arguments');
 
-        $this->parser->parse('command arguments')->shouldHaveBeenCalled();
+        $this->parser->parse('command arguments sanitised')->shouldHaveBeenCalled();
     }
 
     /** @test */
     public function it_fetches_the_command_handler()
     {
+        $this->sanitiser->sanitise('foo command')->willReturn('foo command');
+
         $this->subject->run($this->userId, 'foo command');
 
         $this->container->get('Namespace\FooCommandHandler')->shouldHaveBeenCalled();
@@ -80,6 +92,8 @@ final class CommandRunnerTest extends \PHPUnit_Framework_TestCase
     /** @test */
     public function it_handles_the_command()
     {
+        $this->sanitiser->sanitise('foo command')->willReturn('foo command');
+
         $this->subject->run($this->userId, 'foo command');
 
         $this->handler->handle($this->userId, $this->command)->shouldHaveBeenCalled();
@@ -90,6 +104,7 @@ final class CommandRunnerTest extends \PHPUnit_Framework_TestCase
     {
         $result = ['the result'];
         $this->handler->handle(Argument::cetera())->willReturn($result);
+        $this->sanitiser->sanitise('foo command')->willReturn('foo command');
 
         assertSame($result, $this->subject->run($this->userId, 'foo command'));
     }

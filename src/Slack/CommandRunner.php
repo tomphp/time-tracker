@@ -12,14 +12,24 @@ final class CommandRunner
     /** @var ContainerInterface */
     private $container;
 
-    public function __construct(ContainerInterface $container, array $commands)
-    {
+    /** @var CommandSanitiser */
+    private $sanitiser;
+
+    /** @param Command[] $commands */
+    public function __construct(
+        ContainerInterface $container,
+        CommandSanitiser $sanitiser,
+        array $commands
+    ) {
         $this->commands  = $commands;
         $this->container = $container;
+        $this->sanitiser = $sanitiser;
     }
 
     public function run(SlackUserId $userId, string $commandString) : array
     {
+        $commandString = $this->sanitiser->sanitise($commandString);
+
         list($name, $arguments) = explode(' ', $commandString, 2);
 
         $command = $this->parser($name)->parse($arguments);
