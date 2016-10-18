@@ -32,7 +32,7 @@ final class ProjectResourceTest extends \PHPUnit_Framework_TestCase
                     'id'         => 'project-id',
                     'attributes' => [
                         'name'       => 'Project Name',
-                        'total-time' => '2:00 hours',
+                        'total-time' => '2h',
                     ],
                 ],
             ],
@@ -49,7 +49,7 @@ final class ProjectResourceTest extends \PHPUnit_Framework_TestCase
                 'id'         => 'project-id',
                 'attributes' => [
                     'name'       => 'Project Name',
-                    'total-time' => '2:00 hours',
+                    'total-time' => '2h',
                 ],
             ],
             $this->resource->data()

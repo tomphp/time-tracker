@@ -22,7 +22,7 @@ final class LogCommandParserTest extends \PHPUnit_Framework_TestCase
     /** @test */
     public function it_parses_a_simple_command_with_no_date()
     {
-        $command = $this->subject->parse('log 3hrs against Time Tracker for Implementing Slack integration');
+        $command = $this->subject->parse('3hrs against Time Tracker for Implementing Slack integration');
 
         assertEquals(new LogCommand(
             'Time Tracker',

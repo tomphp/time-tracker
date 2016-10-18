@@ -125,9 +125,21 @@ final class PeriodTest extends \PHPUnit_Framework_TestCase
     }
 
     /** @test */
-    public function on_toString_it_returns_a_string_representation()
+    public function on_toString_it_returns_a_string_for_hours_only()
     {
-        assertSame('2:45 hours', (string) Period::fromString('2:45'));
+        assertSame('2h', (string) Period::fromString('2:00'));
+    }
+
+    /** @test */
+    public function on_toString_it_returns_a_string_for_minutes_only()
+    {
+        assertSame('30m', (string) Period::fromString('0:30'));
+    }
+
+    /** @test */
+    public function on_toString_it_returns_a_string_for_hours_and_minutes()
+    {
+        assertSame('2h 45m', (string) Period::fromString('2:45'));
     }
 
     /** @test */

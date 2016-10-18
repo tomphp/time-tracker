@@ -118,6 +118,6 @@ final class LogCommandHandlerTest extends \PHPUnit_Framework_TestCase
         $result = $this->subject->handle(Fran::slackUserId(), $this->command);
 
         assertSame('ephemeral', $result['response_type']);
-        assertSame('Fran logged 2:00 hours against Ingredient Inventory', $result['text']);
+        assertSame('Fran logged 2h against Ingredient Inventory', $result['text']);
     }
 }

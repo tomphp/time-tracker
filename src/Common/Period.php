@@ -77,6 +77,14 @@ final class Period
 
     public function __toString() : string
     {
-        return sprintf('%d:%02d hours', $this->hours, $this->minutes);
+        if ($this->hours && $this->minutes) {
+            return sprintf('%dh %02dm', $this->hours, $this->minutes);
+        }
+
+        if (!$this->hours && $this->minutes) {
+            return sprintf('%02dm', $this->minutes);
+        }
+
+        return sprintf('%dh', $this->hours);
     }
 }
