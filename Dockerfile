@@ -1,4 +1,4 @@
-FROM php:7-cli
+FROM php:7.1-rc-cli
 
 # Install ZLib (for composer)
 RUN apt-get update \
@@ -26,12 +26,13 @@ RUN mkdir -p /var/www/html
 
 COPY . /var/www/html
 
-RUN useradd -ms /bin/bash composer
-RUN chown -R composer: /var/www/html
+RUN useradd -ms /bin/bash composer \
+    && chown -R composer: /var/www/html
 
 USER composer
+
 WORKDIR /var/www/html
 
-RUN /usr/local/bin/composer install --no-plugins --no-scripts
+RUN /usr/local/bin/composer install --no-plugins --no-scripts --no-dev --optimize-autoloader 
 
 VOLUME /var/www/html
