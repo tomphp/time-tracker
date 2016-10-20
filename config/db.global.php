@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 return [
     'db' => [
         'dsn'      => sprintf('mysql:host=%s;dbname=%s', getenv('MYSQL_HOSTNAME'), getenv('MYSQL_DBNAME')),
@@ -8,7 +9,7 @@ return [
     'di' => [
         'services' => [
             'database' => [
-                'class'     => PDO,
+                'class'     => \PDO::class,
                 'arguments' => [
                     'config.db.dsn',
                     'config.db.username',
