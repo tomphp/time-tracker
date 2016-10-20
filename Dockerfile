@@ -14,7 +14,7 @@ RUN apt-get update \
 RUN apt-get update \
     && apt-get install -y git
 
-RUN docker-php-ext-install pdo && docker-php-ext-install mysql
+RUN docker-php-ext-install pdo pdo_mysql
 
 # Install Composer
 RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
