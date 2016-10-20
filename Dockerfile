@@ -1,6 +1,5 @@
 FROM php:7-cli
 
-
 # Install ZLib (for composer)
 RUN apt-get update \
     && apt-get install -y zlib1g-dev \
@@ -14,6 +13,8 @@ RUN apt-get update \
 # Install git (for composer)
 RUN apt-get update \
     && apt-get install -y git
+
+RUN docker-php-ext-install pdo && docker-php-ext-install mysql
 
 # Install Composer
 RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
