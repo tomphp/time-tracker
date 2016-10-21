@@ -1,9 +1,10 @@
 #!/bin/sh -xe
 
+START_DIR=`pwd`
 SCRIPT_DIR=`dirname $0`
 PROJECT_DIR=`dirname $SCRIPT_DIR`
 
-pushd $PROJECT_DIR
+cd $PROJECT_DIR
 
 pwd
 
@@ -16,3 +17,5 @@ vendor/bin/behat -p features
 vendor/bin/behat -p integration
 
 popd
+
+cd $START_DIR
