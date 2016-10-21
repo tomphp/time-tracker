@@ -70,6 +70,23 @@ final class CommandRunnerTest extends \PHPUnit_Framework_TestCase
     }
 
     /** @test */
+    public function it_returns_an_error_if_the_command_is_unknown()
+    {
+        $this->sanitiser->sanitise('unknown command')->willReturn('unknown command');
+
+        $result = $this->subject->run($this->userId, 'unknown command');
+
+        assertSame('ephemeral', $result['response_type']);
+        assertSame(
+            [
+                'unknown is not a valid command',
+                'Valid commands are: foo, bar',
+            ],
+            $result['text']
+        );
+    }
+
+    /** @test */
     public function it_parses_the_command()
     {
         $this->sanitiser->sanitise('bar command arguments')->willReturn('bar command arguments sanitised');

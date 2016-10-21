@@ -32,6 +32,16 @@ final class CommandRunner
 
         list($name, $arguments) = explode(' ', $commandString, 2);
 
+        if (!array_key_exists($name, $this->commands)) {
+            return [
+                'response_type' => 'ephemeral',
+                'text'          => [
+                    $name . ' is not a valid command',
+                    'Valid commands are: ' . implode(', ', array_keys($this->commands)),
+                ],
+            ];
+        }
+
         $command = $this->parser($name)->parse($arguments);
 
         return $this->handler($name)->handle($userId, $command);
