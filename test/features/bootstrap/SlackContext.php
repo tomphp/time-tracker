@@ -2,7 +2,6 @@
 
 namespace test\features\TomPHP\TimeTracker;
 
-use Behat\Behat\Tester\Exception\PendingException;
 use Behat\Behat\Context\Context;
 use Behat\Behat\Context\SnippetAcceptingContext;
 use Interop\Container\ContainerInterface;
@@ -174,11 +173,7 @@ class SlackContext implements Context, SnippetAcceptingContext
     public function assertSlackResponseMessage(string $message)
     {
         assertSame('ephemeral', $this->result['response_type']);
-        if (is_array($this->result['text'])) {
-            assertContains($message, $this->result['text']);
-        } else {
-            assertSame($message, $this->result['text']);
-        }
+        assertSame($message, $this->result['text']);
     }
 
     /**
@@ -188,12 +183,12 @@ class SlackContext implements Context, SnippetAcceptingContext
     {
         $commands = array_keys($this->services->get('config.slack.commands'));
 
-        assertInternalType('array', $this->result['text']);
+        $attachments = $this->result['attachments'];
 
-        $commandMessage = $this->result['text'][1];
+        assertSame('Valid commands are:', $attachments['text']);
 
         foreach ($commands as $command) {
-            assertContains($command, $commandMessage);
+            assertContains($command, $attachments);
         }
     }
 

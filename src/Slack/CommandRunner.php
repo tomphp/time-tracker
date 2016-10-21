@@ -33,12 +33,15 @@ final class CommandRunner
         list($name, $arguments) = explode(' ', $commandString, 2);
 
         if (!array_key_exists($name, $this->commands)) {
+            $attachments = array_merge(
+                ['text' => 'Valid commands are:'],
+                array_keys($this->commands)
+            );
+
             return [
                 'response_type' => 'ephemeral',
-                'text'          => [
-                    $name . ' is not a valid command',
-                    'Valid commands are: ' . implode(', ', array_keys($this->commands)),
-                ],
+                'text'          => $name . ' is not a valid command',
+                'attachments'   => $attachments,
             ];
         }
 

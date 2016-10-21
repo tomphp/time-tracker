@@ -77,12 +77,14 @@ final class CommandRunnerTest extends \PHPUnit_Framework_TestCase
         $result = $this->subject->run($this->userId, 'unknown command');
 
         assertSame('ephemeral', $result['response_type']);
+        assertSame('unknown is not a valid command', $result['text']);
         assertSame(
             [
-                'unknown is not a valid command',
-                'Valid commands are: foo, bar',
+                'text' => 'Valid commands are:',
+                'foo',
+                'bar',
             ],
-            $result['text']
+            $result['attachments']
         );
     }
 
