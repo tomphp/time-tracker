@@ -9,7 +9,7 @@ resources:
 
 jobs:
 - name: unit-tests
-  public: true
+  public: false
   plan:
   - get: github-repository
     trigger: true
@@ -28,7 +28,7 @@ jobs:
         path: build-dir/ci/unit.sh
 
 - name: mysql-tests
-  public: true
+  public: false
   plan:
   - get: github-repository
     trigger: true
@@ -71,6 +71,7 @@ jobs:
             docker volume rm $(docker volume ls -q)
 
 - name: e2e-tests
+  public: false
   plan:
   - get: github-repository
     passed: [unit-tests, mysql-tests]
