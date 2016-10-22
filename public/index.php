@@ -4,13 +4,12 @@ use Fig\Http\Message\StatusCodeInterface as HttpStatus;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\App;
-use TomPHP\ContainerConfigurator\Configurator;
 use TomPHP\TimeTracker\Api\Controllers\DevelopersControllor;
 use TomPHP\TimeTracker\Api\Controllers\ProjectsController;
+use TomPHP\TimeTracker\Bootstrap;
 use TomPHP\TimeTracker\Slack\CommandRunner;
 use TomPHP\TimeTracker\Slack\SlackUserId;
 use TomPHP\TimeTracker\Tracker\DeveloperId;
-use TomPHP\TimeTracker\Tracker\EventBus;
 use TomPHP\TimeTracker\Tracker\ProjectId;
 use TomPHP\TimeTracker\Tracker\TimeEntryProjection;
 use TomPHP\TimeTracker\Tracker\TimeEntryProjections;
@@ -25,14 +24,7 @@ $app = new App([
     ],
 ]);
 
-Configurator::apply()
-    ->configFromFiles(PROJECT_ROOT . '/config/*.global.php')
-    ->withSetting(Configurator::SETTING_DEFAULT_SINGLETON_SERVICES, true)
-    ->to($app->getContainer());
-
-foreach ($app->getContainer()->get('config.tracker.event_handlers') as $name) {
-    EventBus::addHandler($app->getContainer()->get($name));
-}
+Bootstrap::run($app->getContainer());
 
 $app->group('/slack', function () {
     $this->post('/slash-command-endpoint', function (Request $request, Response $response) {

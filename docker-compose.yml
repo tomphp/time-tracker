@@ -29,6 +29,7 @@ services:
     links:
       - db
     environment:
+      STORAGE_DRIVER: mysql
       MYSQL_DBNAME: tracker
       MYSQL_HOSTNAME: db
       MYSQL_USERNAME: username
@@ -45,6 +46,7 @@ services:
       - codebase
     command: echo "CLI Initialised..."
     environment:
+      STORAGE_DRIVER: ${STORAGE_DRIVER}
       MYSQL_DBNAME: tracker
       MYSQL_HOSTNAME: db
       MYSQL_USERNAME: username

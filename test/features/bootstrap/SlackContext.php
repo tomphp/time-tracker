@@ -8,7 +8,7 @@ use Interop\Container\ContainerInterface;
 use Prophecy\Argument;
 use Prophecy\Prophet;
 use Slim\Container;
-use TomPHP\ContainerConfigurator\Configurator;
+use TomPHP\TimeTracker\Bootstrap;
 use TomPHP\TimeTracker\Common\Date;
 use TomPHP\TimeTracker\Common\DeveloperId;
 use TomPHP\TimeTracker\Common\Email;
@@ -50,11 +50,7 @@ class SlackContext implements Context, SnippetAcceptingContext
         $this->prophet  = new Prophet();
         $this->services = new Container();
 
-        Configurator::apply()
-            ->configFromFiles(__DIR__ . '/../../../config/*.global.php')
-            ->configFromFiles(__DIR__ . '/../../../config/*.features.php')
-            ->withSetting(Configurator::SETTING_DEFAULT_SINGLETON_SERVICES, true)
-            ->to($this->services);
+        Bootstrap::run($this->services);
 
         $this->timeTracker = $this->prophet->prophesize(TimeTracker::class);
 

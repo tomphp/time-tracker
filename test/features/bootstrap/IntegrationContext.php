@@ -7,7 +7,7 @@ use Behat\Behat\Context\SnippetAcceptingContext;
 use Interop\Container\ContainerInterface;
 use Prophecy\Prophet;
 use Slim\Container;
-use TomPHP\ContainerConfigurator\Configurator;
+use TomPHP\TimeTracker\Bootstrap;
 use TomPHP\TimeTracker\Common\Email;
 use TomPHP\TimeTracker\Common\Period;
 use TomPHP\TimeTracker\Slack\CommandRunner;
@@ -15,7 +15,6 @@ use TomPHP\TimeTracker\Slack\SlackUserId;
 use TomPHP\TimeTracker\Tracker\Developer;
 use TomPHP\TimeTracker\Tracker\DeveloperId;
 use TomPHP\TimeTracker\Tracker\DeveloperProjections;
-use TomPHP\TimeTracker\Tracker\EventBus;
 use TomPHP\TimeTracker\Tracker\Project;
 use TomPHP\TimeTracker\Tracker\ProjectId;
 use TomPHP\TimeTracker\Tracker\ProjectProjections;
@@ -48,16 +47,7 @@ class IntegrationContext implements Context, SnippetAcceptingContext
         $this->prophet  = new Prophet();
         $this->services = new Container();
 
-        Configurator::apply()
-            ->configFromFiles(__DIR__ . '/../../../config/*.global.php')
-            ->configFromFiles(__DIR__ . '/../../../config/*.features.php')
-            ->withSetting(Configurator::SETTING_DEFAULT_SINGLETON_SERVICES, true)
-            ->to($this->services);
-
-        EventBus::clearHandlers();
-        foreach ($this->services['config.tracker.event_handlers'] as $name) {
-            EventBus::addHandler($this->services[$name]);
-        }
+        Bootstrap::run($this->services);
     }
 
     /**

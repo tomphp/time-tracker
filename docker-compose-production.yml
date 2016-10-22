@@ -26,6 +26,7 @@ services:
     links:
       - db
     environment:
+      STORAGE_DRIVER: mysql
       MYSQL_DBNAME: tracker
       MYSQL_HOSTNAME: db
       MYSQL_USERNAME: username

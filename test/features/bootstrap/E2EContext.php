@@ -10,10 +10,9 @@ use Fig\Http\Message\StatusCodeInterface as HttpStatus;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Response;
 use Slim\Container;
-use TomPHP\ContainerConfigurator\Configurator;
+use TomPHP\TimeTracker\Bootstrap;
 use TomPHP\TimeTracker\Common\Date;
 use TomPHP\TimeTracker\Common\Period;
-use TomPHP\TimeTracker\Tracker\EventBus;
 
 class E2EContext implements Context, SnippetAcceptingContext
 {
@@ -51,16 +50,9 @@ class E2EContext implements Context, SnippetAcceptingContext
 
         $services = new Container();
 
-        Configurator::apply()
-            ->configFromFiles(__DIR__ . '/../../../config/*.global.php')
-            ->withSetting(Configurator::SETTING_DEFAULT_SINGLETON_SERVICES, true)
-            ->to($services);
+        Bootstrap::run($services);
 
-        EventBus::clearHandlers();
-        foreach ($services['config.tracker.event_handlers'] as $name) {
-            EventBus::addHandler($services->get($name));
-        }
-
+        $services->get('database')->exec('TRUNCATE `slack_linked_accounts`');
         $services->get('database')->exec('TRUNCATE `developer_projections`');
         $services->get('database')->exec('TRUNCATE `project_projections`');
         $services->get('database')->exec('TRUNCATE `time_entry_projections`');

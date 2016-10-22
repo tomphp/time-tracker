@@ -5,7 +5,6 @@ use TomPHP\TimeTracker\Slack\Command;
 use TomPHP\TimeTracker\Slack\CommandRunner;
 use TomPHP\TimeTracker\Slack\CommandSanitiser;
 use TomPHP\TimeTracker\Slack\LinkedAccounts;
-use TomPHP\TimeTracker\Slack\Storage\MySQLLinkedAccountRepository;
 use TomPHP\TimeTracker\Slack\TimeTracker;
 use TomPHP\TimeTracker\Tracker\DeveloperProjections;
 use TomPHP\TimeTracker\Tracker\ProjectProjections;
@@ -32,10 +31,6 @@ return [
                     CommandSanitiser::class,
                     'config.slack.commands',
                 ],
-            ],
-            LinkedAccounts::class => [
-                'class'     => MySQLLinkedAccountRepository::class,
-                'arguments' => ['database'],
             ],
             CommandSanitiser::class         => [],
             Command\LogCommandParser::class => [
