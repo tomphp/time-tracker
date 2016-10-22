@@ -1,6 +1,4 @@
-FROM php:7.1-rc-apache
-
-RUN docker-php-ext-install pdo pdo_mysql
+FROM tomphp/time-tracker-php
 
 ADD vhost.conf /etc/apache2/sites-available/tracker.conf
 
