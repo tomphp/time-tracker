@@ -8,7 +8,7 @@ cd $PROJECT_DIR
 
 pwd
 
-composer install --no-plugins --no-scripts
+# composer install --no-plugins --no-scripts
 
 vendor/bin/php-cs-fixer fix --dry-run
 

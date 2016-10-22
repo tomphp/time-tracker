@@ -1,0 +1,23 @@
+---
+
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: composer/composer
+
+inputs:
+  - name: github-repository
+
+outputs:
+  - name: build-dir
+
+run:
+  path: sh
+  args:
+    - -exc
+    - |
+      git clone ./github-repository ./build-dir
+      cd build-dir
+      composer install --no-interaction --no-ansi
