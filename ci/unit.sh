@@ -16,6 +16,4 @@ vendor/bin/phpunit --testsuite unit
 vendor/bin/behat -p features
 vendor/bin/behat -p integration
 
-popd
-
 cd $START_DIR
