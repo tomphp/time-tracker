@@ -1,4 +1,4 @@
-FROM tomphp/time-tracker-php
+FROM tomoram/time-tracker-php
 
 ADD vhost.conf /etc/apache2/sites-available/tracker.conf
 
