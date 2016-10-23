@@ -5,10 +5,7 @@ volumes:
 
 services:
   codebase:
-    # build: .
-    image: busybox
-    volumes:
-      - ./:/var/www/html
+    build: .
 
   db:
     image: mariadb
@@ -22,8 +19,6 @@ services:
 
   webserver:
     build: containers/webserver
-    ports:
-      - 8080:80
     volumes_from:
       - codebase
     links:
@@ -38,7 +33,7 @@ services:
       - db
 
   cli:
-    build: containers/webserver
+    build: tomoram/time-tracker-php
     links:
       - db
       - webserver
@@ -46,7 +41,6 @@ services:
       - codebase
     command: echo "CLI Initialised..."
     environment:
-      STORAGE_DRIVER: ${STORAGE_DRIVER}
       MYSQL_DBNAME: tracker
       MYSQL_HOSTNAME: db
       MYSQL_USERNAME: username
