@@ -33,7 +33,7 @@ services:
       - db
 
   cli:
-    build: tomoram/time-tracker-php
+    image: tomoram/time-tracker-php
     links:
       - db
       - webserver
