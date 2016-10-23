@@ -33,3 +33,19 @@ services:
       MYSQL_PASSWORD: password
     depends_on:
       - db
+
+  cli:
+    build: tomoram/time-tracker-php
+    links:
+      - db
+      - webserver
+    volumes_from:
+      - codebase
+    command: echo "CLI Initialised..."
+    environment:
+      MYSQL_DBNAME: tracker
+      MYSQL_HOSTNAME: db
+      MYSQL_USERNAME: username
+      MYSQL_PASSWORD: password
+    depends_on:
+      - webserver
