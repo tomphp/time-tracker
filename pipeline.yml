@@ -56,44 +56,88 @@ jobs:
   - get: github-repository
     passed: [unit-tests]
     trigger: true
+
   - task: composer install
     file: github-repository/ci/composer_install.yml
     privileged: true
+
   - task: Run end-to-end tests
-    privileged: true
     config:
       platform: linux
       image_resource:
         type: docker-image
         source:
-          repository: amidos/dcind
+          repository: tomoram/docker-tools
       inputs:
-        - name: build-dir
+      - name: build-dir
       run:
+        dir: build-dir
         path: sh
         args:
-          - -exc
-          - |
-            source /docker-lib.sh
-            start_docker
+        - -exc
+        - |
+          export DOCKER_MACHINE_NAME=do-time-tracker
+          export DOCKER_MACHINE_CA_KEY_PEM={{docker_machine_ca_key_pem}}
+          export DOCKER_MACHINE_CA_PEM={{docker_machine_ca_pem}}
+          export DOCKER_MACHINE_CERT_PEM={{docker_machine_cert_pem}}
+          export DOCKER_MACHINE_CONFIG={{docker_machine_config}}
+          export DOCKER_MACHINE_ID_RSA={{docker_machine_id_rsa}}
+          export DOCKER_MACHINE_ID_RSA_PUB={{docker_machine_id_rsa_pub}}
+          export DOCKER_MACHINE_KEY_PEM={{docker_machine_key_pem}}
+          export DOCKER_MACHINE_SERVER_KEY_PEM={{docker_machine_server_key_pem}}
+          export DOCKER_MACHINE_SERVER_PEM={{docker_machine_server_pem}}
 
-            # docker load -i tomphp/time-tracker-php
-            # docker images
+          env-to-docker-machine
+          eval $(docker-machine env --shell bash do-time-tracker)
 
-            cd build-dir
-            export STORAGE_DRIVER=mysql
+          export STORAGE_DRIVER=mysql
 
-            docker-compose up -d
-            docker ps
+          docker-compose -p tt_staging -f docker-compose-staging.yml up -d
+          docker ps
 
-            sleep 20 # Wait for MySQL to initialise
+          docker-compose -p tt_staging -f docker-compose-staging.yml run --rm cli vendor/bin/phinx migrate -e testing
+          docker-compose -p tt_staging -f docker-compose-staging.yml run --rm cli vendor/bin/phpunit --testsuite mysql
+          docker-compose -p tt_staging -f docker-compose-staging.yml run --rm cli vendor/bin/behat -p e2e
 
-            docker-compose run --rm cli vendor/bin/phinx migrate -e testing
-            docker-compose run --rm cli vendor/bin/phpunit --testsuite mysql
-            docker-compose run --rm cli vendor/bin/behat -p e2e
+          docker-compose -p tt_staging -f docker-compose-staging.yml down
 
-            docker-compose down
-            docker volume rm $(docker volume ls -q)
+  # - task: Run end-to-end tests
+  #   privileged: true
+  #   config:
+  #     platform: linux
+  #     image_resource:
+  #       type: docker-image
+  #       source:
+  #         repository: amidos/dcind
+  #     inputs:
+  #       - name: build-dir
+  #     run:
+  #       path: sh
+  #       args:
+  #         - -exc
+  #         - |
+  #           source /docker-lib.sh
+  #           start_docker
+
+  #           # docker load -i tomphp/time-tracker-php
+  #           # docker images
+
+  #           cd build-dir
+  #           export STORAGE_DRIVER=mysql
+
+  #           docker-compose up -d
+  #           docker ps
+
+  #           sleep 30 # Wait for MySQL to initialise
+
+  #           docker-compose logs
+
+  #           docker-compose run --rm cli vendor/bin/phinx migrate -e testing
+  #           docker-compose run --rm cli vendor/bin/phpunit --testsuite mysql
+  #           docker-compose run --rm cli vendor/bin/behat -p e2e
+
+  #           docker-compose down
+  #           docker volume rm $(docker volume ls -q)
 
 - name: deploy
   public: false
@@ -124,3 +168,36 @@ jobs:
           composer install --no-interaction --no-scripts --no-ansi --no-dev --optimize-autoloader
 
   - put: deploy-server
+
+  - task: Update the database
+    config:
+      platform: linux
+      image_resource:
+        type: docker-image
+        source:
+          repository: tomoram/docker-tools
+      inputs:
+      - name: github-repository
+      run:
+        dir: github-repository
+        path: sh
+        args:
+        - -exc
+        - |
+          export DOCKER_MACHINE_NAME=do-time-tracker
+          export DOCKER_MACHINE_CA_KEY_PEM={{docker_machine_ca_key_pem}}
+          export DOCKER_MACHINE_CA_PEM={{docker_machine_ca_pem}}
+          export DOCKER_MACHINE_CERT_PEM={{docker_machine_cert_pem}}
+          export DOCKER_MACHINE_CONFIG={{docker_machine_config}}
+          export DOCKER_MACHINE_ID_RSA={{docker_machine_id_rsa}}
+          export DOCKER_MACHINE_ID_RSA_PUB={{docker_machine_id_rsa_pub}}
+          export DOCKER_MACHINE_KEY_PEM={{docker_machine_key_pem}}
+          export DOCKER_MACHINE_SERVER_KEY_PEM={{docker_machine_server_key_pem}}
+          export DOCKER_MACHINE_SERVER_PEM={{docker_machine_server_pem}}
+
+          env-to-docker-machine
+          eval $(docker-machine env --shell bash do-time-tracker)
+          #sleep 30 # Wait for sql server
+          pwd
+          ls
+          docker-compose -p deployserver -f docker-compose-production.yml run --rm cli vendor/bin/phinx migrate -e testing
