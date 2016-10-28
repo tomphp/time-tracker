@@ -47,7 +47,7 @@
 
     <target name="test:mysql">
         <echo message="Running MySQL tests" />
-        <exec command="${cmd.docker_cli} 'vendor/bin/phpunit --colors=always --testsuite mysql'"
+        <exec command="STORAGE_DRIVER=mysql ${cmd.docker_cli} 'vendor/bin/phpunit --colors=always --testsuite mysql'"
               checkreturn="true"
               passthru="true" />
     </target>

@@ -55,6 +55,8 @@ class SlackContext implements Context, SnippetAcceptingContext
         $this->timeTracker = $this->prophet->prophesize(TimeTracker::class);
 
         $this->services[TimeTracker::class] = $this->timeTracker->reveal();
+
+        $this->timeTracker->hasProjectWithName(Argument::any())->willReturn(false);
     }
 
     /**
@@ -128,9 +130,8 @@ class SlackContext implements Context, SnippetAcceptingContext
 
         $this->projects[$projectName] = $project;
 
-        $this->timeTracker
-            ->fetchProjectByName($projectName)
-            ->willReturn($project);
+        $this->timeTracker->hasProjectWithName($projectName)->willReturn(true);
+        $this->timeTracker->fetchProjectByName($projectName)->willReturn($project);
     }
 
     /**

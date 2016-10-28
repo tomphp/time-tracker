@@ -52,6 +52,7 @@ final class LogCommandHandlerTest extends \PHPUnit_Framework_TestCase
 
         $this->timeTracker->fetchDeveloperById(Argument::any())->willReturn($this->developer);
         $this->timeTracker->fetchProjectByName(Argument::any())->willReturn($this->project);
+        $this->timeTracker->hasProjectWithName(Argument::any())->willReturn(true);
         $this->timeTracker->logTimeEntry(Argument::cetera())->willReturn();
 
         $this->command = new LogCommand(
@@ -85,6 +86,24 @@ final class LogCommandHandlerTest extends \PHPUnit_Framework_TestCase
         $this->timeTracker
             ->fetchDeveloperById(Fran::id())
             ->shouldHaveBeenCalled();
+    }
+
+    /** @test */
+    public function it_returns_an_error_message_if_the_project_does_not_exist()
+    {
+        $this->timeTracker->hasProjectWithName('Unknown Project')->willReturn(false);
+
+        $command = new LogCommand(
+            'Unknown Project',
+            Date::fromString(self::DATE),
+            Period::fromHours(self::PERIOD),
+            self::DESCRIPTION
+        );
+
+        $result = $this->subject->handle(Fran::slackUserId(), $command);
+
+        assertSame('ephemeral', $result['response_type']);
+        assertSame('Project Unknown Project was not found.', $result['text']);
     }
 
     /** @test */

@@ -48,6 +48,11 @@ class TimeTracker
         );
     }
 
+    public function hasProjectWithName(string $name) : bool
+    {
+        return true;
+    }
+
     public function fetchProjectByName(string $name) : Project
     {
         $project = $this->projects->withName($name);
