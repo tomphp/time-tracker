@@ -120,7 +120,9 @@ class IntegrationContext implements Context, SnippetAcceptingContext
     }
 
     /**
-     * @When :developer issues the command :command
+     * @Given :userId has already issued the command :commnad
+     * @When :userId issues the command :command
+     * @When :userId issues the command :command again
      */
     public function issueSlackCommand(SlackUserId $userId, string $command)
     {

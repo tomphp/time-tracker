@@ -16,6 +16,8 @@ interface ProjectProjections
 
     public function withName(string $name) : ProjectProjection;
 
+    public function hasWithName(string $name) : bool;
+
     /** @return void */
     public function updateTotalTimeFor(ProjectId $id, Period $totalTime);
 }

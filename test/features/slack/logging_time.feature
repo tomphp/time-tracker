@@ -14,6 +14,7 @@ Feature: Logging time against a project using Slack
     Then "3:00" hours should have been logged today by Fran against "Ingredient Inventory" for "Feature: Use an ingredient"
     And Fran should receive a response message saying "Fran logged 3h against Ingredient Inventory"
 
+  @integration
   Scenario: The one where the user enters an invalid project name
     Given Fran has a developer account with email "fran@rgsoftware.com"
     And Fran has a Slack account

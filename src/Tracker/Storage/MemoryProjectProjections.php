@@ -31,6 +31,11 @@ final class MemoryProjectProjections implements ProjectProjections
         return $this->projectionsById[(string) $id];
     }
 
+    public function hasWithName(string $name) : bool
+    {
+        return isset($this->projectionsByName[$name]);
+    }
+
     public function withName(string $name) : ProjectProjection
     {
         return $this->projectionsByName[$name];

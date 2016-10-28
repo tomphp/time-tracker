@@ -6,6 +6,7 @@ use TomPHP\TimeTracker\Common\Period;
 use TomPHP\TimeTracker\Tracker\ProjectId;
 use TomPHP\TimeTracker\Tracker\ProjectProjection;
 use TomPHP\TimeTracker\Tracker\ProjectProjections;
+use test\support\TestUsers\IngredientInventory;
 
 abstract class AbstractProjectProjectionsTest extends \PHPUnit_Framework_TestCase
 {
@@ -41,6 +42,28 @@ abstract class AbstractProjectProjectionsTest extends \PHPUnit_Framework_TestCas
     public function on_withId_it_throws_if_there_is_no_project_projection_for_the_given_id()
     {
         $this->markTestIncomplete();
+    }
+
+    /** @test */
+    public function on_hasWithName_it_returns_false_if_the_project_does_not_exist()
+    {
+        $projectId = ProjectId::generate();
+        $project   = new ProjectProjection($projectId, IngredientInventory::name(), Period::fromString('0'));
+
+        $this->projects()->add($project);
+
+        assertFalse($this->projects()->hasWithName('Some Unknown Name'));
+    }
+
+    /** @test */
+    public function on_hasWithName_it_returns_true_if_the_project_does_exist()
+    {
+        $projectId = ProjectId::generate();
+        $project   = new ProjectProjection($projectId, IngredientInventory::name(), Period::fromString('0'));
+
+        $this->projects()->add($project);
+
+        assertTrue($this->projects()->hasWithName(IngredientInventory::name()));
     }
 
     /** @test */

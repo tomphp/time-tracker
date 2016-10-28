@@ -97,11 +97,29 @@ final class TimeTrackerTest extends \PHPUnit_Framework_TestCase
     }
 
     /** @test */
+    public function on_hasProjectWithByName_it_returns_true_if_the_project_exists()
+    {
+        $this->projects->hasWithName(IngredientInventory::name())->willReturn(true);
+
+        assertTrue($this->subject->hasProjectWithName(IngredientInventory::name()));
+
+    }
+
+    /** @test */
+    public function on_hasProjectWithByName_it_returns_false_if_the_project_does_not_exists()
+    {
+        $this->projects->hasWithName(IngredientInventory::name())->willReturn(false);
+
+        assertFalse($this->subject->hasProjectWithName(IngredientInventory::name()));
+
+    }
+
+    /** @test */
     public function on_fetchProjectByName_it_fetches_the_project_by_name()
     {
-        $this->subject->fetchProjectByName('Time Tracker');
+        $this->subject->fetchProjectByName(IngredientInventory::name());
 
-        $this->projects->withName('Time Tracker')->shouldHaveBeenCalled();
+        $this->projects->withName(IngredientInventory::name())->shouldHaveBeenCalled();
     }
 
     /** @test */
@@ -109,7 +127,7 @@ final class TimeTrackerTest extends \PHPUnit_Framework_TestCase
     {
         assertEquals(
             IngredientInventory::asSlackProject(),
-            $this->subject->fetchProjectByName('Time Tracker')
+            $this->subject->fetchProjectByName(IngredientInventory::name())
         );
     }
 

@@ -65,6 +65,15 @@ final class MySQLProjectProjectionRepository implements ProjectProjections
         );
     }
 
+    public function hasWithName(string $name) : bool
+    {
+        $statement = $this->pdo->prepare('SELECT * FROM `project_projections` WHERE `name` = :name');
+
+        $statement->execute([':name' => $name]);
+
+        return (bool) $statement->fetch(PDO::FETCH_OBJ);
+    }
+
     public function withName(string $name) : ProjectProjection
     {
         $statement = $this->pdo->prepare('SELECT * FROM `project_projections` WHERE `name` = :name');
