@@ -13,9 +13,10 @@ inputs:
 outputs:
   - name: build-dir
 
+params:
+  SOURCE: github-repository
+  DESTINATION: build-dir
+  MODE: production
+
 run:
   path: composer_install.sh
-  params:
-    SOURCE: github-repository
-    DESTINATION: build-dir
-    MODE: production
