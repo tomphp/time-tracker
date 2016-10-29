@@ -16,7 +16,7 @@ environments:
 
     testing:
         adapter: mysql
-        host: db
+        host: timetracker.codept.com
         name: tracker
         user: username
         pass: password
