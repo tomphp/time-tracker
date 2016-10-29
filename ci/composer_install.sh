@@ -1,5 +1,7 @@
 # bash -ex
 
+exit 0
+
 cacheFile=time-tracker-vendor.tar.gz
 bucket=ci-composer-cache
 resource="/${bucket}/${cacheFile}"
