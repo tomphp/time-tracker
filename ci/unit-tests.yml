@@ -8,4 +8,4 @@ inputs:
 - name: build-dir
 
 run:
-  path: build-dir/ci/unit.sh
+  path: build-dir/ci/unit-tests.sh

@@ -13,12 +13,13 @@ inputs:
 
 outputs:
   - name: build-dir
+  - name: composer-cache
 
 params:
   SOURCE: github-repository
   DESTINATION: build-dir
   MODE: development
-  CACHE_FILE: composer-cache/time-tracker-vendor.tgz
+  CACHE_FILE: composer-cache/vendor-cache.tgz
 
 run:
   path: github-repository/ci/composer_install.sh
