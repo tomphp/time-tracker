@@ -1,10 +1,32 @@
 ---
+resource_types:
+- name: docker-machine-deploy
+  type: docker-image
+  source: { repository: tomoram/concourse-docker-deploy }
+
+- name: simple-s3
+  type: docker-image
+  source:
+    repository: 18fgsa/s3-resource-simple
+    tag: latest
+
 resources:
 - name: github-repository
   type: git
   source:
     uri: git@github.com:tomphp/time-tracker.git
     private_key: {{github_deploy_private_key}}
+
+- name: composer-cache
+  type: simple-s3
+  source:
+    bucket: ci-composer-cache
+    access_key_id: {{s3_composer_cache_key}}
+    secret_access_key: {{s3_composer_cache_secret}}
+    path: time-tracker
+    options:
+      - "--exclude '*'"
+      - "--include 'build-dir/vendor-cache.tgz'"
 
 - name: deployment-image
   type: docker-image
@@ -27,35 +49,42 @@ resources:
     server_key_pem: {{docker_machine_server_key_pem}}
     server_pem: {{docker_machine_server_pem}}
     compose_file: docker-compose-production.yml
-    compose_root: deploy-server
+    compose_root: build-dir
     compose_project_name: ttdeploy
-
-resource_types:
-  - name: docker-machine-deploy
-    type: docker-image
-    source: { repository: tomoram/concourse-docker-deploy }
 
 jobs:
 - name: unit-tests
   public: false
   plan:
-  - get: github-repository
-    trigger: true
+  - aggregate:
+    - get: github-repository
+      trigger: true
+    - get: composer-cache
   - task: composer install
-    file: github-repository/ci/composer_install_dev.yml
+    file: github-repository/ci/composer_install.yml
     privileged: true
-  - task: run-tests
-    file: github-repository/ci/unit-tests.yml
+    params:
+      MODE: development
+  - aggregate:
+    - task: run-tests
+      file: github-repository/ci/unit-tests.yml
+    - put: composer-cache
 
 - name: build-image
   public: false
   plan:
-  - get: github-repository
-    passed: [unit-tests]
+  - aggregate:
+    - get: github-repository
+      trigger: true
+      passed: [unit-tests]
+    - get: composer-cache
   - task: composer install
-    file: github-repository/ci/composer_install_prod.yml
+    file: github-repository/ci/composer_install.yml
+    privileged: true
+    params:
+      MODE: production
   - put: deployment-image
-    params: { build: deployment-image }
+    params: { build: build-dir }
 
 - name: e2e-tests
   public: false
@@ -67,10 +96,13 @@ jobs:
     - get: deployment-image
       trigger: true
       passed: [build-image]
+    - get: composer-cache
 
   - task: composer install
-    file: github-repository/ci/composer_install_dev.yml
+    file: github-repository/ci/composer_install.yml
     privileged: true
+    params:
+      MODE: developement
 
   - task: Run end-to-end tests
     config:
@@ -117,13 +149,17 @@ jobs:
   plan:
   - aggregate:
     - get: github-repository
-      passed: [unit-tests]
+      passed: [e2e-tests]
     - get: deployment-image
       trigger: true
       passed: [build-image]
+    - get: composer-cache
 
   - task: composer install
-    file: github-repository/ci/composer_install_prod.yml
+    file: github-repository/ci/composer_install.yml
+    privileged: true
+    params:
+      MODE: production
 
   - put: deploy-server
 
