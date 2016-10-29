@@ -1,6 +1,4 @@
-# bash -ex
-
-exit 0
+#!/bin/sh -ex
 
 cacheFile=time-tracker-vendor.tar.gz
 bucket=ci-composer-cache
