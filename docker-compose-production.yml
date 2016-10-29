@@ -15,7 +15,7 @@ services:
       MYSQL_PASSWORD: password
 
   webserver:
-    image: tomoram/time-tracker:${TAG}
+    image: ${DEPLOYMENT_IMAGE}
     ports:
     - 80:80
     links:
