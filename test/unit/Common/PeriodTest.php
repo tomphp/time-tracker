@@ -61,6 +61,18 @@ final class PeriodTest extends \PHPUnit_Framework_TestCase
     }
 
     /** @test */
+    public function on_fromString_it_parses_the_format_11minute()
+    {
+        $this->assertFromStringWorks('0:14', '14minute');
+    }
+
+    /** @test */
+    public function on_fromString_it_parses_the_format_18minutes()
+    {
+        $this->assertFromStringWorks('0:18', '18minutes');
+    }
+
+    /** @test */
     public function on_fromString_it_parses_the_format_1h5m()
     {
         $this->assertFromStringWorks('1:05', '1h5m');
@@ -101,6 +113,8 @@ final class PeriodTest extends \PHPUnit_Framework_TestCase
         $this->assertFromStringWorks('0:30', '30 m');
         $this->assertFromStringWorks('0:11', '11 min');
         $this->assertFromStringWorks('0:15', '15 mins');
+        $this->assertFromStringWorks('0:14', '14 minute');
+        $this->assertFromStringWorks('0:18', '18 minutes');
         $this->assertFromStringWorks('1:05', '1 h 5 m');
         $this->assertFromStringWorks('1:05', '1 hr 5 mins');
     }

@@ -5,7 +5,7 @@ namespace TomPHP\TimeTracker\Common;
 final class Period
 {
     const REGEX = '(?:'
-            . '(?:(?<hours>\d+)\s*(?:hours?|hrs|hr|h))?\s*(?:(?<minutes>\d+)\s*(mins?|m))?'
+            . '(?:(?<hours>\d+)\s*(?:hours?|hrs|hr|h))?\s*(?:(?<minutes>\d+)\s*(minutes?|mins?|m))?'
             . '|'
             . '(?<compound>\d:\d\d)'
             . '|'
