@@ -107,12 +107,12 @@ jobs:
       passed: [build-image]
     - get: composer-cache
 
-  - aggregate:
-    - task: composer install
-      file: github-repository/ci/composer_install.yml
-      privileged: true
-      params: { MODE: developement }
-    - put: testing-server
+  - task: composer install
+    file: github-repository/ci/composer_install.yml
+    privileged: true
+    params: { MODE: developement }
+
+  - put: testing-server
 
   - task: Run end-to-end tests
     config:
@@ -155,13 +155,12 @@ jobs:
       passed: [e2e-tests]
     - get: composer-cache
 
-  - aggregate:
-    - task: composer install
-      file: github-repository/ci/composer_install.yml
-      privileged: true
-      params: { MODE: production }
+  - task: composer install
+    file: github-repository/ci/composer_install.yml
+    privileged: true
+    params: { MODE: production }
 
-    - put: deploy-server
+  - put: deploy-server
 
   - task: Update the database
     config:
