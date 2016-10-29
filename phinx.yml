@@ -5,25 +5,25 @@ paths:
 environments:
     default_migration_table: phinxlog
     default_database: development
-    # production:
-    #     adapter: mysql
-    #     host: localhost
-    #     name: production_db
-    #     user: root
-    #     pass: ''
-    #     port: 3306
-    #     charset: utf8
-
-    # development:
-    #     adapter: mysql
-    #     host: localhost
-    #     name: development_db
-    #     user: root
-    #     pass: ''
-    #     port: 3306
-    #     charset: utf8
+    production:
+        adapter: mysql
+        host: db
+        name: tracker
+        user: username
+        pass: password
+        port: 3306
+        charset: utf8
 
     testing:
+        adapter: mysql
+        host: db
+        name: tracker
+        user: username
+        pass: password
+        port: 3306
+        charset: utf8
+
+    development:
         adapter: mysql
         host: db
         name: tracker

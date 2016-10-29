@@ -44,7 +44,7 @@ class E2EContext implements Context, SnippetAcceptingContext
         $this->jsonApiManager = new Manager();
 
         $this->client = new Client([
-            'base_uri'        => 'http://webserver/',
+            'base_uri'        => getenv('SITE_URL'),
             'allow_redirects' => false,
         ]);
 

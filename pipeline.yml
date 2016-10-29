@@ -35,9 +35,9 @@ resources:
     username: tomoram
     password: {{dockerhub_password}}
 
-- name: deploy-server
+- name: testing-server
   type: docker-machine-deploy
-  source:
+  source: &docker-machine-config
     machine_name: do-time-tracker
     ca_key_pem: {{docker_machine_ca_key_pem}}
     ca_pem: {{docker_machine_ca_pem}}
@@ -48,6 +48,14 @@ resources:
     key_pem: {{docker_machine_key_pem}}
     server_key_pem: {{docker_machine_server_key_pem}}
     server_pem: {{docker_machine_server_pem}}
+    compose_file: docker-compose-testing.yml
+    compose_root: build-dir
+    compose_project_name: tttesting
+
+- name: deploy-server
+  type: docker-machine-deploy
+  source:
+    <<: *docker-machine-config
     compose_file: docker-compose-production.yml
     compose_root: build-dir
     compose_project_name: ttdeploy
@@ -63,8 +71,7 @@ jobs:
   - task: composer install
     file: github-repository/ci/composer_install.yml
     privileged: true
-    params:
-      MODE: development
+    params: { MODE: development }
   - aggregate:
     - task: run-tests
       file: github-repository/ci/unit-tests.yml
@@ -81,8 +88,7 @@ jobs:
   - task: composer install
     file: github-repository/ci/composer_install.yml
     privileged: true
-    params:
-      MODE: production
+    params: { MODE: production }
   - put: deployment-image
     params: { build: build-dir }
 
@@ -101,8 +107,9 @@ jobs:
   - task: composer install
     file: github-repository/ci/composer_install.yml
     privileged: true
-    params:
-      MODE: developement
+    params: { MODE: developement }
+
+  - put: testing-server
 
   - task: Run end-to-end tests
     config:
@@ -112,36 +119,25 @@ jobs:
         source: { repository: tomoram/docker-tools }
       inputs:
       - name: build-dir
+      param:
+        STORAGE_DRIVER: mysql
+        SITE_URL: http://138.68.145.119:9080/
+        MYSQL_PORT: 3306
+        MYSQL_DBNAME: tracker
+        MYSQL_HOSTNAME: 138.68.145.119
+        MYSQL_USERNAME: username
+        MYSQL_PASSWORD: password
       run:
         dir: build-dir
         path: sh
         args:
         - -exc
         - |
-          export DOCKER_MACHINE_NAME=do-time-tracker
-          export DOCKER_MACHINE_CA_KEY_PEM={{docker_machine_ca_key_pem}}
-          export DOCKER_MACHINE_CA_PEM={{docker_machine_ca_pem}}
-          export DOCKER_MACHINE_CERT_PEM={{docker_machine_cert_pem}}
-          export DOCKER_MACHINE_CONFIG={{docker_machine_config}}
-          export DOCKER_MACHINE_ID_RSA={{docker_machine_id_rsa}}
-          export DOCKER_MACHINE_ID_RSA_PUB={{docker_machine_id_rsa_pub}}
-          export DOCKER_MACHINE_KEY_PEM={{docker_machine_key_pem}}
-          export DOCKER_MACHINE_SERVER_KEY_PEM={{docker_machine_server_key_pem}}
-          export DOCKER_MACHINE_SERVER_PEM={{docker_machine_server_pem}}
-
-          env-to-docker-machine
-          eval $(docker-machine env --shell bash do-time-tracker)
-
           export STORAGE_DRIVER=mysql
 
-          docker-compose -p ttstaging -f docker-compose-staging.yml up -d
-          docker ps
-
-          docker-compose -p ttstaging -f docker-compose-staging.yml run --rm cli vendor/bin/phinx migrate -e testing
-          docker-compose -p ttstaging -f docker-compose-staging.yml run --rm cli vendor/bin/phpunit --testsuite mysql
-          docker-compose -p ttstaging -f docker-compose-staging.yml run --rm cli vendor/bin/behat -p e2e
-
-          docker-compose -p ttstaging -f docker-compose-staging.yml down
+          vendor/bin/phinx migrate -e testing
+          vendor/bin/phpunit --testsuite mysql
+          vendor/bin/behat -p e2e
 
 - name: deploy
   public: false
@@ -152,14 +148,13 @@ jobs:
       passed: [e2e-tests]
     - get: deployment-image
       trigger: true
-      passed: [build-image]
+      passed: [e2e-tests]
     - get: composer-cache
 
   - task: composer install
     file: github-repository/ci/composer_install.yml
     privileged: true
-    params:
-      MODE: production
+    params: { MODE: production }
 
   - put: deploy-server
 
@@ -194,4 +189,4 @@ jobs:
           #sleep 30 # Wait for sql server
           pwd
           ls
-          docker-compose -p ttdeploy -f docker-compose-production.yml run --rm cli vendor/bin/phinx migrate -e testing
+          docker-compose -p ttdeploy -f docker-compose-production.yml run --rm cli vendor/bin/phinx migrate -e production

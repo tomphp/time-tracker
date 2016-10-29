@@ -2,7 +2,12 @@
 
 return [
     'db' => [
-        'dsn'      => sprintf('mysql:host=%s;dbname=%s', getenv('MYSQL_HOSTNAME'), getenv('MYSQL_DBNAME')),
+        'dsn'      => sprintf(
+            'mysql:host=%s;dbname=%s;port=%d',
+            getenv('MYSQL_HOSTNAME'),
+            getenv('MYSQL_DBNAME'),
+            getenv('MYSQL_PORT') ?: 3306
+        ),
         'username' => getenv('MYSQL_USERNAME'),
         'password' => getenv('MYSQL_PASSWORD'),
     ],
