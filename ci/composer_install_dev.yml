@@ -9,6 +9,7 @@ image_resource:
 
 inputs:
   - name: github-repository
+  - name: composer-cache
 
 outputs:
   - name: build-dir
@@ -17,6 +18,7 @@ params:
   SOURCE: github-repository
   DESTINATION: build-dir
   MODE: development
+  CACHE_FILE: composer-cache/time-tracker-vendor.tgz
 
 run:
   path: github-repository/ci/composer_install.sh
