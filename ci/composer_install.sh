@@ -24,9 +24,9 @@ git clone "$SOURCE" "$DESTINATION"
 cd "$DESTINATION"
 
 if [ "$MODE" = "production" ]; then
-  composer install --no-interaction --no-ansi --no-dev --no-scripts --no-plugins --optimize-autoloader
+  composer install --no-interaction --no-progress --no-suggest --no-dev --no-scripts --no-plugins --optimize-autoloader
 else
-  composer install --no-interaction --no-ansi
+  composer install --no-interaction --no-progress --no-suggest
 fi
 
 # Backup to S3
