@@ -17,6 +17,8 @@ params:
   SOURCE: github-repository
   DESTINATION: build-dir
   MODE: development
+  S3_KEY: {{s3_composer_cache_key}}
+  S3_SECRET: {{s3_composer_cache_secret}}
 
 run:
-  path: composer_install.sh
+  path: github-repository/ci/composer_install.sh
