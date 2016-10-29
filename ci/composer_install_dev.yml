@@ -19,4 +19,4 @@ params:
   MODE: development
 
 run:
-  path: ci/composer_install.sh
+  path: github-repository/ci/composer_install.sh
