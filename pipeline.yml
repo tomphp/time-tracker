@@ -10,6 +10,7 @@ resource_types:
     repository: 18fgsa/s3-resource-simple
     tag: latest
 
+
 resources:
 - name: github-repository
   type: git
@@ -51,6 +52,7 @@ resources:
     compose_file: docker-compose-testing.yml
     compose_root: build-dir
     compose_project_name: tttesting
+    docker_image: deployment-image
 
 - name: deploy-server
   type: docker-machine-deploy
@@ -59,6 +61,7 @@ resources:
     compose_file: docker-compose-production.yml
     compose_root: build-dir
     compose_project_name: ttdeploy
+
 
 jobs:
 - name: unit-tests
@@ -98,33 +101,34 @@ jobs:
   plan:
   - aggregate:
     - get: github-repository
-      passed: [unit-tests]
+      passed: [build-image]
     - get: deployment-image
       trigger: true
       passed: [build-image]
     - get: composer-cache
 
-  - task: composer install
-    file: github-repository/ci/composer_install.yml
-    privileged: true
-    params: { MODE: developement }
-
-  - put: testing-server
+  - aggregate:
+    - task: composer install
+      file: github-repository/ci/composer_install.yml
+      privileged: true
+      params: { MODE: developement }
+    - put: testing-server
 
   - task: Run end-to-end tests
     config:
       platform: linux
       image_resource:
         type: docker-image
-        source: { repository: tomoram/docker-tools }
+        source: { repository: tomoram/time-tracker-php }
       inputs:
       - name: build-dir
-      param:
+      - name: deployment-image
+      params:
         STORAGE_DRIVER: mysql
-        SITE_URL: http://138.68.145.119:9080/
-        MYSQL_PORT: 3306
+        SITE_URL: http://timetracker.codept.com:9080/
+        MYSQL_PORT: 3307
         MYSQL_DBNAME: tracker
-        MYSQL_HOSTNAME: 138.68.145.119
+        MYSQL_HOSTNAME: timetracker.codept.com
         MYSQL_USERNAME: username
         MYSQL_PASSWORD: password
       run:
@@ -151,42 +155,32 @@ jobs:
       passed: [e2e-tests]
     - get: composer-cache
 
-  - task: composer install
-    file: github-repository/ci/composer_install.yml
-    privileged: true
-    params: { MODE: production }
+  - aggregate:
+    - task: composer install
+      file: github-repository/ci/composer_install.yml
+      privileged: true
+      params: { MODE: production }
 
-  - put: deploy-server
+    - put: deploy-server
 
   - task: Update the database
     config:
       platform: linux
       image_resource:
         type: docker-image
-        source:
-          repository: tomoram/docker-tools
+        source: { repository: tomoram/time-tracker-php }
       inputs:
-      - name: github-repository
+      - name: build-dir
+      - name: deployment-image
+      params:
+        STORAGE_DRIVER: mysql
+        SITE_URL: http://timetracker.codept.com:9080/
+        MYSQL_PORT: 3306
+        MYSQL_DBNAME: tracker
+        MYSQL_HOSTNAME: timetracker.codept.com
+        MYSQL_USERNAME: username
+        MYSQL_PASSWORD: password
       run:
-        dir: github-repository
-        path: sh
-        args:
-        - -exc
-        - |
-          export DOCKER_MACHINE_NAME=do-time-tracker
-          export DOCKER_MACHINE_CA_KEY_PEM={{docker_machine_ca_key_pem}}
-          export DOCKER_MACHINE_CA_PEM={{docker_machine_ca_pem}}
-          export DOCKER_MACHINE_CERT_PEM={{docker_machine_cert_pem}}
-          export DOCKER_MACHINE_CONFIG={{docker_machine_config}}
-          export DOCKER_MACHINE_ID_RSA={{docker_machine_id_rsa}}
-          export DOCKER_MACHINE_ID_RSA_PUB={{docker_machine_id_rsa_pub}}
-          export DOCKER_MACHINE_KEY_PEM={{docker_machine_key_pem}}
-          export DOCKER_MACHINE_SERVER_KEY_PEM={{docker_machine_server_key_pem}}
-          export DOCKER_MACHINE_SERVER_PEM={{docker_machine_server_pem}}
-
-          env-to-docker-machine
-          eval $(docker-machine env --shell bash do-time-tracker)
-          #sleep 30 # Wait for sql server
-          pwd
-          ls
-          docker-compose -p ttdeploy -f docker-compose-production.yml run --rm cli vendor/bin/phinx migrate -e production
+        dir: build-dir
+        path: vendor/bin/phinx
+        args: [migrate, -e, production]
