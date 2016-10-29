@@ -14,10 +14,8 @@ outputs:
   - name: build-dir
 
 run:
-  path: sh
-  args:
-    - -exc
-    - |
-      git clone ./github-repository ./build-dir
-      cd build-dir
-      composer install --no-interaction --no-ansi
+  path: composer_install.sh
+  params:
+    SOURCE: github-repository
+    DESTINATION: build-dir
+    MODE: development
