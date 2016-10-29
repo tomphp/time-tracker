@@ -2,11 +2,11 @@
 
 namespace test\unit\TomPHP\TimeTracker\Tracker\Storage;
 
+use test\support\TestUsers\IngredientInventory;
 use TomPHP\TimeTracker\Common\Period;
 use TomPHP\TimeTracker\Tracker\ProjectId;
 use TomPHP\TimeTracker\Tracker\ProjectProjection;
 use TomPHP\TimeTracker\Tracker\ProjectProjections;
-use test\support\TestUsers\IngredientInventory;
 
 abstract class AbstractProjectProjectionsTest extends \PHPUnit_Framework_TestCase
 {

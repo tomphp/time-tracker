@@ -102,7 +102,6 @@ final class TimeTrackerTest extends \PHPUnit_Framework_TestCase
         $this->projects->hasWithName(IngredientInventory::name())->willReturn(true);
 
         assertTrue($this->subject->hasProjectWithName(IngredientInventory::name()));
-
     }
 
     /** @test */
@@ -111,7 +110,6 @@ final class TimeTrackerTest extends \PHPUnit_Framework_TestCase
         $this->projects->hasWithName(IngredientInventory::name())->willReturn(false);
 
         assertFalse($this->subject->hasProjectWithName(IngredientInventory::name()));
-
     }
 
     /** @test */
