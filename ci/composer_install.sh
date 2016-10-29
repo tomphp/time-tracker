@@ -19,7 +19,7 @@ curl -H "Date: ${dateValue}" \
      -o "$cacheFile"
 
 if [ -e "$cacheFile" ]; then
-  tar xvzf "$cacheFile"
+  tar xzf "$cacheFile"
 fi
 
 git clone "$SOURCE" "$DESTINATION"
@@ -32,7 +32,7 @@ else
 fi
 
 # Backup to S3
-tar cvzf "$cacheFile" vendor/
+tar czf "$cacheFile" vendor/
 
 curl -X PUT -T "${cacheFile}" \
   -H "Host: ${bucket}.s3.amazonaws.com" \
@@ -40,3 +40,5 @@ curl -X PUT -T "${cacheFile}" \
   -H "Content-Type: ${contentType}" \
   -H "Authorization: AWS ${s3Key}:${signature}" \
   https://${bucket}.s3.amazonaws.com/${cacheFile}
+
+rm -f "$cacheFile"
