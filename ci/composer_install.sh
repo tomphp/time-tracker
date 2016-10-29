@@ -32,7 +32,7 @@ fi
 # Backup to S3
 tar czf "$cacheFile" vendor/
 
-curl -X PUT -T "${cacheFile}" \
+curl -L -X PUT -T "${cacheFile}" \
   -H "Host: ${bucket}.s3.amazonaws.com" \
   -H "Date: ${dateValue}" \
   -H "Content-Type: ${contentType}" \
