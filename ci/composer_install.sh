@@ -18,9 +18,7 @@ curl -H "Date: ${dateValue}" \
      "https://s3-us-west-2.amazonaws.com/${resource}" \
      -o "$cacheFile"
 
-if [ -e "$cacheFile" ]; then
-  tar xzf "$cacheFile"
-fi
+! tar xzf "$cacheFile"
 
 git clone "$SOURCE" "$DESTINATION"
 cd "$DESTINATION"
