@@ -2,6 +2,8 @@
 
 namespace TomPHP\TimeTracker\Slack;
 
+use TomPHP\TimeTracker\Common\DeveloperId;
+
 interface LinkedAccounts
 {
     /** @return void */
@@ -9,7 +11,7 @@ interface LinkedAccounts
 
     public function hasSlackUser(SlackUserId $userId) : bool;
 
-    public function hasDeveloper(string $developerId) : bool;
+    public function hasDeveloper(DeveloperId $developerId) : bool;
 
     public function withSlackUserId(SlackUserId $userId) : LinkedAccount;
 }

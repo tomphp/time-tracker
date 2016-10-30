@@ -26,6 +26,20 @@ abstract class LinkedAccountsTest extends \PHPUnit_Framework_TestCase
     }
 
     /** @test */
+    public function on_hasDeveloper_it_returns_false_if_no_LinkedAccount_added()
+    {
+        assertFalse($this->linkedAccounts()->hasDeveloper(Mike::id()));
+    }
+
+    /** @test */
+    public function on_hasDeveloper_it_returns_true_if_a_LinkedAccount_with_that_user_id_has_been_added()
+    {
+        $this->linkedAccounts()->add(new LinkedAccount(Mike::id(), Mike::slackUserId()));
+
+        assertTrue($this->linkedAccounts()->hasDeveloper(Mike::id()));
+    }
+
+    /** @test */
     public function on_hasSlackUser_it_returns_false_if_a_LinkedAccount_with_a_different_user_id_has_been_added()
     {
         $this->linkedAccounts()->add(new LinkedAccount(Fran::id(), Fran::slackUserId()));

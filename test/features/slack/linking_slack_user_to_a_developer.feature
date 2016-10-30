@@ -14,4 +14,13 @@ Feature: Linking a Slack Username to a Tracker Developer
     And Mike has a Slack account
     And Mike has already issued the command "link to account mike@rgsoftware.com"
     When Mike issues the command "link to account mike@rgsoftware.com" again
-    Then Mike should receive a response message saying "ERROR: Your account has already been linked."
+    Then Mike should receive a response message saying "ERROR: Your Slack user has already been linked."
+
+  Scenario: The one where Mike tries to link to Fran's already linked account
+    Given Mike has a developer account with email "mike@rgsoftware.com"
+    And Fran has a developer account with email "fran@rgsoftware.com"
+    And Mike has a Slack account
+    And Fran has a Slack account
+    And Fran has already issued the command "link to account fran@rgsoftware.com"
+    When Mike issues the command "link to account fran@rgsoftware.com"
+    Then Mike should receive a response message saying "ERROR: This developer account has already been linked."

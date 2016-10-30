@@ -11,8 +11,9 @@ use TomPHP\TimeTracker\Slack\TimeTracker;
 
 final class LinkCommandHandler implements CommandHandler
 {
-    const SUCCESS_MESSAGE              = 'Hi %s, your account has been successfully linked.';
-    const SLACK_ALREADY_LINKED_MESSAGE = 'ERROR: Your account has already been linked.';
+    private const SUCCESS_MESSAGE                  = 'Hi %s, your account has been successfully linked.';
+    private const SLACK_ALREADY_LINKED_MESSAGE     = 'ERROR: Your Slack user has already been linked.';
+    private const DEVELOPER_ALREADY_LINKED_MESSAGE = 'ERROR: This developer account has already been linked.';
 
     /** @var TimeTracker */
     private $timeTracker;
@@ -37,7 +38,12 @@ final class LinkCommandHandler implements CommandHandler
 
         $developer = $this->timeTracker->fetchDeveloperByEmail($command->email());
 
-        //$this->linkedAccounts->hasDeveloper($developer->id());
+        if ($this->linkedAccounts->hasDeveloper($developer->id())) {
+            return [
+                'response_type' => 'ephemeral',
+                'text'          => self::DEVELOPER_ALREADY_LINKED_MESSAGE,
+            ];
+        }
 
         $this->linkedAccounts->add(new LinkedAccount($developer->id(), $userId));
 

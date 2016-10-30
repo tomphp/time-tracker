@@ -45,8 +45,17 @@ final class MySQLLinkedAccountRepository implements LinkedAccounts
         return (bool) $statement->fetch(PDO::FETCH_OBJ);
     }
 
-    public function hasDeveloper(string $developerId) : bool
+    public function hasDeveloper(DeveloperId $developerId) : bool
     {
+        $statement = $this->pdo->prepare(
+            'SELECT * FROM'
+            . ' `slack_linked_accounts`'
+            . ' WHERE `developerId` = :developerId'
+        );
+
+        $statement->execute([':developerId' => (string) $developerId]);
+
+        return (bool) $statement->fetch(PDO::FETCH_OBJ);
     }
 
     public function withSlackUserId(SlackUserId $slackUserId) : LinkedAccount

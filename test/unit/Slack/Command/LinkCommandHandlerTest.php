@@ -52,7 +52,7 @@ final class LinkCommandHandlerTest extends \PHPUnit_Framework_TestCase
     }
 
     /** @test */
-    public function it_checks_if_the_slack_account_is_already_linked()
+    public function it_checks_if_the_slack_user_is_already_linked()
     {
         $this->subject->handle(Mike::slackUserId(), $this->command);
 
@@ -60,14 +60,33 @@ final class LinkCommandHandlerTest extends \PHPUnit_Framework_TestCase
     }
 
     /** @test */
-    public function it_returns_an_error_if_the_slack_account_is_already_linked()
+    public function it_returns_an_error_if_the_slack_user_is_already_linked()
     {
         $this->linkedAccounts->hasSlackUser(Argument::any())->willReturn(true);
 
         $result = $this->subject->handle(Mike::slackUserId(), $this->command);
 
         assertSame('ephemeral', $result['response_type']);
-        assertSame('ERROR: Your account has already been linked.', $result['text']);
+        assertSame('ERROR: Your Slack user has already been linked.', $result['text']);
+    }
+
+    /** @test */
+    public function it_checks_if_the_developer_account_is_already_linked()
+    {
+        $this->subject->handle(Mike::slackUserId(), $this->command);
+
+        $this->linkedAccounts->hasDeveloper(Mike::id())->shouldHaveBeenCalled();
+    }
+
+    /** @test */
+    public function it_returns_an_error_if_the_developer_account_is_already_linked()
+    {
+        $this->linkedAccounts->hasDeveloper(Argument::any())->willReturn(true);
+
+        $result = $this->subject->handle(Mike::slackUserId(), $this->command);
+
+        assertSame('ephemeral', $result['response_type']);
+        assertSame('ERROR: This developer account has already been linked.', $result['text']);
     }
 
     /** @test */
