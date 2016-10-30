@@ -25,10 +25,7 @@ final class LogCommandHandler implements CommandHandler
     public function handle(SlackUserId $userId, Command $command) : array
     {
         if (!$this->timeTracker->hasProjectWithName($command->projectName())) {
-            return [
-                'response_type' => 'ephemeral',
-                'text'          => "Project {$command->projectName()} was not found.",
-            ];
+             return $this->formatMessage("Project {$command->projectName()} was not found.");
         }
 
         $linkedAccount = $this->linkedAccounts->withSlackUserId($userId);
@@ -50,6 +47,11 @@ final class LogCommandHandler implements CommandHandler
             $project->name()
         );
 
+        return $this->formatMessage($message);
+    }
+
+    private function formatMessage(string $message) : array
+    {
         return [
             'response_type' => 'ephemeral',
             'text'          => $message,
