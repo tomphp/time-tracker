@@ -49,6 +49,7 @@ final class LogCommandHandlerTest extends \PHPUnit_Framework_TestCase
         $this->linkedAccounts
             ->withSlackUserId(Argument::any())
             ->willReturn(new LinkedAccount(Fran::id(), Fran::slackUserId()));
+        $this->linkedAccounts->hasSlackUser(Argument::any())->willReturn(true);
 
         $this->timeTracker->fetchDeveloperById(Argument::any())->willReturn($this->developer);
         $this->timeTracker->fetchProjectByName(Argument::any())->willReturn($this->project);
@@ -73,9 +74,7 @@ final class LogCommandHandlerTest extends \PHPUnit_Framework_TestCase
     {
         $this->subject->handle(Fran::slackUserId(), $this->command);
 
-        $this->linkedAccounts
-            ->withSlackUserId(Fran::slackUserId())
-            ->shouldHaveBeenCalled();
+        $this->linkedAccounts->withSlackUserId(Fran::slackUserId())->shouldHaveBeenCalled();
     }
 
     /** @test */
@@ -83,9 +82,7 @@ final class LogCommandHandlerTest extends \PHPUnit_Framework_TestCase
     {
         $this->subject->handle(Fran::slackUserId(), $this->command);
 
-        $this->timeTracker
-            ->fetchDeveloperById(Fran::id())
-            ->shouldHaveBeenCalled();
+        $this->timeTracker->fetchDeveloperById(Fran::id())->shouldHaveBeenCalled();
     }
 
     /** @test */
@@ -111,9 +108,7 @@ final class LogCommandHandlerTest extends \PHPUnit_Framework_TestCase
     {
         $this->subject->handle(Fran::slackUserId(), $this->command);
 
-        $this->timeTracker
-            ->fetchProjectByName(IngredientInventory::name())
-            ->shouldHaveBeenCalled();
+        $this->timeTracker->fetchProjectByName(IngredientInventory::name())->shouldHaveBeenCalled();
     }
 
     /** @test */
