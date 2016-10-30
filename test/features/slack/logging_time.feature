@@ -21,3 +21,11 @@ Feature: Logging time against a project using Slack
     And Fran has linked her slack user to "fran@rgsoftware.com"
     When Fran issues the command "log 3hrs against Unknown Project for Trying to break things"
     Then Fran should receive a response message saying "Project Unknown Project was not found."
+
+  Scenario: The one where the user enters an invalid log command
+    Given Fran has a developer account with email "fran@rgsoftware.com"
+    And Fran has a Slack account
+    And Fran has linked her slack user to "fran@rgsoftware.com"
+    When Fran issues the command "log with arguments which make now sense"
+    Then Fran should receive a response message saying "Invalid log command"
+    And Fran should receive an extended reponse message saying "Format: log [time] against [project] for [description]"

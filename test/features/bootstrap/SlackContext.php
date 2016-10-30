@@ -176,7 +176,7 @@ class SlackContext implements Context, SnippetAcceptingContext
     /**
      * @Then Mike should receive a list of all valid commands
      */
-    public function mikeShouldReceiveAListOfAllValidCommands()
+    public function assertListOfCommandsIsShown()
     {
         $commands = array_keys($this->services->get('config.slack.commands'));
 
@@ -187,6 +187,16 @@ class SlackContext implements Context, SnippetAcceptingContext
         foreach ($commands as $command) {
             assertContains($command, $attachments);
         }
+    }
+
+    /**
+     * @Then :developerName should receive an extended reponse message saying :message
+     */
+    public function assertExtendedSlackResponseMessage(string $message)
+    {
+        $attachments = $this->result['attachments'];
+
+        assertSame($message, $attachments['text']);
     }
 
     private function commandRunner() : CommandRunner

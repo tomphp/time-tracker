@@ -19,18 +19,31 @@ final class LogCommandParser implements CommandParser
 
     public function parse(string $command) : Command
     {
-        $regex = sprintf(
-            '/^(?<period>%s) against (?<project>.*) for (?<description>.*)$/',
-            Period::REGEX
-        );
-
-        preg_match($regex, $command, $matches);
+        preg_match($this->regex(), $command, $matches);
 
         return new LogCommand(
             $matches['project'],
             $this->today,
             Period::fromString($matches['period']),
             $matches['description']
+        );
+    }
+
+    public function matchesFormat(string $command) : bool
+    {
+        return (bool) preg_match($this->regex(), $command);
+    }
+
+    public function formatDescription() : string
+    {
+        return 'log [time] against [project] for [description]';
+    }
+
+    private function regex() : string
+    {
+        return sprintf(
+            '/^(?<period>%s) against (?<project>.*) for (?<description>.*)$/',
+            Period::REGEX
         );
     }
 }

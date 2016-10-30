@@ -28,26 +28,42 @@ final class CommandRunner
 
     public function run(SlackUserId $userId, string $commandString) : array
     {
-        $commandString = $this->sanitiser->sanitise($commandString);
-
+        $commandString          = $this->sanitiser->sanitise($commandString);
         list($name, $arguments) = explode(' ', $commandString, 2);
-
         if (!array_key_exists($name, $this->commands)) {
-            $attachments = array_merge(
-                ['text' => 'Valid commands are:'],
-                array_keys($this->commands)
-            );
-
-            return [
-                'response_type' => 'ephemeral',
-                'text'          => $name . ' is not a valid command',
-                'attachments'   => $attachments,
-            ];
+            return $this->unknownCommandResponse($name);
         }
 
-        $command = $this->parser($name)->parse($arguments);
+        $parser = $this->parser($name);
+        if (!$parser->matchesFormat($arguments)) {
+            return $this->invalidFormatResponse($name, $parser);
+        }
+        $command = $parser->parse($arguments);
 
         return $this->handler($name)->handle($userId, $command);
+    }
+
+    private function unknownCommandResponse(string $name) : array
+    {
+        $attachments = array_merge(
+            ['text' => 'Valid commands are:'],
+            array_keys($this->commands)
+        );
+
+        return [
+            'response_type' => 'ephemeral',
+            'text'          => $name . ' is not a valid command',
+            'attachments'   => $attachments,
+        ];
+    }
+
+    private function invalidFormatResponse(string $name, CommandParser $parser) : array
+    {
+        return [
+            'response_type' => 'ephemeral',
+            'text'          => "Invalid $name command",
+            'attachments'   => ['text' => 'Format: ' . $parser->formatDescription()],
+        ];
     }
 
     private function parser(string $name) : CommandParser

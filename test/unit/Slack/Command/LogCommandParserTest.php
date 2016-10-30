@@ -20,7 +20,19 @@ final class LogCommandParserTest extends \PHPUnit_Framework_TestCase
     }
 
     /** @test */
-    public function it_parses_a_simple_command_with_no_date()
+    public function on_matchesFormat_it_returns_true_for_a_valid_format_command()
+    {
+        assertTrue($this->subject->matchesFormat('3hrs against Project for Description'));
+    }
+
+    /** @test */
+    public function on_matchesFormat_it_returns_false_for_an_invalid_format_command()
+    {
+        assertFalse($this->subject->matchesFormat('invalid format command'));
+    }
+
+    /** @test */
+    public function on_parse_it_parses_a_simple_command_with_no_date()
     {
         $command = $this->subject->parse('3hrs against Time Tracker for Implementing Slack integration');
 
@@ -33,8 +45,14 @@ final class LogCommandParserTest extends \PHPUnit_Framework_TestCase
     }
 
     /** @test */
-    public function it_throws_if_the_command_cannot_be_parsed()
+    public function on_parse_it_throws_if_the_command_cannot_be_parsed()
     {
         $this->markTestIncomplete('Implement me!');
+    }
+
+    /** @test */
+    public function on_formatDescription_it_returns_the_description()
+    {
+        assertSame('log [time] against [project] for [description]', $this->subject->formatDescription());
     }
 }

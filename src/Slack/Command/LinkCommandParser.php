@@ -15,4 +15,14 @@ final class LinkCommandParser implements CommandParser
 
         return new LinkCommand(Email::fromString($matches[1]));
     }
+
+    public function matchesFormat(string $command) : bool
+    {
+        return true;
+    }
+
+    public function formatDescription() : string
+    {
+        return '';
+    }
 }

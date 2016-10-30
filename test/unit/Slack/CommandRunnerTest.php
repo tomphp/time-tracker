@@ -46,6 +46,8 @@ final class CommandRunnerTest extends \PHPUnit_Framework_TestCase
         $this->container->get('Namespace\BarCommandHandler')->willReturn($this->handler->reveal());
 
         $this->parser->parse(Argument::any())->willReturn($this->command->reveal());
+        $this->parser->matchesFormat(Argument::any())->willReturn(true);
+        $this->parser->formatDescription()->willReturn('');
 
         $this->userId = SlackUserId::fromString('U1234567890');
 
@@ -62,9 +64,7 @@ final class CommandRunnerTest extends \PHPUnit_Framework_TestCase
     /** @test */
     public function it_fetches_the_parser_from_the_container()
     {
-        $this->sanitiser->sanitise('foo command')->willReturn('foo command');
-
-        $this->subject->run($this->userId, 'foo command');
+        $this->runCommand('foo command');
 
         $this->container->get('Namespace\FooCommandParser')->shouldHaveBeenCalled();
     }
@@ -72,9 +72,7 @@ final class CommandRunnerTest extends \PHPUnit_Framework_TestCase
     /** @test */
     public function it_returns_an_error_if_the_command_is_unknown()
     {
-        $this->sanitiser->sanitise('unknown command')->willReturn('unknown command');
-
-        $result = $this->subject->run($this->userId, 'unknown command');
+        $result = $this->runCommand('unknown command');
 
         assertSame('ephemeral', $result['response_type']);
         assertSame('unknown is not a valid command', $result['text']);
@@ -89,11 +87,22 @@ final class CommandRunnerTest extends \PHPUnit_Framework_TestCase
     }
 
     /** @test */
+    public function it_returns_an_error_if_the_command_format_is_invalid()
+    {
+        $this->parser->matchesFormat('invalid command')->willReturn(false);
+        $this->parser->formatDescription()->willReturn('format description');
+
+        $result = $this->runCommand('foo invalid command');
+
+        assertSame('ephemeral', $result['response_type']);
+        assertSame('Invalid foo command', $result['text']);
+        assertSame(['text' => 'Format: format description'], $result['attachments']);
+    }
+
+    /** @test */
     public function it_parses_the_command()
     {
-        $this->sanitiser->sanitise('bar command arguments')->willReturn('bar command arguments sanitised');
-
-        $this->subject->run($this->userId, 'bar command arguments');
+        $this->runCommand('bar command arguments sanitised');
 
         $this->parser->parse('command arguments sanitised')->shouldHaveBeenCalled();
     }
@@ -101,9 +110,7 @@ final class CommandRunnerTest extends \PHPUnit_Framework_TestCase
     /** @test */
     public function it_fetches_the_command_handler()
     {
-        $this->sanitiser->sanitise('foo command')->willReturn('foo command');
-
-        $this->subject->run($this->userId, 'foo command');
+        $this->runCommand('foo command');
 
         $this->container->get('Namespace\FooCommandHandler')->shouldHaveBeenCalled();
     }
@@ -111,9 +118,7 @@ final class CommandRunnerTest extends \PHPUnit_Framework_TestCase
     /** @test */
     public function it_handles_the_command()
     {
-        $this->sanitiser->sanitise('foo command')->willReturn('foo command');
-
-        $this->subject->run($this->userId, 'foo command');
+        $this->runCommand('foo command');
 
         $this->handler->handle($this->userId, $this->command)->shouldHaveBeenCalled();
     }
@@ -123,8 +128,14 @@ final class CommandRunnerTest extends \PHPUnit_Framework_TestCase
     {
         $result = ['the result'];
         $this->handler->handle(Argument::cetera())->willReturn($result);
-        $this->sanitiser->sanitise('foo command')->willReturn('foo command');
 
-        assertSame($result, $this->subject->run($this->userId, 'foo command'));
+        assertSame($result, $this->runCommand('foo command'));
+    }
+
+    private function runCommand(string $command) : array
+    {
+        $this->sanitiser->sanitise('unsanitised command')->willReturn($command);
+
+        return $this->subject->run($this->userId, 'unsanitised command');
     }
 }
