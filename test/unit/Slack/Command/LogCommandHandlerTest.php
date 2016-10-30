@@ -70,6 +70,18 @@ final class LogCommandHandlerTest extends \PHPUnit_Framework_TestCase
     }
 
     /** @test */
+    public function it_returns_an_error_if_there_slack_user_is_not_linked()
+    {
+        $this->linkedAccounts->hasSlackUser(Fran::slackUserId())->willReturn(false);
+
+        $result = $this->subject->handle(Fran::slackUserId(), $this->command);
+
+        assertSame('ephemeral', $result['response_type']);
+        assertSame('You Slack user has not been linked to an account', $result['text']);
+        assertSame(['text' => 'Please use the link command to connect your user'], $result['attachments']);
+    }
+
+    /** @test */
     public function it_fetches_the_linked_account_for_the_slack_user()
     {
         $this->subject->handle(Fran::slackUserId(), $this->command);

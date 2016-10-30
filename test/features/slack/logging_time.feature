@@ -29,3 +29,10 @@ Feature: Logging time against a project using Slack
     When Fran issues the command "log with arguments which make now sense"
     Then Fran should receive a response message saying "Invalid log command"
     And Fran should receive an extended reponse message saying "Format: log [time] against [project] for [description]"
+
+  Scenario: The one where the user tries to log time before linking their account
+    Given Fran has a Slack account
+    And Fran has not linked her slack user to a developer account
+    When Fran issues the command "log 3hrs against Ingredient Inventory for Feature: Use an ingredient"
+    Then Fran should receive a response message saying "You Slack user has not been linked to an account"
+    And Fran should receive an extended reponse message saying "Please use the link command to connect your user"

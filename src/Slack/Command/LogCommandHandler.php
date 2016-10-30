@@ -24,8 +24,16 @@ final class LogCommandHandler implements CommandHandler
 
     public function handle(SlackUserId $userId, Command $command) : array
     {
+        if (!$this->linkedAccounts->hasSlackUser($userId)) {
+            return $this->formatMessage(
+                'You Slack user has not been linked to an account',
+                [],
+                'Please use the link command to connect your user'
+            );
+        }
+
         if (!$this->timeTracker->hasProjectWithName($command->projectName())) {
-             return $this->formatMessage("Project {$command->projectName()} was not found.");
+             return $this->formatMessage('Project %s was not found.', [$command->projectName()]);
         }
 
         $linkedAccount = $this->linkedAccounts->withSlackUserId($userId);
@@ -40,21 +48,23 @@ final class LogCommandHandler implements CommandHandler
             $command->description()
         );
 
-        $message = sprintf(
+        return $this->formatMessage(
             '%s logged %s against %s',
-            $developer->name(),
-            $command->period(),
-            $project->name()
+            [$developer->name(), $command->period(), $project->name()]
         );
-
-        return $this->formatMessage($message);
     }
 
-    private function formatMessage(string $message) : array
+    private function formatMessage(string $message, array $params = [], string $extended = null) : array
     {
-        return [
+        $result = [
             'response_type' => 'ephemeral',
-            'text'          => $message,
+            'text'          => sprintf($message, ...$params),
         ];
+
+        if ($extended) {
+            $result['attachments'] = ['text' => $extended];
+        }
+
+        return $result;
     }
 }

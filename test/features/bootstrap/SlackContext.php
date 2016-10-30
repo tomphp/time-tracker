@@ -2,6 +2,7 @@
 
 namespace test\features\TomPHP\TimeTracker;
 
+use Behat\Behat\Tester\Exception\PendingException;
 use Behat\Behat\Context\Context;
 use Behat\Behat\Context\SnippetAcceptingContext;
 use Interop\Container\ContainerInterface;
@@ -105,6 +106,13 @@ class SlackContext implements Context, SnippetAcceptingContext
     public function linkSlackUser(SlackUserId $userId, Email $email)
     {
         $this->developerIssuesCommand($userId, "link to account $email");
+    }
+
+    /**
+     * @Given Fran has not linked her slack user to a developer account
+     */
+    public function doNothing()
+    {
     }
 
     /**
