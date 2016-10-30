@@ -33,7 +33,7 @@ final class LogCommandHandler implements CommandHandler
         }
 
         if (!$this->timeTracker->hasProjectWithName($command->projectName())) {
-             return $this->formatMessage('Project %s was not found.', [$command->projectName()]);
+            return $this->formatMessage('Project %s was not found.', [$command->projectName()]);
         }
 
         $linkedAccount = $this->linkedAccounts->withSlackUserId($userId);

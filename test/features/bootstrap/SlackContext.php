@@ -2,7 +2,6 @@
 
 namespace test\features\TomPHP\TimeTracker;
 
-use Behat\Behat\Tester\Exception\PendingException;
 use Behat\Behat\Context\Context;
 use Behat\Behat\Context\SnippetAcceptingContext;
 use Interop\Container\ContainerInterface;
