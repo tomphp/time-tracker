@@ -12,8 +12,8 @@ use Psr\Http\Message\ResponseInterface;
 
 class SlackAPIContext implements Context, SnippetAcceptingContext
 {
-    private const SLACK_ENDPOINT = '/slack/slash-command-endpoint';
-    private const REST_ENDPOINT  = '/api/v1';
+    const SLACK_ENDPOINT = '/slack/slash-command-endpoint';
+    const REST_ENDPOINT  = '/api/v1';
 
     /** Client */
     private $client;

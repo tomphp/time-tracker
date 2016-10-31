@@ -12,7 +12,7 @@ use TomPHP\TimeTracker\Slack\SlackUserId;
 
 final class MySQLLinkedAccountRepository implements LinkedAccounts
 {
-    private const TABLE_NAME = 'slack_linked_accounts';
+    const TABLE_NAME = 'slack_linked_accounts';
 
     /** @var PDO */
     private $pdo;
