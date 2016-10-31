@@ -28,4 +28,4 @@ e2e:
       - test\features\TomPHP\TimeTracker\E2EContext
       - test\features\TomPHP\TimeTracker\SlackAPIContext
       filters:
-        tags: "@e2e-only,@critical&&~@wip"
+        tags: "@e2e-only,@e2e&&~@wip"

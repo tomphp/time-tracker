@@ -4,7 +4,7 @@ Feature: Logging time against a project using Slack
   I want a simple slack interface
 
   @integration
-  @critical
+  @e2e
   Scenario: The one where Fran logs time against the project using Slack
     Given Fran has a developer account with email "fran@rgsoftware.com"
     And Fran has a Slack account
