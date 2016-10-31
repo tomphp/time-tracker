@@ -2,6 +2,8 @@
 
 namespace TomPHP\TimeTracker\Slack\Storage;
 
+use Aura\SqlQuery\AbstractQuery;
+use Aura\SqlQuery\QueryFactory;
 use PDO;
 use TomPHP\TimeTracker\Common\DeveloperId;
 use TomPHP\TimeTracker\Slack\LinkedAccount;
@@ -10,6 +12,8 @@ use TomPHP\TimeTracker\Slack\SlackUserId;
 
 final class MySQLLinkedAccountRepository implements LinkedAccounts
 {
+    private const TABLE_NAME = 'slack_linked_accounts';
+
     /** @var PDO */
     private $pdo;
 
@@ -20,61 +24,63 @@ final class MySQLLinkedAccountRepository implements LinkedAccounts
 
     public function add(LinkedAccount $account)
     {
-        $statement = $this->pdo->prepare(
-            'INSERT INTO `slack_linked_accounts`'
-            . ' (`developerId`, `slackUserId`)'
-            . ' VALUES (:developerId, :slackUserId)'
-        );
-
-        $statement->execute([
-            ':developerId' => (string) $account->developerId(),
-            ':slackUserId' => (string) $account->slackUserId(),
+        $this->insert([
+            'developerId' => (string) $account->developerId(),
+            'slackUserId' => (string) $account->slackUserId(),
         ]);
     }
 
     public function hasSlackUser(SlackUserId $slackUserId) : bool
     {
-        $statement = $this->pdo->prepare(
-            'SELECT * FROM'
-            . ' `slack_linked_accounts`'
-            . ' WHERE `slackUserId` = :slackUserId'
-        );
-
-        $statement->execute([':slackUserId' => (string) $slackUserId]);
-
-        return (bool) $statement->fetch(PDO::FETCH_OBJ);
+        return (bool) $this->selectOne('slackUserId', (string) $slackUserId);
     }
 
     public function hasDeveloper(DeveloperId $developerId) : bool
     {
-        $statement = $this->pdo->prepare(
-            'SELECT * FROM'
-            . ' `slack_linked_accounts`'
-            . ' WHERE `developerId` = :developerId'
-        );
-
-        $statement->execute([':developerId' => (string) $developerId]);
-
-        return (bool) $statement->fetch(PDO::FETCH_OBJ);
+        return (bool) $this->selectOne('developerId', (string) $developerId);
     }
 
     public function withSlackUserId(SlackUserId $slackUserId) : LinkedAccount
     {
-        $statement = $this->pdo->prepare(
-            'SELECT * FROM'
-            . ' `slack_linked_accounts`'
-            . ' WHERE `slackUserId` = :slackUserId'
-        );
+        $row = $this->selectOne('slackUserId', (string) $slackUserId);
 
-        $statement->execute([':slackUserId' => (string) $slackUserId]);
+        return new LinkedAccount(DeveloperId::fromString($row->developerId), $slackUserId);
+    }
 
-        // TODO: check row count
+    private function selectOne(string $field, $value)
+    {
+        $select = $this->queryFactory()->newSelect();
 
-        $row = $statement->fetch(PDO::FETCH_OBJ);
+        $select
+            ->cols(['*'])
+            ->from(self::TABLE_NAME)
+            ->where("$field = ?", (string) $value);
 
-        return new LinkedAccount(
-            DeveloperId::fromString($row->developerId),
-            $slackUserId
-        );
+        $statement = $this->executeQuery($select);
+
+        return $statement->fetch(PDO::FETCH_OBJ);
+    }
+
+    private function insert(array $cols)
+    {
+        $insert = $this->queryFactory()->newInsert();
+        $insert
+            ->into(self::TABLE_NAME)
+            ->cols($cols);
+
+        $this->executeQuery($insert);
+    }
+
+    private function executeQuery(AbstractQuery $query) : \PDOStatement
+    {
+        $statement = $this->pdo->prepare($query->getStatement());
+        $statement->execute($query->getBindValues());
+
+        return $statement;
+    }
+
+    private function queryFactory() : QueryFactory
+    {
+        return new QueryFactory('mysql');
     }
 }
