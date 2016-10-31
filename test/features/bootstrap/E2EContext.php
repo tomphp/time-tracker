@@ -39,6 +39,9 @@ class E2EContext implements Context, SnippetAcceptingContext
     /** @var array|\stdClass */
     private $result;
 
+    /** @var string */
+    private $slackToken;
+
     public function __construct()
     {
         $this->jsonApiManager = new Manager();
@@ -56,6 +59,8 @@ class E2EContext implements Context, SnippetAcceptingContext
         $services->get('database')->exec('TRUNCATE `developer_projections`');
         $services->get('database')->exec('TRUNCATE `project_projections`');
         $services->get('database')->exec('TRUNCATE `time_entry_projections`');
+
+        $this->slackToken = $services->get('config.slack.token');
     }
 
     /**
@@ -131,7 +136,7 @@ class E2EContext implements Context, SnippetAcceptingContext
             self::SLACK_ENDPOINT,
             [
                 'form_params' => [
-                    'token'        => 'gIkuvaNzQIHg97ATvDxqgjtO',
+                    'token'        => $this->slackToken,
                     'team_id'      => 'T0001',
                     'team_domain'  => 'example',
                     'channel_id'   => 'C2147483705',

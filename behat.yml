@@ -4,13 +4,13 @@ features:
       paths: [ %paths.base%/test/features/tracker ]
       contexts: [ test\features\TomPHP\TimeTracker\TrackerContext ]
       filters:
-        tags: "~@ui-only&&~@wip"
+        tags: "~@ui-only&&~@wip&&~@e2e-only"
 
     slack:
       paths: [ %paths.base%/test/features/slack ]
       contexts: [ test\features\TomPHP\TimeTracker\SlackContext ]
       filters:
-        tags: "~@ui-only&&~@wip"
+        tags: "~@ui-only&&~@wip&&~@e2e-only"
 
 integration:
   suites:
@@ -18,12 +18,14 @@ integration:
       paths: [ %paths.base%/test/features ]
       contexts: [ test\features\TomPHP\TimeTracker\IntegrationContext ]
       filters:
-        tags: "@integration&&~@wip"
+        tags: "@integration&&~@wip&&~@e2e-only"
 
 e2e:
   suites:
     default:
       paths: [ %paths.base%/test/features ]
-      contexts: [ test\features\TomPHP\TimeTracker\E2EContext ]
+      contexts:
+      - test\features\TomPHP\TimeTracker\E2EContext
+      - test\features\TomPHP\TimeTracker\SlackAPIContext
       filters:
-        tags: "@critical&&~@wip"
+        tags: "@e2e-only,@critical&&~@wip"

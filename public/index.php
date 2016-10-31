@@ -29,11 +29,11 @@ Bootstrap::run($app->getContainer());
 $app->group('/slack', function () {
     $this->post('/slash-command-endpoint', function (Request $request, Response $response) {
         $params = $request->getParsedBody();
+        $token = $params['token'];
 
-        error_log('Slack name = ' . $params['user_name']);
-        error_log('Command    = ' . $params['command']);
-        error_log('Text       = ' . $params['text']);
-        error_log(print_r($params, true));
+        if ($token !== $this->get('config.slack.token')) {
+            return $response->withJson([], HttpStatus::STATUS_FORBIDDEN);
+        }
 
         $result = $this->get(CommandRunner::class)
             ->run(SlackUserId::fromString($params['user_id']), $params['text']);

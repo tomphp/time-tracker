@@ -11,6 +11,7 @@ use TomPHP\TimeTracker\Tracker\ProjectProjections;
 
 return [
     'slack' => [
+        'token' => 'aRRsxesxOOvkMclol5nUtKGx', // @todo Regenerate and move to a secure location
         'commands' => [
             'log'  => Command\LogCommand::class,
             'link' => Command\LinkCommand::class,
