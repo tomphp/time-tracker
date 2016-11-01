@@ -2,6 +2,7 @@
 
 namespace TomPHP\TimeTracker\Common;
 
+use Assert\Assertion;
 use TomPHP\TimeTracker\Common\Exception\InvalidStringFormat;
 
 final class Period
@@ -51,6 +52,9 @@ final class Period
 
     private function __construct(int $hours, int $minutes)
     {
+        Assertion::min($hours, 0);
+        Assertion::between($minutes, 0, 59);
+
         $this->hours   = $hours;
         $this->minutes = $minutes;
     }

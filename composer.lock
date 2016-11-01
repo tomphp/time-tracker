@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "353ea301e5968e3e4db90b52b0a2e7eb",
-    "content-hash": "a3203f2ccd817d58adcef639bd36be2a",
+    "hash": "42e044ee4d03b8f5f58de264efe88669",
+    "content-hash": "3e76b27a05f21c4fcb8d26f7e07a613e",
     "packages": [
         {
             "name": "aura/sqlquery",
@@ -73,16 +73,16 @@
         },
         {
             "name": "beberlei/assert",
-            "version": "2.6.5",
+            "version": "v2.6.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/beberlei/assert.git",
-                "reference": "fbadde44717ea3eb98fba35425d49731185bf418"
+                "reference": "f567e3e4bce5419bccb9e9b1faf8d4ca9b2f5055"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/beberlei/assert/zipball/fbadde44717ea3eb98fba35425d49731185bf418",
-                "reference": "fbadde44717ea3eb98fba35425d49731185bf418",
+                "url": "https://api.github.com/repos/beberlei/assert/zipball/f567e3e4bce5419bccb9e9b1faf8d4ca9b2f5055",
+                "reference": "f567e3e4bce5419bccb9e9b1faf8d4ca9b2f5055",
                 "shasum": ""
             },
             "require": {
@@ -124,7 +124,7 @@
                 "assertion",
                 "validation"
             ],
-            "time": "2016-10-11 17:13:28"
+            "time": "2016-10-31 12:09:54"
         },
         {
             "name": "container-interop/container-interop",

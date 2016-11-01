@@ -149,6 +149,32 @@ final class PeriodTest extends \PHPUnit_Framework_TestCase
     }
 
     /** @test */
+    public function it_throws_if_hours_are_under_0()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+
+        Period::fromHours(-1);
+    }
+
+    /** @test */
+    public function it_throws_if_minutes_are_under_0()
+    {
+        // Since we are checking through fromString(), it catches the format
+        // error before getting to the constructor
+        $this->expectException(InvalidStringFormat::class);
+
+        Period::fromString('-1mins');
+    }
+
+    /** @test */
+    public function it_throws_if_minutes_over_59()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+
+        Period::fromString('60mins');
+    }
+
+    /** @test */
     public function on_toString_it_returns_a_string_for_hours_only()
     {
         assertSame('2h', (string) Period::fromString('2:00'));

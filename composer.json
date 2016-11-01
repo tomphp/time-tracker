@@ -12,6 +12,7 @@
     "require": {
         "php": "^7.0",
         "aura/sqlquery": "^2.7",
+        "beberlei/assert": "^2.6",
         "fig/http-message-util": "^1.1",
         "friendsofphp/php-cs-fixer": "dev-master",
         "ramsey/uuid": "^3.5",
