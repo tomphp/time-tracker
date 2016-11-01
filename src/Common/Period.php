@@ -2,6 +2,8 @@
 
 namespace TomPHP\TimeTracker\Common;
 
+use TomPHP\TimeTracker\Common\Exception\InvalidStringFormat;
+
 final class Period
 {
     const REGEX = '(?:'
@@ -11,7 +13,7 @@ final class Period
             . '|'
             . '(?<decimal>\d?\.\d+)'
             . '|'
-            . '(?<single>\d)'
+            . '(?<single>\d+)'
         . ')';
 
     /** @var int */
@@ -28,6 +30,7 @@ final class Period
     public static function fromString(string $string) : self
     {
         if (!preg_match('/^' . self::REGEX . '$/', $string, $parts)) {
+            throw InvalidStringFormat::forClass($string, __CLASS__);
         }
 
         if (isset($parts['single']) && $parts['single']) {

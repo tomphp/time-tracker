@@ -2,6 +2,7 @@
 
 namespace test\unit\TomPHP\TimeTracker\Common;
 
+use TomPHP\TimeTracker\Common\Exception\InvalidStringFormat;
 use TomPHP\TimeTracker\Common\Period;
 
 final class PeriodTest extends \PHPUnit_Framework_TestCase
@@ -122,11 +123,20 @@ final class PeriodTest extends \PHPUnit_Framework_TestCase
     /** @test */
     public function on_fromString_it_handles_multiple_digits()
     {
+        $this->assertFromStringWorks('22:00', '22');
         $this->assertFromStringWorks('21:00', '21 h');
         $this->assertFromStringWorks('45:00', '45 hr');
         $this->assertFromStringWorks('51:00', '51 hrs');
         $this->assertFromStringWorks('19:00', '19 hour');
         $this->assertFromStringWorks('32:00', '32 hours');
+    }
+
+    /** @test */
+    public function on_fromString_it_throws_if_the_string_is_invalid()
+    {
+        $this->expectException(InvalidStringFormat::class);
+
+        Period::fromString('invalid period string');
     }
 
     /** @test */
