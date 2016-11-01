@@ -7,9 +7,9 @@ use TomPHP\TimeTracker\Common\Exception\InvalidStringFormat;
 final class InvalidStringFormatTest extends \PHPUnit_Framework_TestCase
 {
     /** @test */
-    public function it_is_a_LogicException()
+    public function it_is_an_InvalidArgumentException()
     {
-        assertInstanceOf(\LogicException::class, new InvalidStringFormat());
+        assertInstanceOf(\InvalidArgumentException::class, new InvalidStringFormat());
     }
 
     /** @test */

@@ -4,7 +4,7 @@ namespace TomPHP\TimeTracker\Common\Exception;
 
 use TomPHP\ExceptionConstructorTools;
 
-final class InvalidStringFormat extends \LogicException
+final class InvalidStringFormat extends \InvalidArgumentException
 {
     use ExceptionConstructorTools;
 
