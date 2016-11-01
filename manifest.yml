@@ -1,0 +1,8 @@
+applications:
+- name: time-tracker-app
+  memory: 64M
+  buildpack: https://github.com/cloudfoundry/php-buildpack.git
+  env:
+    STORAGE_DRIVER: mysql
+  services:
+  - time-tracker-db

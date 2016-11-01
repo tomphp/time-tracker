@@ -1,15 +1,19 @@
 <?php declare(strict_types=1);
 
+$vcapServices = json_decode(getenv('VCAP_SERVICES'), true);
+$databases    = $vcapServices['cleardb'];
+$database     = $databases[0]['credentials'];
+
 return [
     'db' => [
         'dsn'      => sprintf(
             'mysql:host=%s;dbname=%s;port=%d',
-            getenv('MYSQL_HOSTNAME'),
-            getenv('MYSQL_DBNAME'),
-            getenv('MYSQL_PORT') ?: 3306
+            $database['hostname'],
+            $database['name'],
+            $database['port']
         ),
-        'username' => getenv('MYSQL_USERNAME'),
-        'password' => getenv('MYSQL_PASSWORD'),
+        'username' => $database['username'],
+        'password' => $database['password'],
     ],
     'di' => [
         'services' => [

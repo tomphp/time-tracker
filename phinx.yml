@@ -5,6 +5,16 @@ paths:
 environments:
   default_migration_table: phinxlog
   default_database: development
+
+  cf:
+    adapter: mysql
+    host: us-cdbr-iron-east-04.cleardb.net
+    name: ad_ede6e8e070945c2
+    pass: c7f0591d
+    user: ba0154d7ef264b
+    port: 3306
+    charset: utf8
+
   production:
     adapter: mysql
     host: timetracker.codept.com
