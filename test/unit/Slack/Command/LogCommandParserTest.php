@@ -34,8 +34,25 @@ final class LogCommandParserTest extends \PHPUnit_Framework_TestCase
     /** @test */
     public function on_parse_it_parses_a_simple_command_with_no_date()
     {
-        $command = $this->subject->parse('3hrs against Time Tracker for Implementing Slack integration');
+        $commandString = '3hrs against Time Tracker for Implementing Slack integration';
+        $command = $this->subject->parse($commandString);
 
+        assertTrue($this->subject->matchesFormat($commandString));
+        assertEquals(new LogCommand(
+            'Time Tracker',
+            Date::today(),
+            Period::fromString('3'),
+            'Implementing Slack integration'
+        ), $command);
+    }
+
+    /** @test */
+    public function on_parse_it_parses_a_log_which_is_explicitly_for_today()
+    {
+        $commandString = '3hrs today against Time Tracker for Implementing Slack integration';
+        $command = $this->subject->parse($commandString);
+
+        assertTrue($this->subject->matchesFormat($commandString));
         assertEquals(new LogCommand(
             'Time Tracker',
             Date::today(),
@@ -47,8 +64,10 @@ final class LogCommandParserTest extends \PHPUnit_Framework_TestCase
     /** @test */
     public function on_parse_it_parses_a_log_command_for_yesterday()
     {
-        $command = $this->subject->parse('3hrs yesterday against Time Tracker for Implementing Slack integration');
+        $commandString = '3hrs yesterday against Time Tracker for Implementing Slack integration';
+        $command = $this->subject->parse($commandString);
 
+        assertTrue($this->subject->matchesFormat($commandString));
         assertEquals(new LogCommand(
             'Time Tracker',
             Date::yesterday(),

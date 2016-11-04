@@ -21,7 +21,7 @@ final class LogCommandParser implements CommandParser
     {
         preg_match($this->regex(), $command, $matches);
 
-        if ($matches['when'] === 'yesterday') {
+        if (isset($matches['when']) && $matches['when'] === 'yesterday') {
             $date = Date::yesterday();
         } else {
             $date = $this->today; // <-- don't inject
@@ -48,7 +48,7 @@ final class LogCommandParser implements CommandParser
     private function regex() : string
     {
         return sprintf(
-            '/^(?<period>%s) (?:(?<when>yesterday) )?against (?<project>.*) for (?<description>.*)$/',
+            '/^(?<period>%s) (?:(?<when>yesterday|today) )?against (?<project>.*) for (?<description>.*)$/',
             Period::REGEX
         );
     }
