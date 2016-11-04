@@ -45,6 +45,19 @@ final class LogCommandParserTest extends \PHPUnit_Framework_TestCase
     }
 
     /** @test */
+    public function on_parse_it_parses_a_log_command_for_yesterday()
+    {
+        $command = $this->subject->parse('3hrs yesterday against Time Tracker for Implementing Slack integration');
+
+        assertEquals(new LogCommand(
+            'Time Tracker',
+            Date::yesterday(),
+            Period::fromString('3'),
+            'Implementing Slack integration'
+        ), $command);
+    }
+
+    /** @test */
     public function on_parse_it_throws_if_the_command_cannot_be_parsed()
     {
         $this->markTestIncomplete('Implement me!');

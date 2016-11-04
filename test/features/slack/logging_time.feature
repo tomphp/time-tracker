@@ -14,7 +14,14 @@ Feature: Logging time against a project using Slack
     And there is a project named "Ingredient Inventory"
     When Fran issues the command "log 3hrs against Ingredient Inventory for Feature: Use an ingredient"
     Then "3:00" hours should have been logged today by Fran against "Ingredient Inventory" for "Feature: Use an ingredient"
-    And Fran should receive a response message saying "Fran logged 3h against Ingredient Inventory"
+    And Fran should receive a response message saying "Fran logged 3h today against Ingredient Inventory"
+
+  Scenario: The one where Fran logs time for work done the previous day using Slack
+    Given Fran has linked her slack user to "fran@rgsoftware.com"
+    And there is a project named "Ingredient Inventory"
+    When Fran issues the command "log 3hrs yesterday against Ingredient Inventory for Feature: Use an ingredient"
+    Then "3:00" hours should have been logged yesterday by Fran against "Ingredient Inventory" for "Feature: Use an ingredient"
+    And Fran should receive a response message saying "Fran logged 3h yesterday against Ingredient Inventory"
 
   @integration
   Scenario: The one where the user enters an invalid project name

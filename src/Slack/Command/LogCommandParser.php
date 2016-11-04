@@ -21,9 +21,15 @@ final class LogCommandParser implements CommandParser
     {
         preg_match($this->regex(), $command, $matches);
 
+        if ($matches['when'] === 'yesterday') {
+            $date = Date::yesterday();
+        } else {
+            $date = $this->today; // <-- don't inject
+        }
+
         return new LogCommand(
             $matches['project'],
-            $this->today,
+            $date,
             Period::fromString($matches['period']),
             $matches['description']
         );
@@ -42,7 +48,7 @@ final class LogCommandParser implements CommandParser
     private function regex() : string
     {
         return sprintf(
-            '/^(?<period>%s) against (?<project>.*) for (?<description>.*)$/',
+            '/^(?<period>%s) (?:(?<when>yesterday) )?against (?<project>.*) for (?<description>.*)$/',
             Period::REGEX
         );
     }

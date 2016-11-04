@@ -2,6 +2,7 @@
 
 namespace test\features\TomPHP\TimeTracker;
 
+use Behat\Behat\Tester\Exception\PendingException;
 use Behat\Behat\Context\Context;
 use Behat\Behat\Context\SnippetAcceptingContext;
 use Interop\Container\ContainerInterface;
@@ -153,22 +154,26 @@ class SlackContext implements Context, SnippetAcceptingContext
         $this->result = $this->commandRunner()->run($userId, $command);
     }
 
+
     /**
-     * @Then :period hours should have been logged today by :developer against :project for :description
+     * @Then :period hours should have been logged :when by :developer against :project for :description
      */
     public function assertTimeEntryLogged(
         Period $period,
+        string $when,
         Developer $developer,
         Project $project,
         string $description
     ) {
-        $this->timeTracker->logTimeEntry(
-            $developer,
-            $project,
-            Date::today(),
-            $period,
-            $description
-        )->shouldHaveBeenCalled();
+        if ($when === 'today') {
+            $date = Date::today();
+        } elseif ($when === 'yesterday') {
+            $date = Date::yesterday();
+        }
+
+        $this->timeTracker
+            ->logTimeEntry($developer, $project, $date, $period, $description)
+            ->shouldHaveBeenCalled();
     }
 
     /**

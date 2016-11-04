@@ -49,8 +49,8 @@ final class LogCommandHandler implements CommandHandler
         );
 
         return $this->formatMessage(
-            '%s logged %s against %s',
-            [$developer->name(), $command->period(), $project->name()]
+            '%s logged %s %s against %s',
+            [$developer->name(), $command->period(), $command->date()->toFriendlyString(), $project->name()]
         );
     }
 

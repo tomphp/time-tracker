@@ -17,7 +17,6 @@ use TomPHP\TimeTracker\Slack\TimeTracker;
 
 final class LogCommandHandlerTest extends \PHPUnit_Framework_TestCase
 {
-    const DATE         = '2016-09-24';
     const PERIOD       = 2;
     const DESCRIPTION  = 'Work on the Slack integration';
 
@@ -58,7 +57,7 @@ final class LogCommandHandlerTest extends \PHPUnit_Framework_TestCase
 
         $this->command = new LogCommand(
             IngredientInventory::name(),
-            Date::fromString(self::DATE),
+            Date::today(),
             Period::fromHours(self::PERIOD),
             self::DESCRIPTION
         );
@@ -104,7 +103,7 @@ final class LogCommandHandlerTest extends \PHPUnit_Framework_TestCase
 
         $command = new LogCommand(
             'Unknown Project',
-            Date::fromString(self::DATE),
+            Date::today(),
             Period::fromHours(self::PERIOD),
             self::DESCRIPTION
         );
@@ -132,7 +131,7 @@ final class LogCommandHandlerTest extends \PHPUnit_Framework_TestCase
             ->logTimeEntry(
                 $this->developer,
                 $this->project,
-                Date::fromString(self::DATE),
+                Date::today(),
                 Period::fromHours(self::PERIOD),
                 self::DESCRIPTION
             )->shouldHaveBeenCalled();
@@ -144,6 +143,6 @@ final class LogCommandHandlerTest extends \PHPUnit_Framework_TestCase
         $result = $this->subject->handle(Fran::slackUserId(), $this->command);
 
         assertSame('ephemeral', $result['response_type']);
-        assertSame('Fran logged 2h against Ingredient Inventory', $result['text']);
+        assertSame('Fran logged 2h today against Ingredient Inventory', $result['text']);
     }
 }
