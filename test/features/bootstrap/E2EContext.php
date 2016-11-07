@@ -2,8 +2,6 @@
 
 namespace test\features\TomPHP\TimeTracker;
 
-use Art4\JsonApiClient\Document;
-use Art4\JsonApiClient\Utils\Manager;
 use Behat\Behat\Context\Context;
 use Behat\Behat\Context\SnippetAcceptingContext;
 use Fig\Http\Message\StatusCodeInterface as HttpStatus;
@@ -30,9 +28,6 @@ class E2EContext implements Context, SnippetAcceptingContext
     /** @var array */
     private $projects;
 
-    /** @var Manager */
-    private $jsonApiManager;
-
     /** @var SlackUserId[] */
     private $slackUsers = [];
 
@@ -44,8 +39,6 @@ class E2EContext implements Context, SnippetAcceptingContext
 
     public function __construct()
     {
-        $this->jsonApiManager = new Manager();
-
         $this->client = new Client([
             'base_uri'        => getenv('SITE_URL'),
             'allow_redirects' => false,
@@ -166,43 +159,43 @@ class E2EContext implements Context, SnippetAcceptingContext
         // Fetch front page
         $document = $this->jsonApiGet(self::REST_ENDPOINT);
 
-        assertTrue($document->has('data.relationships.projects.links.related'));
-        $link = $document->get('data.relationships.projects.links.related');
+        assertTrue(isset($document->data->relationships->projects->links->related));
+        $link = $document->data->relationships->projects->links->related;
 
         // Fetch projects
         $document = $this->jsonApiGet($link);
 
-        $resources = $document->get('data')->asArray();
+        $resources = $document->data;
         $project   = null;
         foreach ($resources as $resource) {
-            if ($resource->get('attributes.name') === $projectName) {
+            if ($resource->attributes->name === $projectName) {
                 $project = $resource;
                 break;
             }
         }
 
         assertNotNull($project, 'Project not found');
-        assertSame('projects', $project->get('type'));
-        assertTrue($project->has('links.self'), 'Failed to get links.self');
+        assertSame('projects', $project->type);
+        assertTrue(isset($project->links->self), 'Failed to get links.self');
 
-        $projectId = $project->get('id');
-        $link      = $project->get('links.self');
+        $projectId = $project->id;
+        $link      = $project->links->self;
 
         // Fetch project
         $document = $this->jsonApiGet($link);
 
-        assertSame('projects', $document->get('data.type'));
-        assertSame($projectName, $document->get('data.attributes.name'));
+        assertSame('projects', $document->data->type);
+        assertSame($projectName, $document->data->attributes->name);
 
-        $timeEntry = $document->get('included')->asArray()[0];
-        assertSame('time-entries', $timeEntry->get('type'));
+        $timeEntry = $document->included[0];
+        assertSame('time-entries', $timeEntry->type);
 
         $timeEntryObject = (object) [
             'projectId'   => $projectId,
-            'developerId' => $timeEntry->get('relationships.developer.data.id'),
-            'date'        => $timeEntry->get('attributes.date'),
-            'period'      => $timeEntry->get('attributes.period'),
-            'description' => $timeEntry->get('attributes.description'),
+            'developerId' => $timeEntry->relationships->developer->data->id,
+            'date'        => $timeEntry->attributes->date,
+            'period'      => $timeEntry->attributes->period,
+            'description' => $timeEntry->attributes->description,
         ];
 
         $expectedEntry = (object) [
@@ -238,13 +231,13 @@ class E2EContext implements Context, SnippetAcceptingContext
         return $matches[1];
     }
 
-    private function jsonApiGet(string $uri) : Document
+    private function jsonApiGet(string $uri)
     {
         $response = $this->client->get($uri);
 
         assertSame(HttpStatus::STATUS_OK, $response->getStatusCode());
         $json = (string) $response->getBody();
 
-        return $this->jsonApiManager->parse($json);
+        return json_decode($json);
     }
 }

@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "42e044ee4d03b8f5f58de264efe88669",
-    "content-hash": "3e76b27a05f21c4fcb8d26f7e07a613e",
+    "hash": "f36474b1d61aa3fa1ea3877faf2dbc4a",
+    "content-hash": "05101ec9495e11f71fd6d27f044b5fc6",
     "packages": [
         {
             "name": "aura/sqlquery",
@@ -266,6 +266,44 @@
             ],
             "description": "A tool to automatically fix PHP code style",
             "time": "2016-10-17 18:04:08"
+        },
+        {
+            "name": "jefersondaniel/siren-php",
+            "version": "1.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/jefersondaniel/sirenphp.git",
+                "reference": "542f23b2280d1dc13153c2f1574494ff7ef89fca"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/jefersondaniel/sirenphp/zipball/542f23b2280d1dc13153c2f1574494ff7ef89fca",
+                "reference": "542f23b2280d1dc13153c2f1574494ff7ef89fca",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "SirenPHP\\": "src/SirenPHP"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "authors": [
+                {
+                    "name": "Jeferson Daniel",
+                    "email": "jeferson.daniel412@gmail.com"
+                }
+            ],
+            "description": "Siren hypermedia type implementation for PHP",
+            "keywords": [
+                "Siren",
+                "hypermedia",
+                "json"
+            ],
+            "time": "2016-03-18 02:49:02"
         },
         {
             "name": "nikic/fast-route",
@@ -1527,55 +1565,6 @@
         }
     ],
     "packages-dev": [
-        {
-            "name": "art4/json-api-client",
-            "version": "0.6.3",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/Art4/json-api-client.git",
-                "reference": "4579f73df016d0c17e67fd53330e6f7d2539df3d"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/Art4/json-api-client/zipball/4579f73df016d0c17e67fd53330e6f7d2539df3d",
-                "reference": "4579f73df016d0c17e67fd53330e6f7d2539df3d",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.4"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "~4.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Art4\\JsonApiClient\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "GPL2"
-            ],
-            "authors": [
-                {
-                    "name": "Artur Weigandt",
-                    "email": "art4@wlabs.de",
-                    "homepage": "http://wlabs.de"
-                }
-            ],
-            "description": "JSON API client",
-            "homepage": "https://github.com/Art4/json-api-client",
-            "keywords": [
-                "JSON-API",
-                "api",
-                "client",
-                "json",
-                "reader",
-                "validator"
-            ],
-            "time": "2016-04-26 17:28:19"
-        },
         {
             "name": "behat/behat",
             "version": "v3.2.1",
