@@ -17,6 +17,8 @@ use TomPHP\TimeTracker\Tracker\TimeEntryProjections;
 
 const PROJECT_ROOT = __DIR__ . '/..';
 
+header('Access-Control-Allow-Origin: *');
+
 require PROJECT_ROOT . '/vendor/autoload.php';
 
 $app = new App([
