@@ -157,13 +157,13 @@ class E2EContext implements Context, SnippetAcceptingContext
         string $description
     ) {
         // Fetch front page
-        $document = $this->jsonApiGet(self::REST_ENDPOINT);
+        $document = $this->apiGet(self::REST_ENDPOINT);
 
         assertTrue(isset($document->data->relationships->projects->links->related));
         $link = $document->data->relationships->projects->links->related;
 
         // Fetch projects
-        $document = $this->jsonApiGet($link);
+        $document = $this->apiGet($link);
 
         $resources = $document->data;
         $project   = null;
@@ -182,7 +182,7 @@ class E2EContext implements Context, SnippetAcceptingContext
         $link      = $project->links->self;
 
         // Fetch project
-        $document = $this->jsonApiGet($link);
+        $document = $this->apiGet($link);
 
         assertSame('projects', $document->data->type);
         assertSame($projectName, $document->data->attributes->name);
@@ -231,7 +231,7 @@ class E2EContext implements Context, SnippetAcceptingContext
         return $matches[1];
     }
 
-    private function jsonApiGet(string $uri)
+    private function apiGet(string $uri)
     {
         $response = $this->client->get($uri);
 
