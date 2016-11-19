@@ -63,7 +63,7 @@ class E2EContext implements Context, SnippetAcceptingContext
     public function createDeveloperWithEmail(string $name, string $email)
     {
         $developer = $this->getCollection('developers');
-        $action   = $developer->getAction('add-developer');
+        $action    = $developer->getAction('add-developer');
 
         $developer = $this->performAction($action, ['name'  => $name, 'email' => $email]);
 
@@ -151,7 +151,7 @@ class E2EContext implements Context, SnippetAcceptingContext
         assertNotNull($project, 'Project not found');
 
         $projectLink = $project->getLinksByRel('self')[0];
-        $document = $this->apiGet($projectLink->getHref());
+        $document    = $this->apiGet($projectLink->getHref());
 
         assertSame($projectName, $document->getProperty('name'));
 
@@ -199,13 +199,13 @@ class E2EContext implements Context, SnippetAcceptingContext
     public function performAction(Siren\Action $action, array $fields = []) : Siren\Entity
     {
         $actionMethod = mb_strtolower($action->getMethod());
-        $fields = ['json' => $fields];
+        $fields       = ['json' => $fields];
 
         $response = $this->client->$actionMethod($action->getHref(), $fields);
 
         assertSame(HttpStatus::STATUS_CREATED, $response->getStatusCode());
 
-        $link = $response->getHeader('location')[0];
+        $link     = $response->getHeader('location')[0];
         $response = $this->client->get($link);
 
         assertSame(HttpStatus::STATUS_OK, $response->getStatusCode());

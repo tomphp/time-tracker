@@ -7,7 +7,6 @@ use Interop\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use TomPHP\Siren;
-use TomPHP\TimeTracker\Api\Resources\DeveloperResource;
 use TomPHP\TimeTracker\Common\Email;
 use TomPHP\TimeTracker\Tracker\Developer;
 use TomPHP\TimeTracker\Tracker\DeveloperId;
