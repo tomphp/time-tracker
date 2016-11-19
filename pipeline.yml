@@ -71,7 +71,7 @@ jobs:
     passed: [unit-tests]
   - put: e2e-tests-platform
     params:
-      manifest: github-repository
+      manifest: github-repository/manifest.yml
       current_app_name: time-tracker-e2e-tests
       environment_variables:
         STORAGE_DRIVER: mysql
@@ -99,8 +99,8 @@ jobs:
         source: { repository: tomoram/time-tracker-php }
       inputs:
       - name: build-dir
-      - name: deployment-image
       params:
+        STORAGE_DRIVER: mysql
         SITE_URL: http://time-tracker-e2e-tests.cfapps.io/
       run:
         dir: build-dir
@@ -108,9 +108,7 @@ jobs:
         args:
         - -exc
         - |
-          export STORAGE_DRIVER=mysql
-
-          vendor/bin/phpunit --testsuite mysql
+          #vendor/bin/phpunit --testsuite mysql
           vendor/bin/behat -p e2e
 
 - name: deploy
@@ -122,7 +120,7 @@ jobs:
     passed: [e2e-tests]
   - put: deploy-platform
     params:
-      manifest: github-repository
+      manifest: github-repository/manifest.yml
       current_app_name: time-tracker-app
       environment_variables:
         STORAGE_DRIVER: mysql
