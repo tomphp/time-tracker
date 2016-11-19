@@ -52,6 +52,8 @@ $app->group('/api/v1', function () {
     $this->get('', function (Request $request, Response $response) {
         $document = Siren\Entity::builder()
             ->addLink('collection', apiUrl('/projects'), 'projects')
+            ->addLink('collection', apiUrl('/developers'), 'developers')
+            ->addClass('index')
             ->build();
 
         return $response->withJson($document->toArray(), HttpStatus::STATUS_OK)
@@ -59,6 +61,7 @@ $app->group('/api/v1', function () {
     });
 
     $this->post('/developers', DevelopersControllor::class . ':postToCollection');
+    $this->get('/developers', DevelopersControllor::class . ':getCollection');
     /* Untested */
     $this->get('/developers/{developerId}', DevelopersControllor::class . ':getResource');
 

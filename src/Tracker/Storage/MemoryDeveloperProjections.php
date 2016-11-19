@@ -2,8 +2,8 @@
 
 namespace TomPHP\TimeTracker\Tracker\Storage;
 
+use TomPHP\TimeTracker\Common\DeveloperId;
 use TomPHP\TimeTracker\Common\Email;
-use TomPHP\TimeTracker\Tracker\DeveloperId;
 use TomPHP\TimeTracker\Tracker\DeveloperProjection;
 use TomPHP\TimeTracker\Tracker\DeveloperProjections;
 
@@ -17,8 +17,13 @@ final class MemoryDeveloperProjections implements DeveloperProjections
 
     public function add(DeveloperProjection $developer)
     {
-        $this->developersById[(string) $developer->id()]                   = $developer;
-        $this->developersByEmail[(string) $developer->email()]             = $developer;
+        $this->developersById[(string) $developer->id()]       = $developer;
+        $this->developersByEmail[(string) $developer->email()] = $developer;
+    }
+
+    public function all() : array
+    {
+        return array_values($this->developersById);
     }
 
     public function withId(DeveloperId $id) : DeveloperProjection

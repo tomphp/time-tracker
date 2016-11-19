@@ -2,11 +2,12 @@
 
 namespace TomPHP\TimeTracker\Tracker;
 
+use TomPHP\TimeTracker\Common\DeveloperId as Id;
 use TomPHP\TimeTracker\Common\Email;
 
 final class DeveloperProjection
 {
-    /** @var DeveloperId */
+    /** @var Id */
     private $id;
 
     /** @var string */
@@ -15,14 +16,14 @@ final class DeveloperProjection
     /** @var Email */
     private $email;
 
-    public function __construct(DeveloperId $id, string $name, Email $email)
+    public function __construct(Id $id, string $name, Email $email)
     {
-        $this->id          = $id;
-        $this->name        = $name;
-        $this->email       = $email;
+        $this->id    = $id;
+        $this->name  = $name;
+        $this->email = $email;
     }
 
-    public function id() : DeveloperId
+    public function id() : Id
     {
         return $this->id;
     }

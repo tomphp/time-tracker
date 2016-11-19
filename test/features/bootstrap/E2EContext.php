@@ -62,13 +62,22 @@ class E2EContext implements Context, SnippetAcceptingContext
      */
     public function createDeveloperWithEmail(string $name, string $email)
     {
-        $response = $this->client->post(
-            '/api/v1/developers',
+        // Fetch front page
+        $entryPoint = $this->apiGet(self::REST_ENDPOINT);
+
+        // Fetch developers page
+        $projects = $this->apiGet($entryPoint->getLinksByClass('developers')[0]->getHref());
+        $action   = $projects->getAction('add-developer');
+
+        // Perform Action
+        $actionLink   = $action->getHref();
+        $actionMethod = mb_strtolower($action->getMethod());
+        $response     = $this->client->$actionMethod(
+            $actionLink,
             [
                 'json' => [
-                    'name'         => $name,
-                    'email'        => $email,
-                    'slack-handle' => "@$name",
+                    'name'  => $name,
+                    'email' => $email,
                 ],
             ]
         );
@@ -88,7 +97,7 @@ class E2EContext implements Context, SnippetAcceptingContext
 
         $this->slackUsers[$developerName] = [
             'id'   => $id,
-            'name' => '@' . strtolower($developerName),
+            'name' => '@' . mb_strtolower($developerName),
         ];
     }
 
@@ -109,12 +118,12 @@ class E2EContext implements Context, SnippetAcceptingContext
         $entryPoint = $this->apiGet(self::REST_ENDPOINT);
 
         $projects = $this->apiGet($entryPoint->getLinksByClass('projects')[0]->getHref());
-        $action = $projects->getAction('add-project');
+        $action   = $projects->getAction('add-project');
 
         // Perform Action
-        $actionLink = $action->getHref();
-        $actionMethod = strtolower($action->getMethod());
-        $response = $this->client->$actionMethod(
+        $actionLink   = $action->getHref();
+        $actionMethod = mb_strtolower($action->getMethod());
+        $response     = $this->client->$actionMethod(
             $actionLink,
             [
                 'json' => ['name' => $name],
@@ -168,7 +177,7 @@ class E2EContext implements Context, SnippetAcceptingContext
     ) {
         // Fetch front page
         $entryPoint = $this->apiGet(self::REST_ENDPOINT);
-        $projects = $this->apiGet($entryPoint->getLinksByClass('projects')[0]->getHref());
+        $projects   = $this->apiGet($entryPoint->getLinksByClass('projects')[0]->getHref());
 
         $project = $projects->getEntitiesByProperty('name', $projectName)[0];
         assertNotNull($project, 'Project not found');

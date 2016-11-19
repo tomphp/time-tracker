@@ -17,9 +17,9 @@
         </phingcall>
     </target>
 
-    <target name="migrate-db:test">
-        <echo message="Set up the test database" />
-        <exec command="${cmd.docker_cli} 'vendor/bin/phinx migrate -e testing'"
+    <target name="migrate-db:development">
+        <echo message="Set up the development database" />
+        <exec command="${cmd.docker_cli} 'vendor/bin/phinx migrate -e development'"
               checkreturn="true"
               passthru="true" />
     </target>

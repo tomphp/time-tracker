@@ -6,6 +6,7 @@ use Fig\Http\Message\StatusCodeInterface as HttpStatus;
 use Interop\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use TomPHP\Siren;
 use TomPHP\TimeTracker\Api\Resources\DeveloperResource;
 use TomPHP\TimeTracker\Common\Email;
 use TomPHP\TimeTracker\Tracker\Developer;
@@ -35,6 +36,41 @@ final class DevelopersControllor
 
         return $response->withJson([], HttpStatus::STATUS_CREATED)
             ->withHeader('Location', "/api/v1/developers/$id");
+    }
+
+    public function getCollection(Request $request, Response $response)
+    {
+        $builder = Siren\Entity::builder()
+            ->addLink('self', apiUrl('/developers'))
+            ->addClass('developer');
+
+        $developers = $this->container->get(DeveloperProjections::class);
+
+        foreach ($developers->all() as $developer) {
+            $projectEntity = Siren\Entity::builder()
+                ->addLink('self', apiUrl('/developers/' . $developer->id()))
+                ->addProperty('name', (string) $developer->name())
+                ->addProperty('email', (string) $developer->email())
+                ->addClass('developer')
+                ->build();
+
+            $builder->addSubEntity($projectEntity);
+        }
+
+        $addProject = Siren\Action::builder()
+            ->setName('add-developer')
+            ->setHref(apiUrl('/developers'))
+            ->setMethod('POST')
+            ->setTitle('Add Developer')
+            ->addClass('developer')
+            //->setType('application/json')
+            ->build();
+
+        $builder->addAction($addProject);
+        $collection = $builder->build();
+
+        return $response->withJson($collection->toArray(), HttpStatus::STATUS_OK)
+            ->withHeader('Content-Type', 'application/vnd.siren+json');
     }
 
     public function getResource(Request $request, Response $response, array $args)

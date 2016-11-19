@@ -2,6 +2,7 @@
 
 namespace TomPHP\TimeTracker\Tracker;
 
+use TomPHP\TimeTracker\Common\DeveloperId as Id;
 use TomPHP\TimeTracker\Common\Email;
 
 interface DeveloperProjections
@@ -9,7 +10,10 @@ interface DeveloperProjections
     /** @return void */
     public function add(DeveloperProjection $developer);
 
-    public function withId(DeveloperId $id) : DeveloperProjection;
+    /** @return Developer[] */
+    public function all() : array;
+
+    public function withId(Id $id) : DeveloperProjection;
 
     public function withEmail(Email $email) : DeveloperProjection;
 }

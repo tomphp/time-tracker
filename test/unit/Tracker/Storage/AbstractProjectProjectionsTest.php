@@ -107,7 +107,7 @@ abstract class AbstractProjectProjectionsTest extends \PHPUnit_Framework_TestCas
         usort(
             $projects,
             function (ProjectProjection $a, ProjectProjection $b) {
-                return $a->name() <=> $b->name();
+                return (string) $a->id() <=> (string) $b->id();
             }
         );
 

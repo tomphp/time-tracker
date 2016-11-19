@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "66b8c1e9e04e15bad1380a0fb92a16dc",
-    "content-hash": "2f98f11d236b55b0fbaf79aa44b83a62",
+    "hash": "0f421ea1c24a0c3cba2597b357c9308a",
+    "content-hash": "ce939bd55c2cfaad84eecac1c7fce8e4",
     "packages": [
         {
             "name": "aura/sqlquery",
@@ -205,16 +205,16 @@
         },
         {
             "name": "friendsofphp/php-cs-fixer",
-            "version": "dev-master",
+            "version": "v2.0.0-RC",
             "source": {
                 "type": "git",
                 "url": "https://github.com/FriendsOfPHP/PHP-CS-Fixer.git",
-                "reference": "ac52fe74ad1d8728c907dad4529c1cddbf946e96"
+                "reference": "f88ef17f44fa442e1dd98deb7da0d943be9c8fa8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/FriendsOfPHP/PHP-CS-Fixer/zipball/ac52fe74ad1d8728c907dad4529c1cddbf946e96",
-                "reference": "ac52fe74ad1d8728c907dad4529c1cddbf946e96",
+                "url": "https://api.github.com/repos/FriendsOfPHP/PHP-CS-Fixer/zipball/f88ef17f44fa442e1dd98deb7da0d943be9c8fa8",
+                "reference": "f88ef17f44fa442e1dd98deb7da0d943be9c8fa8",
                 "shasum": ""
             },
             "require": {
@@ -265,7 +265,7 @@
                 }
             ],
             "description": "A tool to automatically fix PHP code style",
-            "time": "2016-11-17 22:30:11"
+            "time": "2016-11-12 22:43:36"
         },
         {
             "name": "nikic/fast-route",
@@ -1522,22 +1522,22 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/tomphp/siren-php.git",
-                "reference": "55c23266a261e6de7230a4ccf7eb69f3d94887f1"
+                "reference": "a9c7f88f834c79f5e44501615bedb4ad225c53e2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tomphp/siren-php/zipball/55c23266a261e6de7230a4ccf7eb69f3d94887f1",
-                "reference": "55c23266a261e6de7230a4ccf7eb69f3d94887f1",
+                "url": "https://api.github.com/repos/tomphp/siren-php/zipball/a9c7f88f834c79f5e44501615bedb4ad225c53e2",
+                "reference": "a9c7f88f834c79f5e44501615bedb4ad225c53e2",
                 "shasum": ""
             },
             "require": {
                 "beberlei/assert": "^2.6",
-                "friendsofphp/php-cs-fixer": "dev-master",
                 "php": "^7.0",
                 "psr/link": "^1.0",
                 "tomphp/exception-constructor-tools": "^1.0"
             },
             "require-dev": {
+                "friendsofphp/php-cs-fixer": "2.0.0-RC",
                 "phpunit/phpunit": "^5.6"
             },
             "type": "library",
@@ -1557,7 +1557,7 @@
                 }
             ],
             "description": "A library for creating and parsing Siren APIs in PHP",
-            "time": "2016-11-18 15:06:29"
+            "time": "2016-11-19 11:07:47"
         },
         {
             "name": "tomphp/transform",
@@ -1917,16 +1917,16 @@
         },
         {
             "name": "guzzlehttp/promises",
-            "version": "1.2.0",
+            "version": "1.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/promises.git",
-                "reference": "c10d860e2a9595f8883527fa0021c7da9e65f579"
+                "reference": "2693c101803ca78b27972d84081d027fca790a1e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/promises/zipball/c10d860e2a9595f8883527fa0021c7da9e65f579",
-                "reference": "c10d860e2a9595f8883527fa0021c7da9e65f579",
+                "url": "https://api.github.com/repos/guzzle/promises/zipball/2693c101803ca78b27972d84081d027fca790a1e",
+                "reference": "2693c101803ca78b27972d84081d027fca790a1e",
                 "shasum": ""
             },
             "require": {
@@ -1964,7 +1964,7 @@
             "keywords": [
                 "promise"
             ],
-            "time": "2016-05-18 16:56:05"
+            "time": "2016-11-18 17:47:58"
         },
         {
             "name": "guzzlehttp/psr7",
@@ -2697,23 +2697,23 @@
         },
         {
             "name": "phpunit/phpunit-mock-objects",
-            "version": "3.4.0",
+            "version": "3.4.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit-mock-objects.git",
-                "reference": "238d7a2723bce689c79eeac9c7d5e1d623bb9dc2"
+                "reference": "45026c8383187ad1dcb14fbfec77dced265b9cfc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit-mock-objects/zipball/238d7a2723bce689c79eeac9c7d5e1d623bb9dc2",
-                "reference": "238d7a2723bce689c79eeac9c7d5e1d623bb9dc2",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit-mock-objects/zipball/45026c8383187ad1dcb14fbfec77dced265b9cfc",
+                "reference": "45026c8383187ad1dcb14fbfec77dced265b9cfc",
                 "shasum": ""
             },
             "require": {
                 "doctrine/instantiator": "^1.0.2",
                 "php": "^5.6 || ^7.0",
                 "phpunit/php-text-template": "^1.2",
-                "sebastian/exporter": "^1.2"
+                "sebastian/exporter": "^1.2 || ^2.0"
             },
             "conflict": {
                 "phpunit/phpunit": "<5.4.0"
@@ -2752,7 +2752,7 @@
                 "mock",
                 "xunit"
             ],
-            "time": "2016-10-09 07:01:45"
+            "time": "2016-11-19 09:07:46"
         },
         {
             "name": "sebastian/code-unit-reverse-lookup",
@@ -2801,22 +2801,22 @@
         },
         {
             "name": "sebastian/comparator",
-            "version": "1.2.1",
+            "version": "1.2.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/comparator.git",
-                "reference": "ce2bda23a56456f19e35d98241446b581f648c14"
+                "reference": "6a1ed12e8b2409076ab22e3897126211ff8b1f7f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/comparator/zipball/ce2bda23a56456f19e35d98241446b581f648c14",
-                "reference": "ce2bda23a56456f19e35d98241446b581f648c14",
+                "url": "https://api.github.com/repos/sebastianbergmann/comparator/zipball/6a1ed12e8b2409076ab22e3897126211ff8b1f7f",
+                "reference": "6a1ed12e8b2409076ab22e3897126211ff8b1f7f",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.3",
                 "sebastian/diff": "~1.2",
-                "sebastian/exporter": "~1.2"
+                "sebastian/exporter": "~1.2 || ~2.0"
             },
             "require-dev": {
                 "phpunit/phpunit": "~4.4"
@@ -2861,7 +2861,7 @@
                 "compare",
                 "equality"
             ],
-            "time": "2016-11-17 14:39:37"
+            "time": "2016-11-19 09:18:40"
         },
         {
             "name": "sebastian/environment",
@@ -3449,7 +3449,7 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "friendsofphp/php-cs-fixer": 20,
+        "friendsofphp/php-cs-fixer": 5,
         "tomphp/siren": 20
     },
     "prefer-stable": false,

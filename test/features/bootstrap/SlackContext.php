@@ -2,7 +2,6 @@
 
 namespace test\features\TomPHP\TimeTracker;
 
-use Behat\Behat\Tester\Exception\PendingException;
 use Behat\Behat\Context\Context;
 use Behat\Behat\Context\SnippetAcceptingContext;
 use Interop\Container\ContainerInterface;
@@ -153,7 +152,6 @@ class SlackContext implements Context, SnippetAcceptingContext
 
         $this->result = $this->commandRunner()->run($userId, $command);
     }
-
 
     /**
      * @Then :period hours should have been logged :when by :developer against :project for :description

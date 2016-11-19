@@ -19,7 +19,7 @@ final class Date
     public static function yesterday() : self
     {
         $secondsInDay = self::SECONDS_IN_MINUTE * self::MINUTES_IN_HOUR * self::HOURS_IN_DAY;
-        $timestamp = time() - $secondsInDay;
+        $timestamp    = time() - $secondsInDay;
 
         return new self(date('Y-m-d', $timestamp));
     }
@@ -43,8 +43,7 @@ final class Date
     {
         if ($this == self::today()) {
             return 'today';
-        } else {
-            return 'yesterday';
         }
+        return 'yesterday';
     }
 }
