@@ -4,6 +4,7 @@ use Fig\Http\Message\StatusCodeInterface as HttpStatus;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\App;
+use TomPHP\Siren;
 use TomPHP\TimeTracker\Api\Controllers\DevelopersControllor;
 use TomPHP\TimeTracker\Api\Controllers\ProjectsController;
 use TomPHP\TimeTracker\Bootstrap;
@@ -49,25 +50,12 @@ function apiUrl(string $path) : string
 
 $app->group('/api/v1', function () {
     $this->get('', function (Request $request, Response $response) {
-        $result = [
-            'links' => [
-                'self' => apiUrl(''),
-            ],
-            'data' => [
-                'type'          => 'font-page',
-                'id'            => '1',
-                'relationships' => [
-                    'projects' => [
-                        'links' => [
-                            'related' => apiUrl('/projects'),
-                        ],
-                    ],
-                ],
-            ],
-        ];
+        $document = Siren\Entity::builder()
+            ->addLink('collection', apiUrl('/projects'), 'projects')
+            ->build();
 
-        return $response->withJson($result, HttpStatus::STATUS_OK)
-            ->withHeader('Content-Type', 'application/vnd.api+json');
+        return $response->withJson($document->toArray(), HttpStatus::STATUS_OK)
+            ->withHeader('Content-Type', 'application/vnd.siren+json');
     });
 
     $this->post('/developers', DevelopersControllor::class . ':postToCollection');

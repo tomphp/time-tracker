@@ -8,6 +8,7 @@ use Fig\Http\Message\StatusCodeInterface as HttpStatus;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Response;
 use Slim\Container;
+use TomPHP\Siren;
 use TomPHP\TimeTracker\Bootstrap;
 use TomPHP\TimeTracker\Common\Date;
 use TomPHP\TimeTracker\Common\Period;
@@ -104,8 +105,17 @@ class E2EContext implements Context, SnippetAcceptingContext
      */
     public function createProject(string $name)
     {
-        $response = $this->client->post(
-            '/api/v1/projects',
+        // Fetch front page
+        $entryPoint = $this->apiGet(self::REST_ENDPOINT);
+
+        $projects = $this->apiGet($entryPoint->getLinksByClass('projects')[0]->getHref());
+        $action = $projects->getAction('add-project');
+
+        // Perform Action
+        $actionLink = $action->getHref();
+        $actionMethod = strtolower($action->getMethod());
+        $response = $this->client->$actionMethod(
+            $actionLink,
             [
                 'json' => ['name' => $name],
             ]
@@ -157,50 +167,30 @@ class E2EContext implements Context, SnippetAcceptingContext
         string $description
     ) {
         // Fetch front page
-        $document = $this->apiGet(self::REST_ENDPOINT);
+        $entryPoint = $this->apiGet(self::REST_ENDPOINT);
+        $projects = $this->apiGet($entryPoint->getLinksByClass('projects')[0]->getHref());
 
-        assertTrue(isset($document->data->relationships->projects->links->related));
-        $link = $document->data->relationships->projects->links->related;
-
-        // Fetch projects
-        $document = $this->apiGet($link);
-
-        $resources = $document->data;
-        $project   = null;
-        foreach ($resources as $resource) {
-            if ($resource->attributes->name === $projectName) {
-                $project = $resource;
-                break;
-            }
-        }
-
+        $project = $projects->getEntitiesByProperty('name', $projectName)[0];
         assertNotNull($project, 'Project not found');
-        assertSame('projects', $project->type);
-        assertTrue(isset($project->links->self), 'Failed to get links.self');
 
-        $projectId = $project->id;
-        $link      = $project->links->self;
+        $projectLink = $project->getLinksByRel('self')[0];
 
         // Fetch project
-        $document = $this->apiGet($link);
+        $document = $this->apiGet($projectLink->getHref());
 
-        assertSame('projects', $document->data->type);
-        assertSame($projectName, $document->data->attributes->name);
+        assertSame($projectName, $document->getProperty('name'));
 
-        $timeEntry = $document->included[0];
-        assertSame('time-entries', $timeEntry->type);
+        $timeEntry = $document->getEntities()[0]; // <- getEntityByProperyValue('date', $wherenever);
 
         $timeEntryObject = (object) [
-            'projectId'   => $projectId,
-            'developerId' => $timeEntry->relationships->developer->data->id,
-            'date'        => $timeEntry->attributes->date,
-            'period'      => $timeEntry->attributes->period,
-            'description' => $timeEntry->attributes->description,
+            //'developerId' => $timeEntry->getEntity('developer')->getHref(), <- OUCH
+            'date'        => $timeEntry->getProperty('date'),
+            'period'      => $timeEntry->getProperty('period'),
+            'description' => $timeEntry->getProperty('description'),
         ];
 
         $expectedEntry = (object) [
-            'projectId'   => (string) $this->projects[$projectName]['id'],
-            'developerId' => (string) $this->developers[$developerName]['id'],
+            //'developerId' => (string) $this->developers[$developerName]['id'],
             'date'        => (string) Date::today(),
             'period'      => (string) $period,
             'description' => $description,
@@ -236,8 +226,9 @@ class E2EContext implements Context, SnippetAcceptingContext
         $response = $this->client->get($uri);
 
         assertSame(HttpStatus::STATUS_OK, $response->getStatusCode());
+        assertContains('application/vnd.siren+json', $response->getHeader('content-type'));
         $json = (string) $response->getBody();
 
-        return json_decode($json);
+        return Siren\Entity::fromArray(json_decode($json, true));
     }
 }

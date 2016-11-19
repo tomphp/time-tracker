@@ -6,6 +6,7 @@ use Fig\Http\Message\StatusCodeInterface as HttpStatus;
 use Interop\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use TomPHP\Siren;
 use TomPHP\TimeTracker\Api\Resources\ProjectResource;
 use TomPHP\TimeTracker\Tracker\Project;
 use TomPHP\TimeTracker\Tracker\ProjectId;
@@ -37,34 +38,37 @@ final class ProjectsController
 
     public function getCollection(Request $request, Response $response)
     {
+        $builder = Siren\Entity::builder()
+            ->addLink('self', apiUrl('/projects'))
+            ->addClass('project');
+
         $projects = $this->container->get(ProjectProjections::class);
 
-        $formattedProjects = array_map(
-            function (ProjectProjection $project) use ($request) {
-                return [
-                    'type'       => 'projects',
-                    'id'         => (string) $project->id(),
-                    'attributes' => [
-                        'name'       => $project->name(),
-                        'total-time' => (string) $project->totalTime(),
-                    ],
-                    'links' => [
-                        'self' => apiUrl('/projects/' . $project->id()),
-                    ],
-                ];
-            },
-            $projects->all()
-        );
+        foreach ($projects->all() as $project) {
+            $projectEntity = Siren\Entity::builder()
+                ->addLink('self', apiUrl('/projects/' . $project->id()))
+                ->addProperty('name', (string) $project->name())
+                ->addProperty('total_time', (string) $project->totalTime())
+                ->addClass('project')
+                ->build();
 
-        $result = [
-            'links' => [
-                'self' => apiUrl('/projects'),
-            ],
-            'data' => $formattedProjects,
-        ];
+            $builder->addSubEntity($projectEntity);
+        }
 
-        return $response->withJson($result, HttpStatus::STATUS_OK)
-            ->withHeader('Content-Type', 'application/hal+json');
+        $addProject = Siren\Action::builder()
+            ->setName('add-project')
+            ->setHref(apiUrl('/projects'))
+            ->setMethod('POST')
+            ->setTitle('Add Project')
+            ->addClass('project')
+            //->setType('application/json')
+            ->build();
+
+        $builder->addAction($addProject);
+        $collection = $builder->build();
+
+        return $response->withJson($collection->toArray(), HttpStatus::STATUS_OK)
+            ->withHeader('Content-Type', 'application/vnd.siren+json');
     }
 
     public function getResource(Request $request, Response $response, array $args)
@@ -75,40 +79,38 @@ final class ProjectsController
 
         $timeEntries = array_map(
             function (TimeEntryProjection $timeEntry) {
-                return [
-                    'type'       => 'time-entries',
-                    'id'         => 'missing-time-entry-id',
-                    'attributes' => [
-                        'date'        => (string) $timeEntry->date(),
-                        'period'      => (string) $timeEntry->period(),
-                        'description' => $timeEntry->description(),
-                    ],
-                    'relationships' => [
-                        'developer' => [
-                            'data' => [
-                                'type' => 'developers',
-                                'id'   => (string) $timeEntry->developerId(),
-                            ],
-                            'links' => [
-                                'self' => apiUrl('/developers/' . $timeEntry->developerId()),
-                            ],
-                        ],
-                    ],
-                ];
+                $developer = new Siren\EntityLink(
+                    ['developer'],
+                    apiUrl('/developers/' . $timeEntry->developerId())
+                );
+
+                $timeEntryEntity = Siren\Entity::builder()
+                    ->addLink('self', apiUrl('/projects/' . $timeEntry->projectId() . '/time-entries/' . $timeEntry->id()))
+                    ->addProperty('date', (string) $timeEntry->date())
+                    ->addProperty('period', (string) $timeEntry->period())
+                    ->addProperty('description', $timeEntry->description())
+                    ->addSubEntity($developer)
+                    ->addClass('time-entry')
+                    ->build();
+
+                return $timeEntryEntity;
             },
             $timeEntries->forProject(ProjectId::fromString($args['projectId']))
         );
 
-        $resource = new ProjectResource(
-            (string) $project->id(),
-            $project->name(),
-            (string) $project->totalTime()
-        );
+        $builder = Siren\Entity::builder()
+            ->addLink('self', apiUrl('/projects/' . $project->id()))
+            ->addProperty('name', $project->name())
+            ->addProperty('total_time', (string) $project->totalTime())
+            ->addClass('project');
 
-        $json             = $resource->toJsonApiResource(apiUrl(''));
-        $json['included'] = $timeEntries;
+        foreach ($timeEntries as $timeEntry) {
+            $builder->addSubEntity($timeEntry);
+        }
 
-        return $response->withJson($json, HttpStatus::STATUS_OK)
-            ->withHeader('Content-Type', 'application/hal+json');
+        $entity = $builder->build();
+
+        return $response->withJson($entity->toArray(), HttpStatus::STATUS_OK)
+            ->withHeader('Content-Type', 'application/vnd.siren+json');
     }
 }

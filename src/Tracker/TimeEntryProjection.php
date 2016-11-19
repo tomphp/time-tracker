@@ -7,6 +7,9 @@ use TomPHP\TimeTracker\Common\Period;
 
 final class TimeEntryProjection
 {
+    /** @var TimeEntryId */
+    private $id;
+
     /** @var ProjectId */
     private $projectId;
 
