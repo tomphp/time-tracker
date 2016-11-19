@@ -31,6 +31,7 @@ final class ProjectsController
         Project::create($id, $params['name']);
 
         return $response->withJson([], HttpStatus::STATUS_CREATED)
+            ->withHeader('Content-Type', 'application/vnd.siren+json')
             ->withHeader('Location', "/api/v1/projects/$id");
     }
 
@@ -45,6 +46,7 @@ final class ProjectsController
         foreach ($projects->all() as $project) {
             $projectEntity = Siren\Entity::builder()
                 ->addLink('self', apiUrl('/projects/' . $project->id()))
+                ->addProperty('id', (string) $project->id())
                 ->addProperty('name', (string) $project->name())
                 ->addProperty('total_time', (string) $project->totalTime())
                 ->addClass('project')
@@ -98,6 +100,7 @@ final class ProjectsController
 
         $builder = Siren\Entity::builder()
             ->addLink('self', apiUrl('/projects/' . $project->id()))
+            ->addProperty('id', (string) $project->id())
             ->addProperty('name', $project->name())
             ->addProperty('total_time', (string) $project->totalTime())
             ->addClass('project');

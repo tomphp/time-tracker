@@ -42,7 +42,7 @@ class E2EContext implements Context, SnippetAcceptingContext
     {
         $this->client = new Client([
             'base_uri'        => getenv('SITE_URL'),
-            'allow_redirects' => false,
+            'allow_redirects' => true,
         ]);
 
         $services = new Container();
@@ -62,14 +62,12 @@ class E2EContext implements Context, SnippetAcceptingContext
      */
     public function createDeveloperWithEmail(string $name, string $email)
     {
-        $projects = $this->getCollection('developers');
-        $action   = $projects->getAction('add-developer');
+        $developer = $this->getCollection('developers');
+        $action   = $developer->getAction('add-developer');
 
-        $response = $this->performAction($action, ['name'  => $name, 'email' => $email]);
+        $developer = $this->performAction($action, ['name'  => $name, 'email' => $email]);
 
-        $id = $this->assertCreatedResponseAndGetId($response, '!^.*/api/v1/developers/(.*?)$!');
-
-        $this->developers[$name] = ['id' => $id];
+        $this->developers[$name] = ['id' => $developer->getProperty('id')];
     }
 
     /**
@@ -102,11 +100,9 @@ class E2EContext implements Context, SnippetAcceptingContext
         $projects = $this->getCollection('projects');
         $action   = $projects->getAction('add-project');
 
-        $response = $this->performAction($action, ['name' => $name]);
+        $project = $this->performAction($action, ['name' => $name]);
 
-        $id = $this->assertCreatedResponseAndGetId($response, '!^.*/api/v1/projects/(.*?)$!');
-
-        $this->projects[$name] = ['id' => $id];
+        $this->projects[$name] = ['id' => $project->getProperty('id')];
     }
 
     /**
@@ -200,12 +196,23 @@ class E2EContext implements Context, SnippetAcceptingContext
         return $matches[1];
     }
 
-    public function performAction(Siren\Action $action, array $fields = []) : Response
+    public function performAction(Siren\Action $action, array $fields = []) : Siren\Entity
     {
         $actionMethod = mb_strtolower($action->getMethod());
         $fields = ['json' => $fields];
 
-        return $this->client->$actionMethod($action->getHref(), $fields);
+        $response = $this->client->$actionMethod($action->getHref(), $fields);
+
+        assertSame(HttpStatus::STATUS_CREATED, $response->getStatusCode());
+
+        $link = $response->getHeader('location')[0];
+        $response = $this->client->get($link);
+
+        assertSame(HttpStatus::STATUS_OK, $response->getStatusCode());
+        assertContains('application/vnd.siren+json', $response->getHeader('content-type'));
+        $json = (string) $response->getBody();
+
+        return Siren\Entity::fromArray(json_decode($json, true));
     }
 
     private function getCollection(string $name) : Siren\Entity

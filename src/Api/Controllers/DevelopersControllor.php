@@ -35,6 +35,7 @@ final class DevelopersControllor
         );
 
         return $response->withJson([], HttpStatus::STATUS_CREATED)
+            ->withHeader('Content-Type', 'application/vnd.siren+json')
             ->withHeader('Location', "/api/v1/developers/$id");
     }
 
@@ -49,6 +50,7 @@ final class DevelopersControllor
         foreach ($developers->all() as $developer) {
             $projectEntity = Siren\Entity::builder()
                 ->addLink('self', apiUrl('/developers/' . $developer->id()))
+                ->addProperty('id', (string) $developer->id())
                 ->addProperty('name', (string) $developer->name())
                 ->addProperty('email', (string) $developer->email())
                 ->addClass('developer')
@@ -78,14 +80,16 @@ final class DevelopersControllor
         $developers = $this->container->get(DeveloperProjections::class);
 
         $projection = $developers->withId(DeveloperId::fromString($args['developerId']));
-        $resource   = new DeveloperResource(
-            (string) $projection->id(),
-            (string) $projection->name()
-        );
 
-        return $response->withJson(
-            $resource->toJsonApiResource(apiUrl('')),
-            HttpStatus::STATUS_OK
-        );
+        $project = Siren\Entity::builder()
+            ->addLink('self', apiUrl('/developers/' . $projection->id()))
+            ->addProperty('id', (string) $projection->id())
+            ->addProperty('name', (string) $projection->name())
+            ->addProperty('email', (string) $projection->email())
+            ->addClass('developer')
+            ->build();
+
+        return $response->withJson($project->toArray(), HttpStatus::STATUS_OK)
+            ->withHeader('Content-Type', 'application/vnd.siren+json');
     }
 }
