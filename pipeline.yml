@@ -1,15 +1,10 @@
 ---
 resource_types:
-- name: docker-machine-deploy
-  type: docker-image
-  source: { repository: tomoram/concourse-docker-deploy }
-
 - name: simple-s3
   type: docker-image
   source:
     repository: 18fgsa/s3-resource-simple
     tag: latest
-
 
 resources:
 - name: github-repository
@@ -17,6 +12,7 @@ resources:
   source:
     uri: git@github.com:tomphp/time-tracker.git
     private_key: {{github_deploy_private_key}}
+    branch: cf
 
 - name: composer-cache
   type: simple-s3
@@ -29,39 +25,25 @@ resources:
       - "--exclude '*'"
       - "--include 'build-dir/vendor-cache.tgz'"
 
-- name: deployment-image
-  type: docker-image
+- name: e2e-tests-platform
+  type: cf
   source:
-    repository: tomoram/timetracker
-    username: tomoram
-    password: {{dockerhub_password}}
+    api: https://api.run.pivotal.io
+    username: tom@codept.com
+    password: {{cf_password}}
+    organization: example-test
+    space: e2e-tests
+    skip_cert_check: false
 
-- name: testing-server
-  type: docker-machine-deploy
-  source: &docker-machine-config
-    machine_name: do-time-tracker
-    ca_key_pem: {{docker_machine_ca_key_pem}}
-    ca_pem: {{docker_machine_ca_pem}}
-    cert_pem: {{docker_machine_cert_pem}}
-    config: {{docker_machine_config}}
-    id_rsa: {{docker_machine_id_rsa}}
-    id_rsa_pub: {{docker_machine_id_rsa_pub}}
-    key_pem: {{docker_machine_key_pem}}
-    server_key_pem: {{docker_machine_server_key_pem}}
-    server_pem: {{docker_machine_server_pem}}
-    compose_file: docker-compose-testing.yml
-    compose_root: build-dir
-    compose_project_name: tttesting
-    docker_image: deployment-image
-
-- name: deploy-server
-  type: docker-machine-deploy
+- name: deploy-platform
+  type: cf
   source:
-    <<: *docker-machine-config
-    compose_file: docker-compose-production.yml
-    compose_root: build-dir
-    compose_project_name: ttdeploy
-
+    api: https://api.run.pivotal.io
+    username: tom@codept.com
+    password: {{cf_password}}
+    organization: example-test
+    space: deployment
+    skip_cert_check: false
 
 jobs:
 - name: unit-tests
@@ -80,20 +62,19 @@ jobs:
       file: github-repository/ci/unit-tests.yml
     - put: composer-cache
 
-- name: build-image
+- name: deploy-e2e
   public: false
+  serial: true
   plan:
-  - aggregate:
-    - get: github-repository
-      trigger: true
-      passed: [unit-tests]
-    - get: composer-cache
-  - task: composer install
-    file: github-repository/ci/composer_install.yml
-    privileged: true
-    params: { MODE: production }
-  - put: deployment-image
-    params: { build: build-dir }
+  - get: github-repository
+    trigger: true
+    passed: [unit-tests]
+  - put: e2e-tests-platform
+    params:
+      manifest: github-repository
+      current_app_name: time-tracker-e2e-tests
+      environment_variables:
+        STORAGE_DRIVER: mysql
 
 - name: e2e-tests
   public: false
@@ -101,18 +82,14 @@ jobs:
   plan:
   - aggregate:
     - get: github-repository
-      passed: [build-image]
-    - get: deployment-image
       trigger: true
-      passed: [build-image]
+      passed: [deploy-e2e]
     - get: composer-cache
 
   - task: composer install
     file: github-repository/ci/composer_install.yml
     privileged: true
     params: { MODE: developement }
-
-  - put: testing-server
 
   - task: Run end-to-end tests
     config:
@@ -124,13 +101,7 @@ jobs:
       - name: build-dir
       - name: deployment-image
       params:
-        STORAGE_DRIVER: mysql
-        SITE_URL: http://timetracker.codept.com:9080/
-        MYSQL_PORT: 3307
-        MYSQL_DBNAME: tracker
-        MYSQL_HOSTNAME: timetracker.codept.com
-        MYSQL_USERNAME: username
-        MYSQL_PASSWORD: password
+        SITE_URL: http://time-tracker-e2e-tests.cfapps.io/
       run:
         dir: build-dir
         path: sh
@@ -139,7 +110,6 @@ jobs:
         - |
           export STORAGE_DRIVER=mysql
 
-          vendor/bin/phinx migrate -e testing
           vendor/bin/phpunit --testsuite mysql
           vendor/bin/behat -p e2e
 
@@ -147,39 +117,12 @@ jobs:
   public: false
   serial: true
   plan:
-  - aggregate:
-    - get: github-repository
-      passed: [e2e-tests]
-    - get: deployment-image
-      trigger: true
-      passed: [e2e-tests]
-    - get: composer-cache
-
-  - task: composer install
-    file: github-repository/ci/composer_install.yml
-    privileged: true
-    params: { MODE: production }
-
-  - put: deploy-server
-
-  - task: Update the database
-    config:
-      platform: linux
-      image_resource:
-        type: docker-image
-        source: { repository: tomoram/time-tracker-php }
-      inputs:
-      - name: build-dir
-      - name: deployment-image
-      params:
+  - get: github-repository
+    trigger: true
+    passed: [e2e-tests]
+  - put: deploy-platform
+    params:
+      manifest: github-repository
+      current_app_name: time-tracker-app
+      environment_variables:
         STORAGE_DRIVER: mysql
-        SITE_URL: http://timetracker.codept.com:9080/
-        MYSQL_PORT: 3306
-        MYSQL_DBNAME: tracker
-        MYSQL_HOSTNAME: timetracker.codept.com
-        MYSQL_USERNAME: username
-        MYSQL_PASSWORD: password
-      run:
-        dir: build-dir
-        path: vendor/bin/phinx
-        args: [migrate, -e, production]
