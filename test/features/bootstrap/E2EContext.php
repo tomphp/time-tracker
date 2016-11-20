@@ -50,9 +50,6 @@ class E2EContext implements Context, SnippetAcceptingContext
         Bootstrap::run($services);
 
         $services->get('database')->exec('TRUNCATE `slack_linked_accounts`');
-        $services->get('database')->exec('TRUNCATE `developer_projections`');
-        $services->get('database')->exec('TRUNCATE `project_projections`');
-        $services->get('database')->exec('TRUNCATE `time_entry_projections`');
 
         $this->slackToken = $services->get('config.slack.token');
     }
@@ -60,12 +57,14 @@ class E2EContext implements Context, SnippetAcceptingContext
     /**
      * @Given :name has a developer account with email :email
      */
-    public function createDeveloperWithEmail(string $name, string $email)
+    public function fetchDeveloperWithEmail(string $name, string $email)
     {
-        $developer = $this->getCollection('developers');
-        $action    = $developer->getAction('add-developer');
-
-        $developer = $this->performAction($action, ['name'  => $name, 'email' => $email]);
+        $developer = $this->findOrCreateEntity(
+            'developers',
+            'add-developer',
+            'email',
+            ['name' => $name, 'email' => $email]
+        );
 
         $this->developers[$name] = ['id' => $developer->getProperty('id')];
     }
@@ -97,12 +96,12 @@ class E2EContext implements Context, SnippetAcceptingContext
      */
     public function createProject(string $name)
     {
-        $projects = $this->getCollection('projects');
-        $action   = $projects->getAction('add-project');
+        $project = $this->findOrCreateEntity('projects', 'add-project', 'name', ['name' => $name]);
 
-        $project = $this->performAction($action, ['name' => $name]);
-
-        $this->projects[$name] = ['id' => $project->getProperty('id')];
+        $this->projects[$name] = [
+            'id'         => $project->getProperty('id'),
+            'total_time' => Period::fromString($project->getProperty('total_time')),
+        ];
     }
 
     /**
@@ -145,15 +144,15 @@ class E2EContext implements Context, SnippetAcceptingContext
         string $projectName,
         string $description
     ) {
-        $projects = $this->getCollection('projects');
-
-        $project = $projects->getEntitiesByProperty('name', $projectName)[0];
-        assertNotNull($project, 'Project not found');
+        $project = $this->findEntityByProperty('projects', 'name', $projectName);
 
         $projectLink = $project->getLinksByRel('self')[0];
         $document    = $this->apiGet($projectLink->getHref());
 
-        assertSame($projectName, $document->getProperty('name'));
+        $totalTime = Period::fromString($document->getProperty('total_time'));
+        $timeDelta = $totalTime->subtract($this->projects[$projectName]['total_time']);
+
+        assertEquals($period, $timeDelta);
 
         $timeEntry = $document->getEntities()[0]; // <- getEntityByProperyValue('date', $wherenever);
 
@@ -194,6 +193,44 @@ class E2EContext implements Context, SnippetAcceptingContext
         );
 
         return $matches[1];
+    }
+
+    private function findEntityByProperty(string $collectionName, string $property, $value) : Siren\Entity
+    {
+        $collection = $this->getCollection($collectionName);
+        $found      = $collection->getEntitiesByProperty($property, $value);
+
+        assertCount(1, $found, "Expected exactly 1 entity to be found in $collectionName with $property == $value");
+
+        return $found[0];
+    }
+
+    private function findOrCreateEntity(
+        string $collection,
+        string $actionName,
+        string $idProperty,
+        array $params
+    ) : Siren\Entity {
+        $collection = $this->getCollection($collection);
+
+        $found    = $collection->getEntitiesByProperty($idProperty, $params[$idProperty]);
+        $numFound = count($found);
+
+        switch ($numFound) {
+            case 0:
+                $action = $collection->getAction($actionName);
+                $entity = $this->performAction($action, $params);
+                break;
+
+            case 1:
+                $entity = $found[0];
+                break;
+
+            default:
+                throw new \Exception("Found $numFound $collection");
+        }
+
+        return $entity;
     }
 
     public function performAction(Siren\Action $action, array $fields = []) : Siren\Entity

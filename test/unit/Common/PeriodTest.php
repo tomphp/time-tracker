@@ -208,6 +208,22 @@ final class PeriodTest extends \PHPUnit_Framework_TestCase
         assertEquals(Period::fromString('2:10'), $period);
     }
 
+    /** @test */
+    public function on_subtract_it_returns_the_difference()
+    {
+        $period = Period::fromString('2:20')->subtract(Period::fromString('1:05'));
+
+        assertEquals(Period::fromString('1:15'), $period);
+    }
+
+    /** @test */
+    public function on_subtract_it_rolls_over_if_minutes_go_under_0()
+    {
+        $period = Period::fromString('2:20')->subtract(Period::fromString('0:25'));
+
+        assertEquals(Period::fromString('1:55'), $period);
+    }
+
     private function assertFromStringWorks(string $expected, string $input)
     {
         if (!preg_match('/^(\d+):(\d\d)$/', $expected, $parts)) {

@@ -82,6 +82,19 @@ final class Period
         return new self($hours, $minutes);
     }
 
+    public function subtract(self $other) : self
+    {
+        $hours   = $this->hours - $other->hours();
+        $minutes = $this->minutes - $other->minutes();
+
+        if ($minutes < 0) {
+            $minutes = 60 + $minutes;
+            $hours -= 1;
+        }
+
+        return new self($hours, $minutes);
+    }
+
     public function __toString() : string
     {
         if ($this->hours && $this->minutes) {
