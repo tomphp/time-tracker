@@ -2,7 +2,6 @@
 
 namespace TomPHP\TimeTracker\Tracker\Storage;
 
-use PDO;
 use TomPHP\TimeTracker\Common\Period;
 use TomPHP\TimeTracker\Tracker\ProjectId;
 use TomPHP\TimeTracker\Tracker\ProjectProjection;
@@ -10,59 +9,23 @@ use TomPHP\TimeTracker\Tracker\ProjectProjections;
 
 final class MySQLProjectProjectionRepository implements ProjectProjections
 {
-    /** @var PDO */
-    private $pdo;
+    use MySQLTools;
 
-    public function __construct(PDO $pdo)
-    {
-        $this->pdo = $pdo;
-    }
+    const TABLE_NAME = 'project_projections';
 
     public function all() : array
     {
-        $statement = $this->pdo->query('SELECT * FROM `project_projections`');
-
-        $results = [];
-
-        while ($row = $statement->fetch(PDO::FETCH_OBJ)) {
-            $results[] = new ProjectProjection(
-                ProjectId::fromString($row->id),
-                $row->name,
-                Period::fromString($row->totalTime)
-            );
-        }
-
-        return $results;
+        return $this->selectAll();
     }
 
     public function add(ProjectProjection $project)
     {
-        $statement = $this->pdo->prepare(
-            'INSERT INTO `project_projections`'
-            . ' (`id`, `name`, `totalTime`)'
-            . ' VALUES (:id, :name, :totalTime)'
-        );
-
-        $statement->execute([
-            ':id'        => (string) $project->id(),
-            ':name'      => $project->name(),
-            ':totalTime' => (string) $project->totalTime(),
-        ]);
+        $this->insert($project);
     }
 
     public function withId(ProjectId $id) : ProjectProjection
     {
-        $statement = $this->pdo->prepare('SELECT * FROM `project_projections` WHERE `id` = :id');
-
-        $statement->execute([':id' => (string) $id]);
-
-        $row = $statement->fetch(PDO::FETCH_OBJ);
-
-        return new ProjectProjection(
-            ProjectId::fromString($row->id),
-            $row->name,
-            Period::fromString($row->totalTime)
-        );
+        return $this->selectOne('id', (string) $id);
     }
 
     public function hasWithName(string $name) : bool
@@ -71,22 +34,12 @@ final class MySQLProjectProjectionRepository implements ProjectProjections
 
         $statement->execute([':name' => $name]);
 
-        return (bool) $statement->fetch(PDO::FETCH_OBJ);
+        return (bool) $statement->fetch(\PDO::FETCH_OBJ);
     }
 
     public function withName(string $name) : ProjectProjection
     {
-        $statement = $this->pdo->prepare('SELECT * FROM `project_projections` WHERE `name` = :name');
-
-        $statement->execute([':name' => $name]);
-
-        $row = $statement->fetch(PDO::FETCH_OBJ);
-
-        return new ProjectProjection(
-            ProjectId::fromString($row->id),
-            $row->name,
-            Period::fromString($row->totalTime)
-        );
+        return $this->selectOne('name', $name);
     }
 
     public function updateTotalTimeFor(ProjectId $id, Period $totalTime)
@@ -97,5 +50,27 @@ final class MySQLProjectProjectionRepository implements ProjectProjections
             ':id'        => (string) $id,
             ':totalTime' => (string) $totalTime,
         ]);
+    }
+
+    /** @return ProjectProjection */
+    protected function create(\stdClass $fields)
+    {
+        return new ProjectProjection(
+            ProjectId::fromString($fields->id),
+            $fields->name,
+            Period::fromString($fields->totalTime)
+        );
+    }
+
+    /**
+     * @param ProjectProjection $project
+     */
+    protected function extract($project) : array
+    {
+        return [
+            'id'        => (string) $project->id(),
+            'name'      => $project->name(),
+            'totalTime' => (string) $project->totalTime(),
+        ];
     }
 }

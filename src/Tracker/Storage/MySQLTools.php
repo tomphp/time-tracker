@@ -27,14 +27,19 @@ trait MySQLTools
             ->cols(['*'])
             ->from(self::TABLE_NAME);
 
-        $statement = $this->executeQuery($select);
+        return $this->multiSelect($select);;
+    }
 
-        $result = [];
-        while ($row = $statement->fetch(\PDO::FETCH_OBJ)) {
-            $result[] = $this->create($row);
-        }
+    protected function selectWhere(string $field, $value) : array
+    {
+        $select = $this->queryFactory()->newSelect();
 
-        return $result;
+        $select
+            ->cols(['*'])
+            ->from(self::TABLE_NAME)
+            ->where("$field = ?", (string) $value);
+
+        return $this->multiSelect($select);
     }
 
     protected function selectOne(string $field, $value)
@@ -47,8 +52,6 @@ trait MySQLTools
             ->where("$field = ?", (string) $value);
 
         $statement = $this->executeQuery($select);
-
-        // TODO: check row count
 
         $row = $statement->fetch(\PDO::FETCH_OBJ);
 
@@ -63,8 +66,18 @@ trait MySQLTools
             ->cols($this->extract($object));
 
         $this->executeQuery($insert);
+    }
 
-        // TODO: check success
+    private function multiSelect($select) : array
+    {
+        $statement = $this->executeQuery($select);
+
+        $result = [];
+        while ($row = $statement->fetch(\PDO::FETCH_OBJ)) {
+            $result[] = $this->create($row);
+        }
+
+        return $result;
     }
 
     private function executeQuery(AbstractQuery $query) : \PDOStatement
