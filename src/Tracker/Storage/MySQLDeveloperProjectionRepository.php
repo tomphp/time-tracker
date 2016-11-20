@@ -2,7 +2,6 @@
 
 namespace TomPHP\TimeTracker\Tracker\Storage;
 
-use PDO;
 use TomPHP\TimeTracker\Common\DeveloperId;
 use TomPHP\TimeTracker\Common\Email;
 use TomPHP\TimeTracker\Tracker\DeveloperProjection;
@@ -10,85 +9,49 @@ use TomPHP\TimeTracker\Tracker\DeveloperProjections;
 
 final class MySQLDeveloperProjectionRepository implements DeveloperProjections
 {
-    /** @var PDO */
-    private $pdo;
+    use MySQLTools;
 
-    public function __construct(PDO $pdo)
-    {
-        $this->pdo = $pdo;
-    }
+    const TABLE_NAME = 'developer_projections';
 
     public function add(DeveloperProjection $developer)
     {
-        $statement = $this->pdo->prepare(
-            'INSERT INTO `developer_projections`'
-            . ' (`id`, `name`, `email`)'
-            . ' VALUES (:id, :name, :email)'
-        );
-
-        $statement->execute([
-            ':id'          => $developer->id(),
-            ':name'        => $developer->name(),
-            ':email'       => $developer->email(),
-        ]);
+        $this->insert($developer);
     }
 
     public function all() : array
     {
-        $statement = $this->pdo->query('SELECT * FROM `developer_projections`');
-
-        $results = [];
-
-        while ($row = $statement->fetch(PDO::FETCH_OBJ)) {
-            $results[] = new DeveloperProjection(
-                DeveloperId::fromString($row->id),
-                $row->name,
-                Email::fromString($row->email)
-            );
-        }
-
-        return $results;
+        return $this->selectAll();
     }
 
     public function withId(DeveloperId $id) : DeveloperProjection
     {
-        $statement = $this->pdo->prepare(
-            'SELECT * FROM'
-            . ' `developer_projections`'
-            . ' WHERE `id` = :id'
-        );
-
-        $statement->execute([':id' => (string) $id]);
-
-        // TODO: check row count
-
-        $row = $statement->fetch(PDO::FETCH_OBJ);
-
-        return new DeveloperProjection(
-            DeveloperId::fromString($row->id),
-            $row->name,
-            Email::fromString($row->email)
-        );
+        return $this->selectOne('id', (string) $id);
     }
 
     public function withEmail(Email $email) : DeveloperProjection
     {
-        $statement = $this->pdo->prepare(
-            'SELECT * FROM'
-            . ' `developer_projections`'
-            . ' WHERE `email` = :email'
-        );
+        return $this->selectOne('email', (string) $email);
+    }
 
-        $statement->execute([':email' => (string) $email]);
+    /**
+     * @param DeveloperProjection $projection
+     */
+    protected function extract($projection) : array
+    {
+        return [
+            'id'    => $projection->id(),
+            'name'  => $projection->name(),
+            'email' => $projection->email(),
+        ];
+    }
 
-        // TODO: check row count
-
-        $row = $statement->fetch(PDO::FETCH_OBJ);
-
+    /** @return DeveloperProjection */
+    protected function create(\stdClass $fields)
+    {
         return new DeveloperProjection(
-            DeveloperId::fromString($row->id),
-            $row->name,
-            Email::fromString($row->email)
+            DeveloperId::fromString($fields->id),
+            $fields->name,
+            Email::fromString($fields->email)
         );
     }
 }
