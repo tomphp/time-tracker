@@ -3,9 +3,14 @@
 namespace TomPHP\TimeTracker\Slack;
 
 use Interop\Container\ContainerInterface;
+use TomPHP\ContextLogger;
+use TomPHP\ContextLogger\ContextLoggerAware;
+use TomPHP\ContextLogger\ContextLoggerAwareTrait;
 
-final class CommandRunner
+final class CommandRunner implements ContextLoggerAware
 {
+    use ContextLoggerAwareTrait;
+
     /** string[] */
     private $commands;
 
@@ -28,7 +33,9 @@ final class CommandRunner
 
     public function run(SlackUserId $userId, string $commandString) : array
     {
-        $commandString          = $this->sanitiser->sanitise($commandString);
+        $commandString = $this->sanitiser->sanitise($commandString);
+        $this->logger->debug('Slack Command: ' . $commandString);
+
         list($name, $arguments) = explode(' ', $commandString, 2);
         if (!array_key_exists($name, $this->commands)) {
             return $this->unknownCommandResponse($name);

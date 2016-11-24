@@ -10,9 +10,14 @@ use TomPHP\TimeTracker\Slack\CommandParser;
 use TomPHP\TimeTracker\Slack\CommandRunner;
 use TomPHP\TimeTracker\Slack\CommandSanitiser;
 use TomPHP\TimeTracker\Slack\SlackUserId;
+use TomPHP\ContextLogger;
+use TomPHP\ContextLogger\ContextLoggerAware;
 
 final class CommandRunnerTest extends \PHPUnit_Framework_TestCase
 {
+    /** @var ContextLogger */
+    private $logger;
+
     /** @var CommandRunner */
     private $subject;
 
@@ -33,6 +38,7 @@ final class CommandRunnerTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
+        $this->logger    = $this->prophesize(ContextLogger::class);
         $this->container = $this->prophesize(ContainerInterface::class);
         $this->parser    = $this->prophesize(CommandParser::class);
         $this->command   = $this->prophesize(Command::class);
@@ -59,6 +65,24 @@ final class CommandRunnerTest extends \PHPUnit_Framework_TestCase
                 'bar' => 'Namespace\BarCommand',
             ]
         );
+
+        $this->subject->setLogger($this->logger->reveal());
+    }
+
+    /** @test */
+    public function it_is_logger_aware()
+    {
+        assertInstanceOf(ContextLoggerAware::class, $this->subject);
+    }
+
+    /** @test */
+    public function it_logs_the_command_at_debug_level()
+    {
+        $this->runCommand('foo command');
+
+        $this->logger
+            ->debug('Slack Command: foo command')
+            ->shouldHaveBeenCalled();
     }
 
     /** @test */
