@@ -2,6 +2,5 @@
     "WEB_SERVER": "httpd",
     "PHP_VERSION": "{PHP_70_LATEST}",
     "WEBDIR": "public",
-    "PHP_MODULES": [ "cli", "fpm", "pear" ],
     "PHP_EXTENSIONS": [ "pdo", "pdo_mysql" ]
 }
