@@ -62,6 +62,7 @@ final class ProjectsController
             ->setTitle('Add Project')
             ->addClass('project')
             //->setType('application/json')
+            ->addField('name', [], 'text', null, 'Name')
             ->build();
 
         $builder->addAction($addProject);

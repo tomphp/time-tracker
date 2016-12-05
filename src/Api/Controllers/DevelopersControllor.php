@@ -65,6 +65,8 @@ final class DevelopersControllor
             ->setTitle('Add Developer')
             ->addClass('developer')
             //->setType('application/json')
+            ->addField('name', [], 'text', null, 'Name')
+            ->addField('email', [], 'email', null, 'Email')
             ->build();
 
         $builder->addAction($addProject);
