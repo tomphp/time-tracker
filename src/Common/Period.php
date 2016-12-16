@@ -12,7 +12,7 @@ final class Period
             . '|'
             . '(?<compound>\d:\d\d)'
             . '|'
-            . '(?<decimal>\d?\.\d+)'
+            . '(?:(?<decimal>\d?\.\d+)(\s*hrs?)?)'
             . '|'
             . '(?<single>\d+)'
         . ')';

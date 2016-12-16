@@ -104,6 +104,18 @@ final class PeriodTest extends \PHPUnit_Framework_TestCase
     }
 
     /** @test */
+    public function on_fromString_it_parses_the_format_3_point_75_hr()
+    {
+        $this->assertFromStringWorks('3:45', '3.75hr');
+    }
+
+    /** @test */
+    public function on_fromString_it_parses_the_format_3_point_5_hrs()
+    {
+        $this->assertFromStringWorks('3:30', '3.5hrs');
+    }
+
+    /** @test */
     public function on_fromString_it_works_with_whitespace()
     {
         $this->assertFromStringWorks('2:00', '2 h');
@@ -118,6 +130,8 @@ final class PeriodTest extends \PHPUnit_Framework_TestCase
         $this->assertFromStringWorks('0:18', '18 minutes');
         $this->assertFromStringWorks('1:05', '1 h 5 m');
         $this->assertFromStringWorks('1:05', '1 hr 5 mins');
+        $this->assertFromStringWorks('3:45', '3.75 hr');
+        $this->assertFromStringWorks('3:30', '3.5 hrs');
     }
 
     /** @test */
