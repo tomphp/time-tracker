@@ -47,6 +47,11 @@ final class Period
             $minutes = $parts['minutes'] ?? 0;
         }
 
+        while ($minutes > 59) {
+            $minutes -= 60;
+            $hours++;
+        }
+
         return new self((int) $hours, (int) $minutes);
     }
 
@@ -98,11 +103,11 @@ final class Period
     public function __toString() : string
     {
         if ($this->hours && $this->minutes) {
-            return sprintf('%dh %02dm', $this->hours, $this->minutes);
+            return sprintf('%dh %dm', $this->hours, $this->minutes);
         }
 
         if (!$this->hours && $this->minutes) {
-            return sprintf('%02dm', $this->minutes);
+            return sprintf('%dm', $this->minutes);
         }
 
         return sprintf('%dh', $this->hours);

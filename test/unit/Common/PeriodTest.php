@@ -167,11 +167,10 @@ final class PeriodTest extends \PHPUnit_Framework_TestCase
     }
 
     /** @test */
-    public function it_throws_if_minutes_over_59()
+    public function it_wraps_if_minutes_go_over_59()
     {
-        $this->expectException(\InvalidArgumentException::class);
+        assertSame('1h 6m', (string) Period::fromString('66mins'));
 
-        Period::fromString('60mins');
     }
 
     /** @test */
