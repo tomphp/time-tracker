@@ -12,7 +12,7 @@ resources:
   source:
     uri: git@github.com:tomphp/time-tracker.git
     private_key: {{github_deploy_private_key}}
-    branch: cf
+    branch: master
 
 - name: composer-cache
   type: simple-s3
