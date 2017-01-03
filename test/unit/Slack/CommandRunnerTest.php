@@ -124,6 +124,19 @@ final class CommandRunnerTest extends \PHPUnit_Framework_TestCase
     }
 
     /** @test */
+    public function it_logs_a_warning_if_the_command_format_is_invalid()
+    {
+        $this->parser->matchesFormat('invalid command')->willReturn(false);
+        $this->parser->formatDescription()->willReturn('format description');
+
+        $result = $this->runCommand('foo invalid command');
+
+        $this->logger
+            ->warning('Invalid command format for \'foo invalid command\'')
+            ->shouldHaveBeenCalled();
+    }
+
+    /** @test */
     public function it_parses_the_command()
     {
         $this->runCommand('bar command arguments sanitised');

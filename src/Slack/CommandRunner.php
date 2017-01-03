@@ -43,6 +43,8 @@ final class CommandRunner implements ContextLoggerAware
 
         $parser = $this->parser($name);
         if (!$parser->matchesFormat($arguments)) {
+            $this->logger->warning("Invalid command format for '$commandString'");
+
             return $this->invalidFormatResponse($name, $parser);
         }
         $command = $parser->parse($arguments);
