@@ -34,7 +34,7 @@ final class CommandRunner implements ContextLoggerAware
     {
         $commandString = $this->sanitiser->sanitise($commandString);
 
-        $this->logger->addContext('slack_user_id', $userId);
+        $this->logger->addContext('slack_user_id', (string) $userId);
         $this->logger->debug('Slack Command: ' . $commandString);
 
         list($name, $arguments) = explode(' ', $commandString, 2);

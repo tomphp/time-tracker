@@ -81,7 +81,7 @@ final class CommandRunnerTest extends \PHPUnit_Framework_TestCase
         $this->runCommand('foo command');
 
         $this->logger
-            ->addContext('slack_user_id', $this->userId)
+            ->addContext('slack_user_id', (string) $this->userId)
             ->shouldHaveBeenCalled();
     }
 
