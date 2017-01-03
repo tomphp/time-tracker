@@ -2,5 +2,6 @@
     "WEB_SERVER": "httpd",
     "PHP_VERSION": "{PHP_70_LATEST}",
     "WEBDIR": "public",
+    "COMPOSER_VENDOR_DIR": "htdocs/vendor",
     "PHP_EXTENSIONS": [ "pdo", "pdo_mysql", "sockets" ]
 }

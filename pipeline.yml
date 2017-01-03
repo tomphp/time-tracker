@@ -72,7 +72,8 @@ jobs:
   - put: e2e-tests-platform
     params:
       manifest: github-repository/manifest.yml
-      current_app_name: time-tracker-e2e-tests
+      current_app_name: time-tracker-app
+      path: github-repository
       environment_variables:
         STORAGE_DRIVER: mysql
 
@@ -100,7 +101,6 @@ jobs:
       inputs:
       - name: build-dir
       params:
-        STORAGE_DRIVER: mysql
         SITE_URL: http://time-tracker-e2e-tests.cfapps.io/
       run:
         dir: build-dir
@@ -122,5 +122,6 @@ jobs:
     params:
       manifest: github-repository/manifest.yml
       current_app_name: time-tracker-app
+      path: github-repository
       environment_variables:
         STORAGE_DRIVER: mysql
