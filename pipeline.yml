@@ -71,7 +71,7 @@ jobs:
     passed: [unit-tests]
   - put: e2e-tests-platform
     params:
-      manifest: github-repository/manifest.yml
+      manifest: github-repository/manifest-e2e-tests.yml
       current_app_name: time-tracker-app
       path: github-repository
       environment_variables:
@@ -120,7 +120,7 @@ jobs:
     passed: [e2e-tests]
   - put: deploy-platform
     params:
-      manifest: github-repository/manifest.yml
+      manifest: github-repository/manifest-production.yml
       current_app_name: time-tracker-app
       path: github-repository
       environment_variables:

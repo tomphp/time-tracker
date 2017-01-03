@@ -1,5 +1,6 @@
 applications:
 - name: time-tracker-app
+  host: time-tracker-e2e-tests
   memory: 64M
   buildpack: https://github.com/cloudfoundry/php-buildpack.git
   env:
