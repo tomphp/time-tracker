@@ -184,7 +184,6 @@ final class PeriodTest extends \PHPUnit_Framework_TestCase
     public function it_wraps_if_minutes_go_over_59()
     {
         assertSame('1h 6m', (string) Period::fromString('66mins'));
-
     }
 
     /** @test */

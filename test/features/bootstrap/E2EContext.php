@@ -244,6 +244,7 @@ class E2EContext implements Context, SnippetAcceptingContext
         $response = $this->client->get($link);
 
         assertSame(HttpStatus::STATUS_OK, $response->getStatusCode());
+        var_dump((string) $response->getBody());
         assertContains('application/vnd.siren+json', $response->getHeader('content-type'));
         $json = (string) $response->getBody();
 

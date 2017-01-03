@@ -27,7 +27,7 @@ trait MySQLTools
             ->cols(['*'])
             ->from(self::TABLE_NAME);
 
-        return $this->multiSelect($select);;
+        return $this->multiSelect($select);
     }
 
     protected function selectWhere(string $field, $value) : array

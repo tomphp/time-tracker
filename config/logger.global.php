@@ -1,7 +1,6 @@
-<?php
-
-use TomPHP\TimeTracker\Infrastructure\LoggerFactory;
+<?php declare(strict_types=1);
 use TomPHP\ContextLogger\ContextLoggerAware;
+use TomPHP\TimeTracker\Infrastructure\LoggerFactory;
 
 return [
     'logger' => [

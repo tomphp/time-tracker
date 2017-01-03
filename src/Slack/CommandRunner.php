@@ -3,7 +3,6 @@
 namespace TomPHP\TimeTracker\Slack;
 
 use Interop\Container\ContainerInterface;
-use TomPHP\ContextLogger;
 use TomPHP\ContextLogger\ContextLoggerAware;
 use TomPHP\ContextLogger\ContextLoggerAwareTrait;
 

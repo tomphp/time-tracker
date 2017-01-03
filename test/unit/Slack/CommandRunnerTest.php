@@ -4,14 +4,14 @@ namespace test\unit\TomPHP\TimeTracker\Slack;
 
 use Interop\Container\ContainerInterface;
 use Prophecy\Argument;
+use TomPHP\ContextLogger;
+use TomPHP\ContextLogger\ContextLoggerAware;
 use TomPHP\TimeTracker\Slack\Command;
 use TomPHP\TimeTracker\Slack\CommandHandler;
 use TomPHP\TimeTracker\Slack\CommandParser;
 use TomPHP\TimeTracker\Slack\CommandRunner;
 use TomPHP\TimeTracker\Slack\CommandSanitiser;
 use TomPHP\TimeTracker\Slack\SlackUserId;
-use TomPHP\ContextLogger;
-use TomPHP\ContextLogger\ContextLoggerAware;
 
 final class CommandRunnerTest extends \PHPUnit_Framework_TestCase
 {

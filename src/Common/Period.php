@@ -49,7 +49,7 @@ final class Period
 
         while ($minutes > 59) {
             $minutes -= 60;
-            $hours++;
+            ++$hours;
         }
 
         return new self((int) $hours, (int) $minutes);
