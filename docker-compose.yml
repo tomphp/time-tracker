@@ -29,6 +29,7 @@ services:
     - db
     environment:
       STORAGE_DRIVER: mysql
+      ADMIN_PASSWORD: testing123
       MYSQL_DBNAME: tracker
       MYSQL_HOSTNAME: db
       MYSQL_USERNAME: username
@@ -46,6 +47,7 @@ services:
     command: echo "CLI Initialised..."
     environment:
       STORAGE_DRIVER: ${STORAGE_DRIVER}
+      ADMIN_PASSWORD: testing123
       MYSQL_DBNAME: tracker
       MYSQL_HOSTNAME: db
       MYSQL_USERNAME: username

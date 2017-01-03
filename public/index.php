@@ -29,6 +29,14 @@ $app = new App([
 
 Bootstrap::run($app->getContainer());
 
+$app->add(new \Slim\Middleware\HttpBasicAuthentication([
+    'path'        => '/',
+    'passthrough' => '/slack',
+    'secure'      => false,
+    'realm'       => 'Protected',
+    'users'       => ['admin' => getenv('ADMIN_PASSWORD')],
+]));
+
 $app->group('/slack', function () {
     $this->post('/slash-command-endpoint', function (Request $request, Response $response) {
         $params = $request->getParsedBody();

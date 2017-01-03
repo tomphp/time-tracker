@@ -22,7 +22,8 @@
         "tomphp/context-logger": "^1.0",
         "tomphp/exception-constructor-tools": "^1.0",
         "tomphp/siren": "^0.1.0",
-        "tomphp/transform": "^0.2.4"
+        "tomphp/transform": "^0.2.4",
+        "tuupola/slim-basic-auth": "^2.2"
     },
     "autoload": {
         "psr-4": {

@@ -43,6 +43,7 @@ class E2EContext implements Context, SnippetAcceptingContext
         $this->client = new Client([
             'base_uri'        => getenv('SITE_URL'),
             'allow_redirects' => true,
+            'auth'            => ['admin', getenv('ADMIN_PASSWORD')],
         ]);
 
         $services = new Container();

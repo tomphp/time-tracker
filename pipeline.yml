@@ -102,6 +102,7 @@ jobs:
       - name: build-dir
       params:
         SITE_URL: http://time-tracker-e2e-tests.cfapps.io/
+        ADMIN_PASSWORD: supersecret
       run:
         dir: build-dir
         path: sh
