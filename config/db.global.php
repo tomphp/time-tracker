@@ -35,6 +35,9 @@ return [
                     'config.db.username',
                     'config.db.password',
                 ],
+                'methods' => [
+                    'setAttribute' => [PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION],
+                ],
             ],
         ],
     ],
