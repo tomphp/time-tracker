@@ -10,7 +10,6 @@ final class Bootstrap
 {
     public static function run(ContainerInterface $container)
     {
-        error_log('Using driver ' . self::storageDriver());
         Configurator::apply()
             ->configFromFiles(self::projectRoot() . '/config/*.global.php')
             ->configFromFiles(self::projectRoot() . '/config/*.' . self::storageDriver() . '.php')

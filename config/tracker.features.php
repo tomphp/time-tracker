@@ -24,8 +24,7 @@ return [
                 'class' => MemoryTimeEntryProjections::class,
             ],
             MemoryEventStore::class => [
-                'class'     => MySQLEventStore::class,
-                'arguments' => ['database'],
+                'class'     => MemoryEventStore::class,
             ],
         ],
     ],

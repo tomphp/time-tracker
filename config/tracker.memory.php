@@ -12,7 +12,7 @@ return [
     'di' => [
         'services' => [
             EventStore::class => [
-                'class'     => MemoryEventStore::class,
+                'class' => MemoryEventStore::class,
             ],
             DeveloperProjections::class => [
                 'class' => MemoryDeveloperProjections::class,

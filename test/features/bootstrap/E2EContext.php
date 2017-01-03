@@ -49,8 +49,6 @@ class E2EContext implements Context, SnippetAcceptingContext
 
         Bootstrap::run($services);
 
-        $services->get('database')->exec('TRUNCATE `slack_linked_accounts`');
-
         $this->slackToken = $services->get('config.slack.token');
     }
 
