@@ -4,6 +4,8 @@ use Fig\Http\Message\StatusCodeInterface as HttpStatus;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\App;
+use Slim\Views\PhpRenderer;
+use Slim\Middleware\HttpBasicAuthentication;
 use TomPHP\Siren;
 use TomPHP\TimeTracker\Api\Controllers\DevelopersControllor;
 use TomPHP\TimeTracker\Api\Controllers\ProjectsController;
@@ -27,15 +29,25 @@ $app = new App([
     ],
 ]);
 
-Bootstrap::run($app->getContainer());
+$container = $app->getContainer();
 
-$app->add(new \Slim\Middleware\HttpBasicAuthentication([
+$container['view'] = function ($container) {
+    return new PhpRenderer(__DIR__ . '/../views/');
+};
+
+Bootstrap::run($container);
+
+$app->add(new HttpBasicAuthentication([
     'path'        => '/',
     'passthrough' => '/slack',
     'secure'      => false,
     'realm'       => 'Protected',
     'users'       => ['admin' => getenv('ADMIN_PASSWORD')],
 ]));
+
+$app->get('/', function (Request $request, Response $response) {
+    return $this->view->render($response, 'index.html.php');
+});
 
 $app->group('/slack', function () {
     $this->post('/slash-command-endpoint', function (Request $request, Response $response) {

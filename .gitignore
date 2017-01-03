@@ -1,3 +1,5 @@
 /vendor/
 /.php_cs.cache
 /credentials.yml
+/client/elm-stuff
+/client/tests/elm-stuff
