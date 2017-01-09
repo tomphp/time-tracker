@@ -1,5 +1,5 @@
 {
-    "WEB_SERVER": "httpd",
+    "WEB_SERVER": "nginx",
     "PHP_VERSION": "{PHP_70_LATEST}",
     "WEBDIR": "public",
     "COMPOSER_VENDOR_DIR": "vendor",
