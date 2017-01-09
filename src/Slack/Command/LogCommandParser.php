@@ -6,6 +6,7 @@ use TomPHP\TimeTracker\Common\Date;
 use TomPHP\TimeTracker\Common\Period;
 use TomPHP\TimeTracker\Slack\Command;
 use TomPHP\TimeTracker\Slack\CommandParser;
+use TomPHP\TimeTracker\Slack\Exception\CommandFormatInvalid;
 
 final class LogCommandParser implements CommandParser
 {
@@ -19,7 +20,9 @@ final class LogCommandParser implements CommandParser
 
     public function parse(string $command) : Command
     {
-        preg_match($this->regex(), $command, $matches);
+        if (!preg_match($this->regex(), $command, $matches)) {
+            throw new CommandFormatInvalid(__CLASS__, $command);
+        }
 
         if (isset($matches['when']) && $matches['when'] === 'yesterday') {
             $date = Date::yesterday();

@@ -5,13 +5,16 @@ namespace TomPHP\TimeTracker\Slack\Command;
 use TomPHP\TimeTracker\Common\Email;
 use TomPHP\TimeTracker\Slack\Command;
 use TomPHP\TimeTracker\Slack\CommandParser;
+use TomPHP\TimeTracker\Slack\Exception\CommandFormatInvalid;
 
 final class LinkCommandParser implements CommandParser
 {
     /** @return LinkCommand */
     public function parse(string $command) : Command
     {
-        preg_match('/^to account (.*)$/', $command, $matches);
+        if (!preg_match('/^to account (.*)$/', $command, $matches)) {
+            throw new CommandFormatInvalid(__CLASS__, $command);
+        }
 
         return new LinkCommand(Email::fromString($matches[1]));
     }
@@ -23,6 +26,6 @@ final class LinkCommandParser implements CommandParser
 
     public function formatDescription() : string
     {
-        return '';
+        return 'link to account [email address]';
     }
 }

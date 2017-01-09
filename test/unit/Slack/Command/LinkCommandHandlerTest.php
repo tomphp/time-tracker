@@ -90,28 +90,6 @@ final class LinkCommandHandlerTest extends \PHPUnit_Framework_TestCase
     }
 
     /** @test */
-    public function it_checks_if_the_account_is_already_linked()
-    {
-        $this->markTestIncomplete('Not implementing this feature yet');
-        $this->linkedAccounts->hasDeveloper(Argument::any())->willReturn(true);
-        $this->subject->handle(Mike::slackUserId(), $this->command);
-
-        $this->linkedAccounts->hasDeveloper(Mike::id())->shouldHaveBeenCalled();
-    }
-
-    /** @test */
-    public function it_returns_an_error_message_if_the_linked_account_is_found()
-    {
-        $this->markTestIncomplete('Not implementing this feature yet');
-        $this->linkedAccounts->hasDeveloper(Argument::any())->willReturn(true);
-
-        $result = $this->subject->handle(Mike::slackUserId(), $this->command);
-
-        assertSame('ephemeral', $result['response_type']);
-        assertSame('ERROR: Your account has already been linked.', $result['text']);
-    }
-
-    /** @test */
     public function it_stores_the_linked_account()
     {
         $result = $this->subject->handle(Mike::slackUserId(), $this->command);

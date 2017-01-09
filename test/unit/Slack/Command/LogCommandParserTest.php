@@ -6,6 +6,7 @@ use TomPHP\TimeTracker\Common\Date;
 use TomPHP\TimeTracker\Common\Period;
 use TomPHP\TimeTracker\Slack\Command\LogCommand;
 use TomPHP\TimeTracker\Slack\Command\LogCommandParser;
+use TomPHP\TimeTracker\Slack\Exception\CommandFormatInvalid;
 
 final class LogCommandParserTest extends \PHPUnit_Framework_TestCase
 {
@@ -79,7 +80,9 @@ final class LogCommandParserTest extends \PHPUnit_Framework_TestCase
     /** @test */
     public function on_parse_it_throws_if_the_command_cannot_be_parsed()
     {
-        $this->markTestIncomplete('Implement me!');
+        $this->expectException(CommandFormatInvalid::class);
+
+        $this->subject->parse('incorrect format of the command');
     }
 
     /** @test */
