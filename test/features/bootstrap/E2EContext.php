@@ -153,7 +153,8 @@ class E2EContext implements Context, SnippetAcceptingContext
 
         assertEquals($period, $timeDelta);
 
-        $timeEntry = $document->getEntities()[0]; // <- getEntityByProperyValue('date', $wherenever);
+        $entities = $document->getEntities();
+        $timeEntry = array_pop($entities);
 
         $timeEntryObject = (object) [
             //'developerId' => $timeEntry->getEntity('developer')->getHref(), <- OUCH
