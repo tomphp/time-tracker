@@ -2,6 +2,7 @@ module Types exposing (Model, Msg(..), Project, Developer, TimeEntry)
 
 import Http
 import Dict exposing (Dict)
+import Material
 
 
 type alias Project =
@@ -31,14 +32,17 @@ type alias Model =
     { apiEndpoint : String
     , projectsEndpoint : Maybe String
     , developersEndpoint : Maybe String
-    , projects : Dict String Project
+    , projects : Maybe (Dict String Project)
     , project : Maybe Project
-    , developers : List Developer
+    , developers : Maybe (List Developer)
+    , mdl : Material.Model
     }
 
 
 type Msg
     = IndexFetched (Result Http.Error ( String, String ))
+    | Refresh
+    | Mdl (Material.Msg Msg)
     | ProjectsFetched (Result Http.Error (Dict String Project))
     | FetchProject String
     | ProjectFetched (Result Http.Error (Maybe Project))

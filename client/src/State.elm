@@ -8,13 +8,14 @@ import Api
         , fetchProjects
         , fetchDevelopers
         )
-import Dict
+import Material
+import Material.Layout as Layout
 import Types exposing (Model, Msg(..))
 
 
 init : ( Model, Cmd Msg )
 init =
-    ( initialModel, fetchIndex )
+    initialModel ! [ Layout.sub0 Mdl, fetchIndex ]
 
 
 initialModel : Model
@@ -22,15 +23,22 @@ initialModel =
     { apiEndpoint = "/api/v1"
     , projectsEndpoint = Nothing
     , developersEndpoint = Nothing
-    , projects = Dict.empty
+    , projects = Nothing
     , project = Nothing
-    , developers = []
+    , developers = Nothing
+    , mdl = Material.model
     }
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
+        Mdl msg ->
+            Material.update Mdl msg model
+
+        Refresh ->
+            ( { model | projects = Nothing, developers = Nothing }, fetchIndex )
+
         IndexFetched (Ok ( projects, developers )) ->
             { model
                 | projectsEndpoint = Just projects
@@ -44,7 +52,7 @@ update msg model =
             ( model, Cmd.none )
 
         ProjectsFetched (Ok projects) ->
-            ( { model | projects = projects }, Cmd.none )
+            ( { model | projects = Just projects }, Cmd.none )
 
         ProjectsFetched (Err _) ->
             ( model, Cmd.none )
@@ -59,12 +67,12 @@ update msg model =
             ( model, Cmd.none )
 
         DevelopersFetched (Ok developers) ->
-            ( { model | developers = developers }, Cmd.none )
+            ( { model | developers = Just developers }, Cmd.none )
 
         DevelopersFetched (Err _) ->
             ( model, Cmd.none )
 
 
 subscriptions : Model -> Sub Msg
-subscriptions _ =
-    Sub.none
+subscriptions model =
+    Layout.subs Mdl model.mdl

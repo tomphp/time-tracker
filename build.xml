@@ -19,7 +19,14 @@
 
     <target name="migrate-db:development">
         <echo message="Set up the development database" />
-        <exec command="${cmd.docker_cli} 'vendor/bin/phinx migrate -e development'"
+        <exec command="STORAGE_DRIVER=mysql ${cmd.docker_cli} 'vendor/bin/phinx migrate -e development'"
+              checkreturn="true"
+              passthru="true" />
+    </target>
+
+    <target name="build:client">
+        <echo message="Building client app" />
+        <exec command="cd client &amp;&amp; elm-make src/App.elm --output ../public/app.js --warn &amp;&amp; cd .."
               checkreturn="true"
               passthru="true" />
     </target>
