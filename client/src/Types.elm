@@ -1,4 +1,12 @@
-module Types exposing (Model, Msg(..), Project, Developer, TimeEntry)
+module Types
+    exposing
+        ( Developer
+        , Loadable(..)
+        , Model
+        , Msg(..)
+        , Project
+        , TimeEntry
+        )
 
 import Http
 import Dict exposing (Dict)
@@ -33,10 +41,17 @@ type alias Model =
     , projectsEndpoint : Maybe String
     , developersEndpoint : Maybe String
     , projects : Maybe (Dict String Project)
-    , project : Maybe Project
+    , project : Loadable Project
     , developers : Maybe (List Developer)
     , mdl : Material.Model
     }
+
+
+type Loadable a
+    = NotLoaded
+    | Loading
+    | Loaded a
+    | Failed
 
 
 type Msg

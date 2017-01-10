@@ -17813,6 +17813,12 @@ var _user$project$Types$Model = F7(
 	function (a, b, c, d, e, f, g) {
 		return {apiEndpoint: a, projectsEndpoint: b, developersEndpoint: c, projects: d, project: e, developers: f, mdl: g};
 	});
+var _user$project$Types$Failed = {ctor: 'Failed'};
+var _user$project$Types$Loaded = function (a) {
+	return {ctor: 'Loaded', _0: a};
+};
+var _user$project$Types$Loading = {ctor: 'Loading'};
+var _user$project$Types$NotLoaded = {ctor: 'NotLoaded'};
 var _user$project$Types$DevelopersFetched = function (a) {
 	return {ctor: 'DevelopersFetched', _0: a};
 };
@@ -18048,7 +18054,9 @@ var _user$project$State$update = F2(
 			case 'FetchProject':
 				return {
 					ctor: '_Tuple2',
-					_0: model,
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{project: _user$project$Types$Loading}),
 					_1: _user$project$Api$fetchProject(_p0._0)
 				};
 			case 'ProjectFetched':
@@ -18057,7 +18065,16 @@ var _user$project$State$update = F2(
 						ctor: '_Tuple2',
 						_0: _elm_lang$core$Native_Utils.update(
 							model,
-							{project: _p0._0._0}),
+							{
+								project: function () {
+									var _p3 = _p0._0._0;
+									if (_p3.ctor === 'Just') {
+										return _user$project$Types$Loaded(_p3._0);
+									} else {
+										return _user$project$Types$Failed;
+									}
+								}()
+							}),
 						_1: _elm_lang$core$Platform_Cmd$none
 					};
 				} else {
@@ -18079,7 +18096,7 @@ var _user$project$State$update = F2(
 				}
 		}
 	});
-var _user$project$State$initialModel = {apiEndpoint: '/api/v1', projectsEndpoint: _elm_lang$core$Maybe$Nothing, developersEndpoint: _elm_lang$core$Maybe$Nothing, projects: _elm_lang$core$Maybe$Nothing, project: _elm_lang$core$Maybe$Nothing, developers: _elm_lang$core$Maybe$Nothing, mdl: _debois$elm_mdl$Material$model};
+var _user$project$State$initialModel = {apiEndpoint: '/api/v1', projectsEndpoint: _elm_lang$core$Maybe$Nothing, developersEndpoint: _elm_lang$core$Maybe$Nothing, projects: _elm_lang$core$Maybe$Nothing, project: _user$project$Types$NotLoaded, developers: _elm_lang$core$Maybe$Nothing, mdl: _debois$elm_mdl$Material$model};
 var _user$project$State$init = A2(
 	_elm_lang$core$Platform_Cmd_ops['!'],
 	_user$project$State$initialModel,
@@ -18345,34 +18362,39 @@ var _user$project$View$projectListHtml = function (model) {
 };
 var _user$project$View$projectHtml = function (project) {
 	var _p2 = project;
-	if (_p2.ctor === 'Just') {
-		var _p3 = _p2._0;
-		return A2(
-			_elm_lang$html$Html$div,
-			{ctor: '[]'},
-			{
-				ctor: '::',
-				_0: A3(
-					_debois$elm_mdl$Material_Options$styled,
-					_elm_lang$html$Html$h2,
-					{
-						ctor: '::',
-						_0: _debois$elm_mdl$Material_Typography$display2,
-						_1: {ctor: '[]'}
-					},
-					{
-						ctor: '::',
-						_0: _elm_lang$html$Html$text(_p3.name),
-						_1: {ctor: '[]'}
-					}),
-				_1: {
+	switch (_p2.ctor) {
+		case 'Loading':
+			return _debois$elm_mdl$Material_Progress$indeterminate;
+		case 'Loaded':
+			var _p3 = _p2._0;
+			return A2(
+				_elm_lang$html$Html$div,
+				{ctor: '[]'},
+				{
 					ctor: '::',
-					_0: _user$project$View$timeEntryListHtml(_p3),
-					_1: {ctor: '[]'}
-				}
-			});
-	} else {
-		return _elm_lang$html$Html$text('');
+					_0: A3(
+						_debois$elm_mdl$Material_Options$styled,
+						_elm_lang$html$Html$h2,
+						{
+							ctor: '::',
+							_0: _debois$elm_mdl$Material_Typography$display2,
+							_1: {ctor: '[]'}
+						},
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html$text(_p3.name),
+							_1: {ctor: '[]'}
+						}),
+					_1: {
+						ctor: '::',
+						_0: _user$project$View$timeEntryListHtml(_p3),
+						_1: {ctor: '[]'}
+					}
+				});
+		case 'NotLoaded':
+			return _elm_lang$html$Html$text('');
+		default:
+			return _elm_lang$html$Html$text('');
 	}
 };
 var _user$project$View$mainArea = function (model) {

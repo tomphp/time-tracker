@@ -10,7 +10,7 @@ import Api
         )
 import Material
 import Material.Layout as Layout
-import Types exposing (Model, Msg(..))
+import Types exposing (Model, Msg(..), Loadable(..))
 
 
 init : ( Model, Cmd Msg )
@@ -24,7 +24,7 @@ initialModel =
     , projectsEndpoint = Nothing
     , developersEndpoint = Nothing
     , projects = Nothing
-    , project = Nothing
+    , project = NotLoaded
     , developers = Nothing
     , mdl = Material.model
     }
@@ -58,10 +58,23 @@ update msg model =
             ( model, Cmd.none )
 
         FetchProject url ->
-            ( model, fetchProject url )
+            ( { model | project = Loading }
+            , fetchProject url
+            )
 
         ProjectFetched (Ok project) ->
-            ( { model | project = project }, Cmd.none )
+            ( { model
+                | project =
+                    (case project of
+                        Just p ->
+                            Loaded p
+
+                        Nothing ->
+                            Failed
+                    )
+              }
+            , Cmd.none
+            )
 
         ProjectFetched (Err _) ->
             ( model, Cmd.none )

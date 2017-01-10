@@ -3,15 +3,23 @@ module View exposing (view)
 import Dict exposing (..)
 import Html exposing (..)
 import Material.Button as Button
+import Material.Grid as Grid exposing (grid, cell, Device(..))
+import Material.Icon as Icon
+import Material.Layout as Layout
 import Material.List as List
 import Material.Options as Options
-import Material.Icon as Icon
 import Material.Progress as Progress
-import Material.Layout as Layout
-import Material.Typography as Typography
 import Material.Table as Table
-import Material.Grid as Grid exposing (grid, cell, Device(..))
-import Types exposing (Model, Msg(..), Project, Developer, TimeEntry)
+import Material.Typography as Typography
+import Types
+    exposing
+        ( Model
+        , Msg(..)
+        , Project
+        , Developer
+        , TimeEntry
+        , Loadable(..)
+        )
 
 
 view : Model -> Html Msg
@@ -58,16 +66,22 @@ mainArea model =
         ]
 
 
-projectHtml : Maybe Project -> Html Msg
+projectHtml : Loadable Project -> Html Msg
 projectHtml project =
     case project of
-        Just p ->
+        Loading ->
+            Progress.indeterminate
+
+        Loaded p ->
             div []
                 [ Options.styled h2 [ Typography.display2 ] [ text p.name ]
                 , timeEntryListHtml p
                 ]
 
-        Nothing ->
+        NotLoaded ->
+            text ""
+
+        Failed ->
             text ""
 
 
