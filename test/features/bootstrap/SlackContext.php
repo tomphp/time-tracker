@@ -192,11 +192,10 @@ class SlackContext implements Context, SnippetAcceptingContext
 
         $attachment = $this->result['attachments'][0];
 
-        assertSame('Valid commands are:', $attachment['text']);
-
-        foreach ($commands as $command) {
-            assertContains($command, $attachment);
-        }
+        assertSame(
+            "Valid commands are:\n" . implode("\n", $commands),
+            $attachment['text']
+        );
     }
 
     /**

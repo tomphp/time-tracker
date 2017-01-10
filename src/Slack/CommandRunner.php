@@ -55,10 +55,9 @@ final class CommandRunner implements ContextLoggerAware
 
     private function unknownCommandResponse(string $name) : array
     {
-        $attachments = array_merge(
-            ['text' => 'Valid commands are:'],
-            array_keys($this->commands)
-        );
+        $attachments = [
+            'text' => "Valid commands are:\n" . implode("\n", array_keys($this->commands)),
+        ];
 
         return [
             'response_type' => 'ephemeral',
