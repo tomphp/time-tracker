@@ -38,6 +38,9 @@ class E2EContext implements Context, SnippetAcceptingContext
     /** @var string */
     private $slackToken;
 
+    /** @var \stdClass[] */
+    private $previousEntries = [];
+
     public function __construct()
     {
         $this->client = new Client([
@@ -101,6 +104,8 @@ class E2EContext implements Context, SnippetAcceptingContext
             'id'         => $project->getProperty('id'),
             'total_time' => Period::fromString($project->getProperty('total_time')),
         ];
+
+        $this->previousEntries = $this->fetchEntriesForProject($name);
     }
 
     /**
@@ -143,25 +148,19 @@ class E2EContext implements Context, SnippetAcceptingContext
         string $projectName,
         string $description
     ) {
-        $project = $this->findEntityByProperty('projects', 'name', $projectName);
+        $latest = $this->fetchEntriesForProject($projectName);
 
-        $projectLink = $project->getLinksByRel('self')[0];
-        $document    = $this->apiGet($projectLink->getHref());
+        $diff = array_diff_key($latest, $this->previousEntries);
 
-        $totalTime = Period::fromString($document->getProperty('total_time'));
-        $timeDelta = $totalTime->subtract($this->projects[$projectName]['total_time']);
+        // $totalTime = Period::fromString($document->getProperty('total_time'));
+        // $timeDelta = $totalTime->subtract($this->projects[$projectName]['total_time']);
 
-        assertEquals($period, $timeDelta);
+        // assertEquals($period, $timeDelta);
 
-        $entities  = $document->getEntities();
-        $timeEntry = array_pop($entities);
+        assertCount(1, $diff, 'Exactly one new entry should have been logged.');
 
-        $timeEntryObject = (object) [
-            //'developerId' => $timeEntry->getEntity('developer')->getHref(), <- OUCH
-            'date'        => $timeEntry->getProperty('date'),
-            'period'      => $timeEntry->getProperty('period'),
-            'description' => $timeEntry->getProperty('description'),
-        ];
+        reset($diff);
+        $timeEntryObject = current($diff);
 
         $expectedEntry = (object) [
             //'developerId' => (string) $this->developers[$developerName]['id'],
@@ -171,6 +170,27 @@ class E2EContext implements Context, SnippetAcceptingContext
         ];
 
         assertEquals($expectedEntry, $timeEntryObject);
+    }
+
+    /** @return \stdClass[] */
+    private function fetchEntriesForProject(string $projectName) : array
+    {
+        $project = $this->findEntityByProperty('projects', 'name', $projectName);
+
+        $projectLink = $project->getLinksByRel('self')[0];
+        $document    = $this->apiGet($projectLink->getHref());
+
+        $entries = [];
+        foreach ($document->getEntities() as $entry) {
+            $entries[$entry->getProperty('id')] = (object) [
+                //'developerId' => $entry->getEntity('developer')->getHref(), <- OUCH
+                'date'        => $entry->getProperty('date'),
+                'period'      => $entry->getProperty('period'),
+                'description' => $entry->getProperty('description'),
+            ];
+        }
+
+        return $entries;
     }
 
     /**

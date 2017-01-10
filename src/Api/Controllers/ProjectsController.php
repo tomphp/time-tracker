@@ -87,6 +87,7 @@ final class ProjectsController
 
                 $timeEntryEntity = Siren\Entity::builder()
                     ->addLink('self', apiUrl('/projects/' . $timeEntry->projectId() . '/time-entries/' . $timeEntry->id()))
+                    ->addProperty('id', (string) $timeEntry->id())
                     ->addProperty('date', (string) $timeEntry->date())
                     ->addProperty('period', (string) $timeEntry->period())
                     ->addProperty('description', $timeEntry->description())
