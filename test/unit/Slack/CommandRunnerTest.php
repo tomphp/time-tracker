@@ -112,9 +112,11 @@ final class CommandRunnerTest extends \PHPUnit_Framework_TestCase
         assertSame('unknown is not a valid command', $result['text']);
         assertSame(
             [
-                'text' => 'Valid commands are:',
-                'foo',
-                'bar',
+                [
+                    'text' => 'Valid commands are:',
+                    'foo',
+                    'bar',
+                ],
             ],
             $result['attachments']
         );
@@ -130,7 +132,7 @@ final class CommandRunnerTest extends \PHPUnit_Framework_TestCase
 
         assertSame('ephemeral', $result['response_type']);
         assertSame('Invalid foo command', $result['text']);
-        assertSame(['text' => 'Format: format description'], $result['attachments']);
+        assertSame([['text' => 'Format: format description']], $result['attachments']);
     }
 
     /** @test */

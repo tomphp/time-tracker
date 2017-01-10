@@ -77,7 +77,7 @@ final class LogCommandHandlerTest extends \PHPUnit_Framework_TestCase
 
         assertSame('ephemeral', $result['response_type']);
         assertSame('You Slack user has not been linked to an account', $result['text']);
-        assertSame(['text' => 'Please use the link command to connect your user'], $result['attachments']);
+        assertSame([['text' => 'Please use the link command to connect your user']], $result['attachments']);
     }
 
     /** @test */

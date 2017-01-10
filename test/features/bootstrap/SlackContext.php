@@ -190,12 +190,12 @@ class SlackContext implements Context, SnippetAcceptingContext
     {
         $commands = array_keys($this->services->get('config.slack.commands'));
 
-        $attachments = $this->result['attachments'];
+        $attachment = $this->result['attachments'][0];
 
-        assertSame('Valid commands are:', $attachments['text']);
+        assertSame('Valid commands are:', $attachment['text']);
 
         foreach ($commands as $command) {
-            assertContains($command, $attachments);
+            assertContains($command, $attachment);
         }
     }
 
@@ -206,7 +206,7 @@ class SlackContext implements Context, SnippetAcceptingContext
     {
         $attachments = $this->result['attachments'];
 
-        assertSame($message, $attachments['text']);
+        assertSame($message, $attachments[0]['text']);
     }
 
     private function commandRunner() : CommandRunner

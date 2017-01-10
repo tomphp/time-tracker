@@ -62,7 +62,7 @@ final class LogCommandHandler implements CommandHandler
         ];
 
         if ($extended) {
-            $result['attachments'] = ['text' => $extended];
+            $result['attachments'] = [['text' => $extended]];
         }
 
         return $result;

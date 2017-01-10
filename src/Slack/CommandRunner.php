@@ -63,7 +63,7 @@ final class CommandRunner implements ContextLoggerAware
         return [
             'response_type' => 'ephemeral',
             'text'          => $name . ' is not a valid command',
-            'attachments'   => $attachments,
+            'attachments'   => [$attachments],
         ];
     }
 
@@ -72,7 +72,7 @@ final class CommandRunner implements ContextLoggerAware
         return [
             'response_type' => 'ephemeral',
             'text'          => "Invalid $name command",
-            'attachments'   => ['text' => 'Format: ' . $parser->formatDescription()],
+            'attachments'   => [['text' => 'Format: ' . $parser->formatDescription()]],
         ];
     }
 
