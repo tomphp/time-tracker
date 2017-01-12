@@ -163,7 +163,7 @@ class E2EContext implements Context, SnippetAcceptingContext
         $timeEntryObject = current($diff);
 
         $expectedEntry = (object) [
-            //'developerId' => (string) $this->developers[$developerName]['id'],
+            'developer'   => $developerName,
             'date'        => (string) Date::today(),
             'period'      => (string) $period,
             'description' => $description,
@@ -183,7 +183,7 @@ class E2EContext implements Context, SnippetAcceptingContext
         $entries = [];
         foreach ($document->getEntities() as $entry) {
             $entries[$entry->getProperty('id')] = (object) [
-                //'developerId' => $entry->getEntity('developer')->getHref(), <- OUCH
+                'developer'   => $entry->getEntitiesByClass('developer')[0]->getProperty('name'),
                 'date'        => $entry->getProperty('date'),
                 'period'      => $entry->getProperty('period'),
                 'description' => $entry->getProperty('description'),

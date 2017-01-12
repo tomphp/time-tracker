@@ -7,6 +7,7 @@ use Interop\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use TomPHP\Siren;
+use TomPHP\TimeTracker\Tracker\DeveloperProjections;
 use TomPHP\TimeTracker\Tracker\Project;
 use TomPHP\TimeTracker\Tracker\ProjectId;
 use TomPHP\TimeTracker\Tracker\ProjectProjections;
@@ -78,12 +79,20 @@ final class ProjectsController
         $project     = $projects->withId(ProjectId::fromString($args['projectId']));
         $timeEntries = $this->container->get(TimeEntryProjections::class);
 
+        $developers = [];
+        foreach ($this->container->get(DeveloperProjections::class)->all() as $developer) {
+            $developers[(string) $developer->id()] = $developer;
+        }
+
         $timeEntries = array_map(
-            function (TimeEntryProjection $timeEntry) {
-                $developer = new Siren\EntityLink(
-                    ['developer'],
-                    apiUrl('/developers/' . $timeEntry->developerId())
-                );
+            function (TimeEntryProjection $timeEntry) use ($developers) {
+                $developerEntity = $developers[(string) $timeEntry->developerId()];
+                $developer = Siren\Entity::builder()
+                    ->addProperty('id', (string) $developerEntity->id())
+                    ->addProperty('name', (string) $developerEntity->name())
+                    ->addClass('developer')
+                    ->addLink('self', apiUrl('/developers/' . $timeEntry->developerId()))
+                    ->build();
 
                 $timeEntryEntity = Siren\Entity::builder()
                     ->addLink('self', apiUrl('/projects/' . $timeEntry->projectId() . '/time-entries/' . $timeEntry->id()))
