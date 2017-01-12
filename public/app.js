@@ -17801,9 +17801,9 @@ var _user$project$Types$Project = F5(
 	function (a, b, c, d, e) {
 		return {id: a, name: b, url: c, totalTime: d, entries: e};
 	});
-var _user$project$Types$TimeEntry = F3(
-	function (a, b, c) {
-		return {date: a, period: b, description: c};
+var _user$project$Types$TimeEntry = F4(
+	function (a, b, c, d) {
+		return {date: a, period: b, description: c, developer: d};
 	});
 var _user$project$Types$Developer = F3(
 	function (a, b, c) {
@@ -17839,6 +17839,16 @@ var _user$project$Types$IndexFetched = function (a) {
 	return {ctor: 'IndexFetched', _0: a};
 };
 
+var _user$project$Api$developerName = function (_p0) {
+	return A2(
+		_elm_lang$core$Maybe$withDefault,
+		'[unknown]',
+		A2(
+			_elm_lang$core$Maybe$andThen,
+			_user$project$Siren_Entity$propertyString('name'),
+			_elm_lang$core$List$head(
+				A2(_user$project$Siren_Entity$embeddedEntitiesWithClass, 'developer', _p0))));
+};
 var _user$project$Api$entityToTimeEntry = function (entity) {
 	return {
 		date: A2(
@@ -17852,7 +17862,8 @@ var _user$project$Api$entityToTimeEntry = function (entity) {
 		description: A2(
 			_elm_lang$core$Maybe$withDefault,
 			'[unknown]',
-			A2(_user$project$Siren_Entity$propertyString, 'description', entity))
+			A2(_user$project$Siren_Entity$propertyString, 'description', entity)),
+		developer: _user$project$Api$developerName(entity)
 	};
 };
 var _user$project$Api$entityToDeveloper = function (entity) {
@@ -17911,11 +17922,11 @@ var _user$project$Api$developers = A2(
 	_elm_lang$core$List$filterMap(_elm_lang$core$Basics$identity),
 	A2(
 		_elm_lang$core$Json_Decode$map,
-		function (_p0) {
+		function (_p1) {
 			return A2(
 				_elm_lang$core$List$map,
 				_user$project$Api$entityToDeveloper,
-				A2(_user$project$Siren_Entity$embeddedEntitiesWithClass, 'developer', _p0));
+				A2(_user$project$Siren_Entity$embeddedEntitiesWithClass, 'developer', _p1));
 		},
 		_user$project$Siren_Decode$entity));
 var _user$project$Api$listToDict = F2(
@@ -17937,15 +17948,15 @@ var _user$project$Api$projects = A2(
 		_elm_lang$core$List$filterMap(_elm_lang$core$Basics$identity),
 		A2(
 			_elm_lang$core$Json_Decode$map,
-			function (_p1) {
+			function (_p2) {
 				return A2(
 					_elm_lang$core$List$map,
 					_user$project$Api$entityToProject,
-					A2(_user$project$Siren_Entity$embeddedEntitiesWithClass, 'project', _p1));
+					A2(_user$project$Siren_Entity$embeddedEntitiesWithClass, 'project', _p2));
 			},
 			_user$project$Siren_Decode$entity)));
 var _user$project$Api$linkWithClassHref = function ($class) {
-	return function (_p2) {
+	return function (_p3) {
 		return A2(
 			_elm_lang$core$Maybe$withDefault,
 			'not found',
@@ -17955,7 +17966,7 @@ var _user$project$Api$linkWithClassHref = function ($class) {
 					return _.href;
 				},
 				_elm_lang$core$List$head(
-					A2(_user$project$Siren_Entity$linksWithClass, $class, _p2))));
+					A2(_user$project$Siren_Entity$linksWithClass, $class, _p3))));
 	};
 };
 var _user$project$Api$index = A3(
@@ -18141,10 +18152,21 @@ var _user$project$View$timeEntryItemHtml = function (entry) {
 						{ctor: '[]'},
 						{
 							ctor: '::',
-							_0: _elm_lang$html$Html$text(entry.description),
+							_0: _elm_lang$html$Html$text(entry.developer),
 							_1: {ctor: '[]'}
 						}),
-					_1: {ctor: '[]'}
+					_1: {
+						ctor: '::',
+						_0: A2(
+							_debois$elm_mdl$Material_Table$td,
+							{ctor: '[]'},
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html$text(entry.description),
+								_1: {ctor: '[]'}
+							}),
+						_1: {ctor: '[]'}
+					}
 				}
 			}
 		});
@@ -18272,10 +18294,21 @@ var _user$project$View$timeEntryListHtml = function (project) {
 										{ctor: '[]'},
 										{
 											ctor: '::',
-											_0: _elm_lang$html$Html$text('Description'),
+											_0: _elm_lang$html$Html$text('Developer'),
 											_1: {ctor: '[]'}
 										}),
-									_1: {ctor: '[]'}
+									_1: {
+										ctor: '::',
+										_0: A2(
+											_debois$elm_mdl$Material_Table$th,
+											{ctor: '[]'},
+											{
+												ctor: '::',
+												_0: _elm_lang$html$Html$text('Description'),
+												_1: {ctor: '[]'}
+											}),
+										_1: {ctor: '[]'}
+									}
 								}
 							}
 						}),

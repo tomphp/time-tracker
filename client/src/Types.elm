@@ -26,6 +26,7 @@ type alias TimeEntry =
     { date : String
     , period : String
     , description : String
+    , developer : String
     }
 
 

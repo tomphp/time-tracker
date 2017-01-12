@@ -108,4 +108,13 @@ entityToTimeEntry entity =
     { date = propertyString "date" entity |> Maybe.withDefault "[unknown]"
     , period = propertyString "period" entity |> Maybe.withDefault "[unknown]"
     , description = propertyString "description" entity |> Maybe.withDefault "[unknown]"
+    , developer = developerName entity
     }
+
+
+developerName : Entity -> String
+developerName =
+    embeddedEntitiesWithClass "developer"
+        >> List.head
+        >> Maybe.andThen (propertyString "name")
+        >> Maybe.withDefault "[unknown]"
