@@ -9,10 +9,12 @@ use TomPHP\TimeTracker\Slack\Exception\CommandFormatInvalid;
 
 final class LinkCommandParser implements CommandParser
 {
+    const REGEX = '/^to account (.*)$/';
+
     /** @return LinkCommand */
     public function parse(string $command) : Command
     {
-        if (!preg_match('/^to account (.*)$/', $command, $matches)) {
+        if (!preg_match(self::REGEX, $command, $matches)) {
             throw new CommandFormatInvalid(__CLASS__, $command);
         }
 
@@ -21,7 +23,7 @@ final class LinkCommandParser implements CommandParser
 
     public function matchesFormat(string $command) : bool
     {
-        return true;
+        return (bool) preg_match(self::REGEX, $command);
     }
 
     public function formatDescription() : string

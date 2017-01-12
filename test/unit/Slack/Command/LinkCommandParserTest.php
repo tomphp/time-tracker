@@ -44,4 +44,16 @@ final class LinkCommandParserTest extends \PHPUnit_Framework_TestCase
             $this->subject->formatDescription()
         );
     }
+
+    /** @test */
+    public function on_matchesFormat_it_returns_true_for_a_valid_command()
+    {
+        assertTrue($this->subject->matchesFormat('to account fran@rgsoftware.com'));
+    }
+
+    /** @test */
+    public function on_matchesFormat_it_returns_false_for_an_invalid_command()
+    {
+        assertFalse($this->subject->matchesFormat('invalid format'));
+    }
 }
