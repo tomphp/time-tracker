@@ -7,13 +7,13 @@ image_resource:
   source: { repository: tomoram/time-tracker-php }
 
 inputs:
-- name: build-dir
+- name: github-repository
 
 params:
   ACCESS_TOKEN: dcee44c6774b4a4fb2663d0a6cef0d97
 
 run:
-  dir: build-dir
+  dir: github-repository
   path: sh
   args:
   - -exc
