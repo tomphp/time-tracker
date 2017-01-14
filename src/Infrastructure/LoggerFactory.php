@@ -3,21 +3,27 @@
 namespace TomPHP\TimeTracker\Infrastructure;
 
 use Monolog\Formatter\LineFormatter;
-use Monolog\Handler\SyslogUdpHandler;
+use Monolog\Handler\ErrorLogHandler;
+use Monolog\Handler\RollbarHandler;
 use Monolog\Logger;
+use Rollbar;
 use TomPHP\ContextLogger;
 
 final class LoggerFactory
 {
-    public function __invoke($name, $papertailHost, $papertrailPort, $correlationId)
+    public function __invoke(string $name, string $correlationId) : ContextLogger
     {
         $output    = '%channel%.%level_name%: %message% %context%';
         $formatter = new LineFormatter($output);
+        $monolog   = new Logger($name);
 
-        $monolog       = new Logger($name);
-        $syslogHandler = new SyslogUdpHandler($papertailHost, $papertrailPort);
-        $syslogHandler->setFormatter($formatter);
-        $monolog->pushHandler($syslogHandler);
+        if (Rollbar::$instance) {
+            $rollbarHandler = new RollbarHandler(Rollbar::$instance, Logger::WARNING);
+            $rollbarHandler->setFormatter($formatter);
+            $monolog->pushHandler($rollbarHandler);
+        }
+
+        $monolog->pushHandler(new ErrorLogHandler());
 
         return new ContextLogger($monolog, ['correlation_id' => $correlationId]);
     }

@@ -4,6 +4,7 @@ applications:
   memory: 64M
   buildpack: https://github.com/cloudfoundry/php-buildpack.git
   env:
+    ENVIRONMENT: production
     STORAGE_DRIVER: mysql
     ADMIN_PASSWORD: supersecret
   services:

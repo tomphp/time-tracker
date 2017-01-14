@@ -28,6 +28,7 @@ services:
     links:
     - db
     environment:
+      ENVIRONMENT: development
       STORAGE_DRIVER: mysql
       ADMIN_PASSWORD: testing123
       MYSQL_DBNAME: tracker
@@ -46,6 +47,7 @@ services:
     - codebase
     command: echo "CLI Initialised..."
     environment:
+      ENVIRONMENT: development
       STORAGE_DRIVER: ${STORAGE_DRIVER}
       ADMIN_PASSWORD: testing123
       MYSQL_DBNAME: tracker

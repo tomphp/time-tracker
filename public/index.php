@@ -19,13 +19,23 @@ use TomPHP\TimeTracker\Tracker\TimeEntryProjections;
 
 const PROJECT_ROOT = __DIR__ . '/..';
 
+$isDevelopment = getenv('ENVIRONMENT') === 'development';
+
 header('Access-Control-Allow-Origin: *');
 
 require PROJECT_ROOT . '/vendor/autoload.php';
 
+if ($isDevelopment) {
+    Rollbar::init([
+        'access_token' => 'dcee44c6774b4a4fb2663d0a6cef0d97',
+        'environment'  => getenv('ENVIRONMENT'),
+    ]);
+}
+
 $app = new App([
     'settings' => [
-        'displayErrorDetails' => true,
+        'debug'               => $isDevelopment,
+        'displayErrorDetails' => $isDevelopment,
     ],
 ]);
 
@@ -34,6 +44,21 @@ $container = $app->getContainer();
 $container['view'] = function ($container) {
     return new PhpRenderer(__DIR__ . '/../views/');
 };
+
+if ($isDevelopment) {
+    $app->add(new \Zeuxisoo\Whoops\Provider\Slim\WhoopsMiddleware($app));
+} else {
+    $container['errorHandler'] = function ($container) {
+        return function ($request, $response, $exception) use ($container) {
+            Rollbar::report_exception($exception);
+
+            return $container['response']
+                ->withStatus(500)
+                ->withHeader('Content-Type', 'text/html')
+                ->write('Something went wrong!');
+        };
+    };
+}
 
 Bootstrap::run($container);
 
@@ -47,6 +72,10 @@ $app->add(new HttpBasicAuthentication([
 
 $app->get('/', function (Request $request, Response $response) {
     return $this->view->render($response, 'index.html.php');
+});
+
+$app->get('/exception', function () {
+    throw new \RuntimeException('This is an example exception');
 });
 
 $app->group('/slack', function () {
