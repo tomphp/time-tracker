@@ -25,7 +25,7 @@ header('Access-Control-Allow-Origin: *');
 
 require PROJECT_ROOT . '/vendor/autoload.php';
 
-if ($isDevelopment) {
+if (!$isDevelopment) {
     Rollbar::init([
         'access_token' => 'dcee44c6774b4a4fb2663d0a6cef0d97',
         'environment'  => getenv('ENVIRONMENT'),
