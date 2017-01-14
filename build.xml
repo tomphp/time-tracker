@@ -24,6 +24,12 @@
               passthru="true" />
     </target>
 
+    <target name="ci:set-pipeline">
+        <exec command="fly -t ttci set-pipeline -p time-tracker -c pipeline.yml -l credentials.yml "
+              checkreturn="true"
+              passthru="true" />
+    </target>
+
     <target name="build:client">
         <echo message="Building client app" />
         <exec command="cd client &amp;&amp; elm-make src/App.elm --output ../public/app.js --warn &amp;&amp; cd .."
