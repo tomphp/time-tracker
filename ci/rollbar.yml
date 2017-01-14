@@ -1,0 +1,28 @@
+---
+
+platform: linux
+
+image_resource:
+  type: docker-image
+  source: { repository: tomoram/time-tracker-php }
+
+inputs:
+- name: build-dir
+
+params:
+  ACCESS_TOKEN: dcee44c6774b4a4fb2663d0a6cef0d97
+
+run:
+  dir: build-dir
+  path: sh
+  args:
+  - -exc
+  - |
+    export LOCAL_USERNAME=`whoami`
+    export REVISION=`git log -n 1 --pretty=format:"%H"`
+
+    curl https://api.rollbar.com/api/1/deploy/ \
+      -F access_token=$ACCESS_TOKEN \
+      -F environment=$ENVIRONMENT \
+      -F revision=$REVISION \
+      -F local_username=$LOCAL_USERNAME
